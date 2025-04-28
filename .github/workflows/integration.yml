@@ -1,4 +1,4 @@
-# This build configuration is adapted from Apalache
+name: Integration Tests
 
 on:
   # Every pull request
@@ -14,81 +14,29 @@ on:
     branches:
       - main
 
-name: build
-
 jobs:
-  quint-linting:
+  changes:
+    name: Detect changes
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./quint
-    strategy:
-      fail-fast: false
+    permissions:
+      pull-requests: read
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: dorny/paths-filter@v3
+        id: filter
         with:
-          node-version: "18"
-      - run: npm install
-      - run: npm run format-check || (echo "Run 'npm run format'" && exit 1)
-
-  quint-vscode-linting:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-      - name: Install quint deps
-        run: cd ./quint && npm install
-      - name: Install yalc
-        run: npm i yalc -g
-      - name: Compile quint vscode plugin
-        run: make local
-      - name: Run formatting for the plugin
-        run: cd ./vscode/quint-vscode && npm run format-check || (echo "Run 'npm run format'" && exit 1)
-
-  quint-unit-tests:
-    runs-on: ${{ matrix.operating-system }}
-    defaults:
-      run:
-        working-directory: ./quint
-    strategy:
-      fail-fast: false
-      matrix:
-        operating-system: [ubuntu-latest, macos-latest, windows-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-      - run: npm install
-      - run: npm run compile
-      - run: npm test
-
-  quint-test-generated-up-to-date:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./quint
-    strategy:
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-      - run: npm install
-      - name: Compile and update test fixtures
-        run: npm run generate
-      - name: Check that generated files are up to date
-        run: |
-          git diff --exit-code \
-            || ( echo ">>> ERROR: Generated files are not up to date. Run 'npm run generate'" &&  exit 1)
+          filters: |
+            code:
+              - 'examples/**'
+              - 'quint/**'
+              - 'evaluator/**'
 
   quint-integration-tests:
+    name: TXM tests by OS
+    needs: changes
+    if: ${{ needs.changes.outputs.code == 'true' || github.ref == 'refs/heads/main' }}
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
@@ -135,7 +83,18 @@ jobs:
         # See https://github.com/anko/txm/issues/10
         if: matrix.operating-system != 'windows-latest'
 
+  quint-integration-tests-aggregator:
+    name: TXM tests
+    # Needed to aggregate all matrix options under the same name for the requirement
+    needs: quint-integration-tests
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All OS tests completed successfully!"
+
   quint-examples-dashboard:
+    name: Examples Dashboard by OS
+    needs: changes
+    if: ${{ needs.changes.outputs.code == 'true' || github.ref == 'refs/heads/main' }}
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
@@ -176,48 +135,10 @@ jobs:
           git diff --exit-code \
             || ( echo ">>> ERROR: Examples dashboard is out of sync. Fix examples or run 'make examples'" &&  exit 1)
 
-  quint-antlr-grammar:
+  quint-examples-dashboard-aggregator:
+    name: Examples Dashboard
+    # Needed to aggregate all matrix options under the same name for the requirement
+    needs: quint-examples-dashboard
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-      - run: cd ./quint && npm install
-      - run: cd ./quint && npm run antlr
-
-  quint-vscode-plugin:
-    runs-on: ${{ matrix.operating-system }}
-    strategy:
-      fail-fast: false
-      matrix:
-        operating-system: [ubuntu-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache nix store
-        # Workaround for cache action not playing well with permissions
-        # See https://github.com/actions/cache/issues/324
-        uses: john-shaffer/cache@59429c0461095f341a8cf7388e5d3aef37b95edd
-        with:
-          path: |
-            /nix/store
-            /nix/var/nix/profiles
-          key: ${{ runner.os }}-nix-${{ hashFiles('**.nix') }}
-          restore-keys: |
-            ${{ runner.os }}-nix-
-            ${{ runner.os }}-
-      - name: Install Nix
-        uses: cachix/install-nix-action@v22
-        with:
-          extra_nix_config: |
-            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-      - name: Build dev-shell
-        run: nix develop -c bash -c exit
-      - name: Install quint deps
-        run: cd ./quint && nix develop -c npm install
-      - name: Compile quint vscode plugin
-        run: nix develop -c make local
-      - name: Run vscode unit tests
-        run: cd ./vscode/quint-vscode && nix develop -c npm test
-      - name: Check that we can create the vsix package
-        run: cd ./vscode/quint-vscode && nix develop -c vsce package
+      - run: echo "All OS tests completed successfully!"
