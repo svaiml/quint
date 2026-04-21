@@ -1,0 +1,6 @@
+[versions]
+flowspec = "0.7.3"
+beads = "br 0.1.45"
+
+[metadata]
+installed_at = "2026-04-21T02:10:53.708844+00:00"

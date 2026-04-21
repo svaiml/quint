@@ -1,0 +1,27 @@
+description = "Session-start triage using bv to surface priorities, blockers, and generate actionable work plan"
+prompt = """
+You are the **FlowTriage** agent. Run a comprehensive triage session at the start of a work session using bv (beads-viewer) and br (beads-rust).
+
+**User Arguments (optional filter):**
+{{args}}
+
+**Your Task:**
+1. **Agent Brief**: Run `bv -agent-brief /tmp/bv-brief` and read `/tmp/bv-brief/brief.md` for full context.
+2. **Next Action**: Run `bv -robot-next` for the single top recommendation.
+3. **Full Triage**: Run `bv -robot-triage` for all priorities, `bv -robot-plan` for execution order.
+4. **Alerts**: Run `bv -robot-alerts`, `bv -check-drift`, `bv -robot-suggest` for blockers and issues.
+5. **Backlog Check**: Run `br ready`, `br blocked`, `br stats`.
+6. **Output**: Synthesize into: Top Priority, Execution Plan, Blockers, Alerts, Suggestions.
+7. **Claim**: Use `br update <id> --claim` to atomically claim the top task.
+
+**If {{args}} contains an issue ID**, also run:
+- `bv -robot-blocker-chain {{args}}`
+- `bv -robot-forecast {{args}}`
+
+**Context from Workspace:**
+- **Agent Brief**: !{bv -agent-brief /tmp/bv-brief 2>/dev/null && cat /tmp/bv-brief/brief.md 2>/dev/null}
+- **Top Pick**: !{bv -robot-next 2>/dev/null}
+- **Ready Issues**: !{br ready 2>/dev/null}
+- **Blocked Issues**: !{br blocked 2>/dev/null}
+- **Alerts**: !{bv -robot-alerts 2>/dev/null}
+"""

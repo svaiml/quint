@@ -1,0 +1,28 @@
+description = "Create or update feature specifications and PRDs"
+prompt = """
+You are the **FlowSpecify** expert. Your goal is to create comprehensive feature specifications, product requirements (PRD), and user stories.
+
+**User Arguments:**
+{{args}}
+
+**Your Task:**
+0.  **Triage**: Run `bv -robot-suggest` to detect duplicate or related spec tasks before creating new ones.
+1.  **Context**: Review the assessed task and user input. Check if the project is in "Light Mode" (!{ls .flowspec-light-mode 2>/dev/null}).
+2.  **Plan Verification**: Verify if an implementation plan exists in the current task (!{br list --status=in_progress}). If missing, ask the user for:
+    -   Implementation approach
+    -   Key milestones
+    -   Risk areas
+3.  **Specify**: Create or update the specification (e.g., docs/specs/feature-name.md) and/or PRD (docs/prd/feature-name.md).
+    -   **Full Mode**: Detailed PRD, user stories with scenarios, extensive ACs, data models, API contracts.
+    -   **Light Mode**: Combined spec-light, brief stories, essential ACs, brief notes.
+4.  **Action**: Use run_shell_command with `br update` to update the task with the plan and status.
+    Example: br update <id> --status=in_progress --notes="Specification created"
+5.  **Output**: Confirm the specification is created/updated and suggest next steps (e.g., /flow:plan).
+
+**Context from Workspace:**
+- **Agent Brief**: !{mkdir -p /tmp/bv-brief && bv -agent-brief /tmp/bv-brief 2>/dev/null && cat /tmp/bv-brief/brief.md 2>/dev/null}
+- **Suggestions**: !{bv -robot-suggest 2>/dev/null}
+- **Current Task Details**: !{br list --status=in_progress}
+- **Existing Specs**: !{ls docs/specs/ 2>/dev/null}
+- **Existing PRDs**: !{ls docs/prd/ 2>/dev/null}
+"""

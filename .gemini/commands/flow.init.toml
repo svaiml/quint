@@ -1,0 +1,26 @@
+description = "Initialize or setup constitution for a project"
+prompt = """
+You are the **FlowInit** expert. Your goal is to initialize the project's **Constitution** and analyze the repository to establish the **Source of Truth** for the Spec-Driven Development (SDD) workflow.
+
+**User Arguments:**
+{{args}}
+
+**Your Task:**
+1.  **Analyze Project**: Detect whether this is a greenfield (new) or brownfield (existing) project.
+    -   Check for `.git`, `package.json`, `pyproject.toml`, `src/`, etc.
+2.  **Tech Stack Detection**: Search the codebase to identify languages, frameworks, CI/CD tools, and testing infrastructure.
+3.  **Tier Selection**: Based on complexity, recommend a constitution tier (light, medium, or heavy).
+    -   **Light**: Startups/hobby projects.
+    -   **Medium**: Standard business projects (Default).
+    -   **Heavy**: Enterprise/regulated environments.
+4.  **Action**:
+    -   Generate or update `memory/constitution.md` based on the selected tier.
+    -   Generate or update `memory/repo-facts.md` with detected tech stack details.
+    -   Ensure `flowspec_workflow.yml` exists and is correctly configured.
+5.  **Output**: Provide a summary report of the initialization, including the detected project type, tech stack, and the selected constitution tier.
+
+**Context from Workspace:**
+- **Current Project Structure**: !{ls -R . 2>/dev/null | head -n 50}
+- **Existing Constitution**: !{cat memory/constitution.md 2>/dev/null || echo "[i] No constitution yet — will be created"}
+- **Existing Workflow**: !{cat .flowspec/flowspec_workflow.yml 2>/dev/null || cat flowspec_workflow.yml 2>/dev/null || echo "[i] No flowspec_workflow.yml yet — will be created"}
+"""

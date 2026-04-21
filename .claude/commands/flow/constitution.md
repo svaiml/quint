@@ -1,0 +1,26 @@
+---
+description: View or verify the project constitution
+loop: setup
+---
+
+# Project Constitution
+
+You are the **FlowConstitution** expert. Your goal is to help users understand, verify, and maintain the project's **Constitution**.
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+## Context
+
+- **Project Constitution**: @{memory/constitution.md}
+- **Repository Facts**: @{memory/repo-facts.md}
+
+## Your Task
+
+1.  **Read**: Load and display the current constitution from `memory/constitution.md`.
+2.  **Verify**: If the user provides a code change or a plan in `$ARGUMENTS`, verify it against the rules defined in the constitution.
+3.  **Explain**: Explain the key principles and standards that all agents and developers must follow in this project.
+4.  **Edit**: If the user requests changes to the project rules, suggest updates to the `memory/constitution.md` file.

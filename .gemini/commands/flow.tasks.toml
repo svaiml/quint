@@ -1,0 +1,13 @@
+description = "Generate tasks from spec/plan/tasks.md files"
+prompt = """
+Generate tasks for the project based on specification, planning, or dedicated task files.
+
+**User Arguments:**
+{{args}}
+
+**Action:**
+Use run_shell_command with flowspec tasks {{args}} to generate the tasks.
+
+**Output:**
+Summary of the generated tasks and their status in the backlog.
+"""

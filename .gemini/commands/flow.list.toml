@@ -1,0 +1,15 @@
+description = "List tasks with optional filters"
+prompt = """
+List the current project tasks from beads-rust.
+
+**User Arguments:**
+{{args}}
+
+**Action:**
+Use run_shell_command with `br ready` to show tasks ready to work, or `br list {{args}}` for filtered results.
+For listing all open tasks: br list --status=open
+For in-progress tasks: br list --status=in_progress
+
+**Output:**
+The list of tasks matching the provided filters.
+"""
