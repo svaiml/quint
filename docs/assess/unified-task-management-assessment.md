@@ -1,0 +1,134 @@
+# Feature Assessment: Unified Task Management (backlog-md + ADRs + GitHub Issues)
+
+**Date**: 2026-04-21
+**Assessed By**: Claude AI Agent
+**Status**: Assessed
+**Tracking Issue**: zombo-sash-eco-gfg
+
+## Feature Overview
+
+The project has three parallel task/decision-tracking systems that are partially inaccessible:
+
+1. **backlog-md tasks** — exist as markdown files in `backlog/tasks/` across nested repos (infer, pctl-rs, zz-notation, apps, flowspec), but the `backlog` CLI is not installed. Root cause: wrong npm package name used (`backlog-md` → correct name is `backlog.md`).
+2. **ADRs** — exist across nested repos (`reasoning-universe/infer/docs/adr/`, `pctl-rs/docs/adr/`, `zz-notation/docs/adr/`) but the top-level `docs/adr/` is empty. No aggregated view.
+3. **GitHub Issues** — nested repos (infer, pctl-rs) have GitHub remotes configured. The umbrella repo (`zombo-sash-eco`) has no git remote, so `gh issue list` fails at the top level.
+
+**Immediate root causes (all fixable without full SDD):**
+- Install `backlog.md@1.44.0` (not `backlog-md`)
+- Add git remote to umbrella repo to enable `gh` commands
+- The flowspec `sync` command already references `backlog.md` correctly internally but the user-facing install prompt used the wrong package name
+
+## Scoring Analysis
+
+### Complexity Score: 4.0/10
+
+| Dimension | Score | Rationale |
+|-----------|-------|-----------|
+| Effort Days | 3/10 | Mostly install + config fixes; one small aggregation feature |
+| Component Count | 4/10 | backlog CLI, ADR reader, GitHub remote, flowspec sync |
+| Integration Points | 5/10 | npm/pnpm, backlog.md format, GitHub CLI/API, ADR markdown files |
+| **Average** | **4.0/10** | |
+
+### Risk Score: 1.3/10
+
+| Dimension | Score | Rationale |
+|-----------|-------|-----------|
+| Security Implications | 2/10 | GitHub token needed for `gh` commands; already present |
+| Compliance Requirements | 1/10 | None |
+| Data Sensitivity | 1/10 | Internal task/decision data only |
+| **Average** | **1.3/10** | |
+
+### Architecture Impact Score: 2.3/10
+
+| Dimension | Score | Rationale |
+|-----------|-------|-----------|
+| New Patterns | 3/10 | Cross-repo task aggregation is new but straightforward |
+| Breaking Changes | 1/10 | Additive only — no existing integrations break |
+| Dependencies Affected | 3/10 | flowspec sync command, CLAUDE.md task commands |
+| **Average** | **2.3/10** | |
+
+### DVF+V Preliminary Risk: +4
+
+| Risk | Present? | Score |
+|------|----------|-------|
+| Value Risk | No — clear need | 0 |
+| Usability Risk | Yes — 3 surfaces to check | +2 |
+| Feasibility Risk | Yes — package name confusion (now resolved) | +2 |
+| Viability Risk | No | 0 |
+| **Total Bonus** | | **+4** |
+
+## Overall Assessment
+
+**Base Score**: 4.0 + 1.3 + 2.3 = **7.6 / 30**
+**DVF+V Bonus**: +4
+**Total Score**: **11.6 / 30**
+**Recommendation**: Spec-Light
+**Confidence**: High
+
+### Rationale
+
+No individual score reaches 7, and no immediate security/compliance concerns. The total (11.6) sits comfortably in the Spec-Light band (10–18). The core work is:
+1. Fix backlog-md install (package name typo) — 10 min
+2. Configure umbrella repo git remote — 5 min
+3. Lightweight spec for cross-repo ADR + task aggregation — 1-2 days
+
+A full SDD workflow would over-engineer what are mostly config/install fixes with a small aggregation feature.
+
+### Key Factors
+
+- **Complexity**: Low-to-moderate. The hardest part is designing the aggregation view, not the mechanics.
+- **Risk**: Negligible. All systems are internal tooling.
+- **Impact**: Moderate. Affects daily workflow across all nested repos once working.
+
+### Immediate Quick Wins (No spec needed)
+
+```bash
+# 1. Install backlog CLI (correct package name)
+npm install -g backlog.md
+# or via pnpm (preferred per flowspec)
+pnpm add -g backlog.md
+
+# 2. Verify
+backlog task list --plain
+
+# 3. Add git remote to umbrella repo (replace with actual remote)
+git remote add origin git@github.com:zombocoder/zombo-sash-eco.git
+gh issue list
+```
+
+## Next Steps
+
+### Spec-Light Path
+
+Create a lightweight spec at `./docs/prd/unified-task-management-spec.md` covering:
+
+1. **Problem**: Three disconnected task sources; no single view
+2. **Requirements**:
+   - `backlog` CLI installed and working at umbrella level
+   - `gh issue list` working at umbrella level (remote configured)
+   - `flow:triage` surfaces backlog tasks from all nested repos
+   - ADR index aggregated from all nested `docs/adr/` directories
+3. **Acceptance Criteria**:
+   - `backlog task list --plain` returns tasks from all workspace repos
+   - `gh issue list` works at umbrella level
+   - `bv` / `br` integrated with backlog sync
+   - ADR README at `docs/adr/` links to or indexes all nested ADRs
+
+```bash
+# After creating the lightweight spec:
+/flow:implement unified-task-management
+```
+
+### Override Options
+
+```bash
+# If you want full SDD (over-engineered but thorough)
+/flow:assess --mode full
+
+# If you just want to skip spec and fix it now
+/flow:assess --mode skip
+```
+
+---
+
+*Assessment generated by /flow:assess workflow*
