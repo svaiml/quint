@@ -81,12 +81,26 @@ HUMAN → ABDUCTION (FPF) → DEDUCTION (infer) → INDUCTION (pctl-rs) → STOR
   └──────────────── review, refine, raise assurance (L3 = operational) ────────┘
 ```
 
+## Bootstrapping with gh CLI (required prerequisite)
+
+`gh` is the only tool needed — no SSH keys, works on Linux, macOS, and Windows.
+Install: https://cli.github.com
+
+```bash
+# One-time authentication (all platforms)
+gh auth login
+```
+
+`clone-ecosystem.sh` uses `gh repo clone` for every repo — public and private alike.
+Any repo that returns FAILED needs explicit access grant on the svaiml org.
+
 ## Quick Commands
 
 ```bash
-# Bootstrap
-./bin/clone-ecosystem.sh ~/zombo-sash-eco
-./bin/setup-tools.sh ~/zombo-sash-eco
+# Bootstrap (first time)
+gh repo clone svaiml/ZomboCraftEco zombocrafteco
+cd zombocrafteco && git checkout develop   # or feature/<name>
+./bin/clone-ecosystem.sh .
 
 # Daily
 uv run python bin/eco-sync sync        # fetch + pull all
