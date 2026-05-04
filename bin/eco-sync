@@ -1,0 +1,605 @@
+#!/usr/bin/env -S uv run python3
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["gita"]
+# ///
+"""
+eco-sync: Scan, configure, and sync all repos in zombo-sash-eco ecosystem.
+
+Usage:
+    eco-sync scan          # Discover all git repos and show status
+    eco-sync sync          # Fetch all origins + pull current branch
+    eco-sync status        # Show branch + dirty status for all repos
+    eco-sync delta         # Show new commits since last sync (changelog)
+    eco-sync report <repo> [--latest N]  # Repo summary with recent commits
+    eco-sync tree          # Show ecosystem tree with GitHub URLs
+    eco-sync fix-remotes   # Ensure all remotes use SSH (not HTTPS)
+
+  Setup:
+    eco-sync setup-gita    # Register all repos + configure groups with gita
+
+  Then use gita directly:
+    gita ll                # all repos status
+    gita ll reasoning      # reasoning group only
+    gita fetch             # fetch all repos
+    gita super reasoning pull  # pull all reasoning repos
+
+  Lazygit:
+    eco-sync lg <repo>     # Open lazygit for a specific repo (e.g. eco-sync lg infer)
+"""
+
+import os
+import subprocess
+import sys
+import json
+from pathlib import Path
+from dataclasses import dataclass, field
+
+ECO_ROOT = Path(__file__).resolve().parent.parent
+GROUPS = {
+    "apps": "apps",
+    "infra-eco": "infra-eco",
+    "reasoning-universe": "reasoning-universe",
+    "prodx": "prodx",
+    "prodx/external": "prodx-external",
+    "tools/ai-tools": "tools/ai-tools",
+    "tools/orchestrator": "tools/orchestrator",
+}
+
+
+@dataclass
+class RepoInfo:
+    path: Path
+    name: str
+    group: str
+    branch: str = ""
+    remote_url: str = ""
+    is_dirty: bool = False
+    behind: int = 0
+    ahead: int = 0
+    has_develop: bool = False
+    errors: list = field(default_factory=list)
+
+
+def git(repo_path: Path, *args: str) -> tuple[int, str]:
+    """Run git command in a repo, return (exit_code, output)."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(repo_path)] + list(args),
+            capture_output=True, text=True, timeout=30,
+        )
+        return result.returncode, (result.stdout + result.stderr).strip()
+    except subprocess.TimeoutExpired:
+        return 1, "timeout"
+    except Exception as e:
+        return 1, str(e)
+
+
+def discover_repos() -> list[RepoInfo]:
+    """Find all git repos in the ecosystem."""
+    repos = []
+    for group_path, group_name in GROUPS.items():
+        group_dir = ECO_ROOT / group_path
+        if not group_dir.exists():
+            continue
+        for entry in sorted(group_dir.iterdir()):
+            if entry.is_dir() and (entry / ".git").exists():
+                repo = RepoInfo(
+                    path=entry,
+                    name=entry.name,
+                    group=group_name,
+                )
+                # Get current branch
+                rc, out = git(entry, "branch", "--show-current")
+                repo.branch = out if rc == 0 else "detached"
+
+                # Get remote URL
+                rc, out = git(entry, "remote", "get-url", "origin")
+                repo.remote_url = out if rc == 0 else "no remote"
+
+                # Check dirty
+                rc, out = git(entry, "status", "--porcelain")
+                repo.is_dirty = bool(out) if rc == 0 else False
+
+                # Check if develop exists
+                rc, out = git(entry, "branch", "--list", "develop")
+                repo.has_develop = bool(out.strip())
+
+                repos.append(repo)
+    return repos
+
+
+def fix_remote_to_ssh(url: str) -> str:
+    """Convert HTTPS GitHub URL to SSH."""
+    if url.startswith("https://github.com/"):
+        return url.replace("https://github.com/", "git@github.com:")
+    return url
+
+
+def cmd_scan():
+    """Discover and display all repos."""
+    repos = discover_repos()
+    current_group = ""
+    for repo in repos:
+        if repo.group != current_group:
+            current_group = repo.group
+            print(f"\n{'=' * 60}")
+            print(f"  {current_group}/")
+            print(f"{'=' * 60}")
+        dirty = " [DIRTY]" if repo.is_dirty else ""
+        branch_info = f"on {repo.branch}"
+        if repo.has_develop and repo.branch != "develop":
+            branch_info += " (has develop)"
+        print(f"  {repo.name:<30} {branch_info}{dirty}")
+        print(f"    {repo.remote_url}")
+    print(f"\nTotal: {len(repos)} repos")
+
+
+def cmd_status():
+    """Show compact status for all repos."""
+    repos = discover_repos()
+    print(f"{'Repo':<35} {'Branch':<30} {'Status':<10} {'Remote'}")
+    print("-" * 110)
+    for repo in repos:
+        dirty = "dirty" if repo.is_dirty else "clean"
+        short_url = repo.remote_url.replace("git@github.com:", "").replace("https://github.com/", "").rstrip(".git")
+        print(f"{repo.group}/{repo.name:<25} {repo.branch:<30} {dirty:<10} {short_url}")
+
+
+def cmd_sync():
+    """Fetch all origins and pull current branch."""
+    repos = discover_repos()
+    for repo in repos:
+        label = f"{repo.group}/{repo.name}"
+        print(f"\n--- {label} ({repo.branch}) ---")
+
+        # Ensure SSH remote
+        if "https://github.com/" in repo.remote_url:
+            ssh_url = fix_remote_to_ssh(repo.remote_url)
+            rc, out = git(repo.path, "remote", "set-url", "origin", ssh_url)
+            if rc == 0:
+                print(f"  Fixed remote: HTTPS → SSH")
+
+        # Fetch
+        rc, out = git(repo.path, "fetch", "origin")
+        if rc != 0:
+            print(f"  FETCH FAILED: {out}")
+            continue
+        print(f"  fetched")
+
+        # Pull if clean
+        if repo.is_dirty:
+            print(f"  SKIP pull (dirty working tree)")
+        else:
+            rc, out = git(repo.path, "pull", "--ff-only", "origin", repo.branch)
+            if rc == 0:
+                if "Already up to date" in out:
+                    print(f"  up to date")
+                else:
+                    print(f"  pulled: {out.split(chr(10))[-1]}")
+            else:
+                print(f"  PULL FAILED: {out.split(chr(10))[0]}")
+
+
+def cmd_fix_remotes():
+    """Ensure all remotes use SSH."""
+    repos = discover_repos()
+    fixed = 0
+    for repo in repos:
+        if "https://github.com/" in repo.remote_url:
+            ssh_url = fix_remote_to_ssh(repo.remote_url)
+            rc, _ = git(repo.path, "remote", "set-url", "origin", ssh_url)
+            if rc == 0:
+                print(f"  Fixed {repo.group}/{repo.name}: {repo.remote_url} → {ssh_url}")
+                fixed += 1
+    print(f"\nFixed {fixed} repos. {len(repos) - fixed} already SSH.")
+
+
+def cmd_setup_gita():
+    """Register all repos with gita and configure groups."""
+    repos = discover_repos()
+
+    # Register repos
+    paths = [str(repo.path) for repo in repos]
+    print(f"Registering {len(paths)} repos with gita...")
+    subprocess.run(["gita", "add"] + paths, check=False)
+
+    # Set up groups
+    for group_name in sorted(set(repo.group for repo in repos)):
+        group_repos = [repo.name for repo in repos if repo.group == group_name]
+        safe_group = group_name.replace("/", "-")
+        # Ensure we don't try to add a group if it has no repos
+        if group_repos:
+            subprocess.run(["gita", "group", "add", "-n", safe_group] + group_repos, check=False)
+            print(f"  Group '{safe_group}': {', '.join(group_repos)}")
+
+    print("\nDone. Use 'gita ll' to see all repos, 'gita super <group> status' to check a group.")
+
+
+def cmd_tree():
+    """Show ecosystem tree with GitHub URLs."""
+    repos = discover_repos()
+    current_group = ""
+
+    print("zombo-sash-eco/")
+    groups = {}
+    for repo in repos:
+        groups.setdefault(repo.group, []).append(repo)
+
+    group_names = list(groups.keys())
+    for gi, group_name in enumerate(group_names):
+        is_last_group = gi == len(group_names) - 1
+        prefix = "└── " if is_last_group else "├── "
+        child_prefix = "    " if is_last_group else "│   "
+
+        print(f"{prefix}{group_name}/")
+        group_repos = groups[group_name]
+        for ri, repo in enumerate(group_repos):
+            is_last = ri == len(group_repos) - 1
+            repo_prefix = "└── " if is_last else "├── "
+            url = repo.remote_url.replace("git@github.com:", "https://github.com/").rstrip(".git")
+            if url == "no remote":
+                url = "(no remote)"
+            branch = f" [{repo.branch}]" if repo.branch != "main" else ""
+            dirty = " *" if repo.is_dirty else ""
+            print(f"{child_prefix}{repo_prefix}{repo.name}{branch}{dirty}  {url}")
+
+    print(f"\n{len(repos)} repos total")
+
+
+DELTA_MARKER = ECO_ROOT / ".beads" / "last-sync-shas.json"
+
+
+def _read_last_shas() -> dict[str, str]:
+    """Read saved HEAD SHAs from last sync."""
+    if DELTA_MARKER.exists():
+        try:
+            return json.loads(DELTA_MARKER.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            pass
+    return {}
+
+
+def _save_current_shas(repos: list[RepoInfo]) -> None:
+    """Save current HEAD SHAs for next delta comparison."""
+    shas = {}
+    for repo in repos:
+        rc, sha = git(repo.path, "rev-parse", "HEAD")
+        if rc == 0:
+            shas[f"{repo.group}/{repo.name}"] = sha
+    DELTA_MARKER.parent.mkdir(parents=True, exist_ok=True)
+    DELTA_MARKER.write_text(json.dumps(shas, indent=2) + "\n", encoding="utf-8")
+
+
+def cmd_delta():
+    """Show new commits since last sync for each repo."""
+    repos = discover_repos()
+    last_shas = _read_last_shas()
+
+    total_new = 0
+    total_repos_changed = 0
+
+    for repo in repos:
+        label = f"{repo.group}/{repo.name}"
+        rc, current_sha = git(repo.path, "rev-parse", "HEAD")
+        if rc != 0:
+            continue
+
+        old_sha = last_shas.get(label)
+        if not old_sha:
+            # First time — show last 3 commits as context
+            rc, log = git(repo.path, "log", "--oneline", "-3")
+            if rc == 0 and log.strip():
+                print(f"\n  {label} (new — no prior sync)")
+                for line in log.strip().split("\n"):
+                    print(f"    {line}")
+            continue
+
+        if current_sha == old_sha:
+            continue
+
+        # Count and show new commits
+        rc, log = git(repo.path, "log", "--oneline", f"{old_sha}..HEAD")
+        if rc != 0 or not log.strip():
+            continue
+
+        lines = log.strip().split("\n")
+        total_new += len(lines)
+        total_repos_changed += 1
+
+        print(f"\n  {label}  +{len(lines)} commits")
+        # Show stat summary
+        rc, stat = git(repo.path, "diff", "--stat", "--no-color", f"{old_sha}..HEAD")
+        if rc == 0 and stat.strip():
+            stat_summary = stat.strip().split("\n")[-1].strip()
+            print(f"    {stat_summary}")
+        for line in lines[:8]:
+            print(f"    {line}")
+        if len(lines) > 8:
+            print(f"    ...+{len(lines) - 8} more")
+
+    if total_repos_changed == 0 and last_shas:
+        print("  No new commits since last sync.")
+    elif not last_shas:
+        print("\n  First run — snapshot saved. Run again after next sync to see delta.")
+
+    print(f"\n  {total_repos_changed} repos changed, {total_new} new commits total")
+
+    # Save current state for next comparison
+    _save_current_shas(repos)
+    print(f"  Snapshot saved to {DELTA_MARKER.name}")
+
+
+def _find_repo(name: str) -> RepoInfo | None:
+    """Find a repo by exact or partial name match."""
+    repos = discover_repos()
+    match = next((r for r in repos if r.name == name), None)
+    if match:
+        return match
+    matches = [r for r in repos if name in r.name]
+    if len(matches) == 1:
+        return matches[0]
+    if len(matches) > 1:
+        print(f"Ambiguous: {', '.join(f'{r.group}/{r.name}' for r in matches)}")
+        sys.exit(1)
+    print(f"Repo '{name}' not found. Available:")
+    for r in repos:
+        print(f"  {r.name}")
+    sys.exit(1)
+
+
+def _list_remotes(repo_path: Path) -> dict[str, str]:
+    """Return {name: url} for all remotes."""
+    rc, out = git(repo_path, "remote", "-v")
+    remotes = {}
+    if rc == 0:
+        for line in out.strip().split("\n"):
+            parts = line.split()
+            if len(parts) >= 2 and "(fetch)" in line:
+                remotes[parts[0]] = parts[1]
+    return remotes
+
+
+def _detect_upstream_ref(repo_path: Path) -> str | None:
+    """Find the best upstream ref: origin/main, origin/develop, or origin/master."""
+    for candidate in ("origin/main", "origin/develop", "origin/master"):
+        rc, _ = git(repo_path, "rev-parse", "--verify", candidate)
+        if rc == 0:
+            return candidate
+    return None
+
+
+def _summarize_commits(repo_path: Path, ref: str, n: int) -> str:
+    """Group recent commits by type and summarize changes."""
+    rc, out = git(repo_path, "log", ref, f"-{n}", "--format=%s")
+    if rc != 0 or not out.strip():
+        return ""
+
+    import re
+    groups: dict[str, list[str]] = {}
+    type_labels = {
+        "feat": "Features",
+        "fix": "Fixes",
+        "docs": "Documentation",
+        "refactor": "Refactoring",
+        "test": "Tests",
+        "chore": "Chores",
+        "perf": "Performance",
+        "ci": "CI/CD",
+        "style": "Style",
+        "build": "Build",
+    }
+
+    for line in out.strip().split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        # Skip merge commits
+        if line.startswith("Merge "):
+            continue
+        # Parse conventional commit type
+        m = re.match(r"^(\w+)(?:\([^)]*\))?[!]?:\s*(.+)", line)
+        if m:
+            ctype = m.group(1).lower()
+            msg = m.group(2).strip()
+            label = type_labels.get(ctype, ctype.capitalize())
+        else:
+            label = "Other"
+            msg = line
+        groups.setdefault(label, []).append(msg)
+
+    if not groups:
+        return ""
+
+    lines = []
+    for label in ("Features", "Fixes", "Documentation", "Refactoring", "Tests",
+                   "Performance", "CI/CD", "Chores", "Style", "Build", "Other"):
+        msgs = groups.get(label)
+        if not msgs:
+            continue
+        lines.append(f"  {label} ({len(msgs)}):")
+        for msg in msgs[:5]:
+            lines.append(f"    - {msg}")
+        if len(msgs) > 5:
+            lines.append(f"    ...+{len(msgs) - 5} more")
+
+    return "\n".join(lines)
+
+
+def _report_branch(repo: RepoInfo, ref: str, latest_n: int, label: str, section: str):
+    """Print report section for a given ref (branch or remote ref)."""
+    print(f"\n  {section}")
+    print(f"  {'-' * len(section)}")
+
+    # Contributors (last 30 days)
+    rc, out = git(repo.path, "shortlog", "-sn", "--since=30 days ago", ref)
+    if rc == 0 and out.strip():
+        authors = [line.strip() for line in out.strip().split("\n")]
+        print(f"  Contributors (30d): {', '.join(a.split(chr(9), 1)[-1] for a in authors[:5])}")
+
+    # Total commits
+    rc, out = git(repo.path, "rev-list", "--count", ref)
+    if rc == 0:
+        print(f"  Total commits: {out.strip()}")
+
+    # Changes summary (grouped by type)
+    summary = _summarize_commits(repo.path, ref, latest_n)
+    if summary:
+        print(f"\n  Changes summary:")
+        print(summary)
+
+    # Recent commits
+    print(f"\n  Latest {latest_n} commits:")
+    rc, log = git(repo.path, "log", ref, f"-{latest_n}",
+                  "--format=    %C(yellow)%h%Creset %s  %C(dim)(%ar, %an)%Creset")
+    if rc == 0 and log.strip():
+        for line in log.strip().split("\n"):
+            print(line)
+
+    # Files changed in latest commit
+    rc, files = git(repo.path, "diff", "--stat", "--no-color", f"{ref}~1..{ref}")
+    if rc == 0 and files.strip():
+        print(f"\n  Latest commit files:")
+        for line in files.strip().split("\n"):
+            print(f"    {line}")
+
+
+def cmd_report():
+    """Show detailed summary for a single repo."""
+    # Parse args: eco-sync report <repo> [--latest N] [--upstream]
+    args = sys.argv[2:]
+    if not args:
+        print("Usage: eco-sync report <repo> [--latest N] [--upstream]")
+        print("  e.g. eco-sync report quint --latest 5")
+        print("  e.g. eco-sync report quint --upstream")
+        sys.exit(1)
+
+    repo_name = args[0]
+    latest_n = 3
+    show_upstream = False
+    for i, a in enumerate(args):
+        if a == "--latest" and i + 1 < len(args):
+            latest_n = int(args[i + 1])
+        if a == "--upstream":
+            show_upstream = True
+
+    repo = _find_repo(repo_name)
+    label = f"{repo.group}/{repo.name}"
+
+    print(f"\n  {label}")
+    print(f"  {'=' * len(label)}")
+
+    # Remotes
+    remotes = _list_remotes(repo.path)
+    for name, url in remotes.items():
+        short = url.replace("git@github.com:", "").replace("https://github.com/", "").rstrip(".git")
+        print(f"  Remote '{name}': {short}")
+
+    # Branch info
+    dirty = " (dirty)" if repo.is_dirty else ""
+    print(f"  Local branch: {repo.branch}{dirty}")
+
+    # Tags
+    rc, out = git(repo.path, "tag", "--sort=-creatordate")
+    if rc == 0 and out.strip():
+        tags = out.strip().split("\n")[:3]
+        print(f"  Latest tags: {', '.join(tags)}")
+
+    # Detect upstream
+    upstream_ref = _detect_upstream_ref(repo.path)
+
+    # Delta since last sync
+    last_shas = _read_last_shas()
+    old_sha = last_shas.get(label)
+    if old_sha:
+        rc, current = git(repo.path, "rev-parse", "HEAD")
+        if rc == 0 and current != old_sha:
+            rc, count = git(repo.path, "rev-list", "--count", f"{old_sha}..HEAD")
+            if rc == 0:
+                print(f"\n  Since last sync: +{count.strip()} commits")
+            rc, stat = git(repo.path, "diff", "--stat", "--no-color", f"{old_sha}..HEAD")
+            if rc == 0 and stat.strip():
+                print(f"    {stat.strip().split(chr(10))[-1].strip()}")
+
+    # Divergence from upstream
+    if upstream_ref:
+        rc, out = git(repo.path, "rev-list", "--left-right", "--count", f"{upstream_ref}...HEAD")
+        if rc == 0:
+            parts = out.split()
+            if len(parts) == 2:
+                behind, ahead = int(parts[0]), int(parts[1])
+                if ahead or behind:
+                    print(f"  vs {upstream_ref}: ahead {ahead}, behind {behind}")
+
+    if show_upstream and upstream_ref:
+        _report_branch(repo, upstream_ref, latest_n, label, f"UPSTREAM ({upstream_ref})")
+        _report_branch(repo, "HEAD", latest_n, label, f"LOCAL ({repo.branch})")
+    else:
+        # Default: show local branch, but if on a feature branch, also show upstream summary
+        ref_to_show = "HEAD"
+        if upstream_ref and repo.branch not in ("main", "develop", "master"):
+            # On a feature branch — show upstream first, then local
+            _report_branch(repo, upstream_ref, latest_n, label, f"UPSTREAM ({upstream_ref})")
+            _report_branch(repo, "HEAD", latest_n, label, f"LOCAL ({repo.branch})")
+        else:
+            _report_branch(repo, ref_to_show, latest_n, label, f"LOCAL ({repo.branch})")
+
+    print()
+
+
+def cmd_lazygit():
+    """Open lazygit for a specific repo."""
+    if len(sys.argv) < 3:
+        print("Usage: eco-sync lg <repo-name>")
+        print("Available repos:")
+        for repo in discover_repos():
+            print(f"  {repo.name}")
+        sys.exit(1)
+
+    target = sys.argv[2]
+    repos = discover_repos()
+    match = next((r for r in repos if r.name == target), None)
+    if not match:
+        # Try partial match
+        matches = [r for r in repos if target in r.name]
+        if len(matches) == 1:
+            match = matches[0]
+        elif len(matches) > 1:
+            print(f"Ambiguous: {', '.join(r.name for r in matches)}")
+            sys.exit(1)
+        else:
+            print(f"Repo '{target}' not found")
+            sys.exit(1)
+
+    lazygit = str(ECO_ROOT / "bin" / "lazygit")
+    os.execvp(lazygit, [lazygit, "-p", str(match.path)])
+
+
+def main():
+    if len(sys.argv) < 2:
+        print(__doc__)
+        sys.exit(0)
+
+    cmd = sys.argv[1]
+    commands = {
+        "scan": cmd_scan,
+        "sync": cmd_sync,
+        "status": cmd_status,
+        "delta": cmd_delta,
+        "report": cmd_report,
+        "setup-gita": cmd_setup_gita,
+        "fix-remotes": cmd_fix_remotes,
+        "tree": cmd_tree,
+        "lg": cmd_lazygit,
+    }
+
+    if cmd in commands:
+        commands[cmd]()
+    else:
+        print(f"Unknown command: {cmd}")
+        print(f"Available: {', '.join(commands.keys())}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
