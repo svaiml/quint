@@ -1,322 +1,322 @@
 [
-  {
-    "group": "apps",
-    "name": "code-catalyst",
-    "branch": "main",
-    "sha": "6c5d08e",
-    "tag": "-",
-    "remote": "svaiml/code-catalys"
-  },
-  {
-    "group": "apps",
-    "name": "reasoning-apps",
-    "branch": "feature/polymarket-temporal-poc",
-    "sha": "f79bdad",
-    "tag": "-",
-    "remote": "zombocoder/reasoning-apps"
-  },
-  {
-    "group": "reasoning-universe",
-    "name": "infer",
-    "branch": "feature/example-outputs-emex",
-    "sha": "715da24",
-    "tag": "-",
-    "remote": "zombocoder/infer"
-  },
-  {
-    "group": "reasoning-universe",
-    "name": "pctl-rs",
-    "branch": "feature/belnap-six-value",
-    "sha": "591fc35",
-    "tag": "-",
-    "remote": "zombocoder/pctl-rs"
-  },
-  {
-    "group": "reasoning-universe",
-    "name": "zz-notation",
-    "branch": "feature/knowledge-store-v2",
-    "sha": "83e023c",
-    "tag": "-",
-    "remote": "zombocoder/zz-notation"
-  },
-  {
-    "group": "reasoning-universe",
-    "name": "fpf-cards",
-    "branch": "develop",
-    "sha": "7512ecd",
-    "tag": "-",
-    "remote": "svaiml/fpf-cards"
-  },
-  {
-    "group": "reasoning-universe",
-    "name": "axiomvm",
-    "branch": "main",
-    "sha": "38032f9",
-    "tag": "v0.0.1",
-    "remote": "zombocoder/axiomvm"
-  },
-  {
-    "group": "reasoning-universe",
-    "name": "aivm",
-    "branch": "main",
-    "sha": "4b28ac0",
-    "tag": "-",
-    "remote": "zombocoder/aivm"
-  },
-  {
-    "group": "reasoning-universe",
-    "name": "craftegy-algo",
-    "branch": "feature/graph-causal-whatif",
-    "sha": "e15bd48",
-    "tag": "-",
-    "remote": "svaiml/craftegy-algo"
-  },
-  {
-    "group": "reasoning-universe",
-    "name": "obstruct",
-    "branch": "main",
-    "sha": "231aaae",
-    "tag": "-",
-    "remote": "zombocoder/obstruc"
-  },
-  {
-    "group": "epistemic-universe",
-    "name": "criterium",
-    "branch": "feature/workspace-scaffold",
-    "sha": "02664ad",
-    "tag": "-",
-    "remote": "svaiml/criterium"
-  },
-  {
-    "group": "infra-eco",
-    "name": "o2l",
-    "branch": "develop",
-    "sha": "2771875",
-    "tag": "v0.0.1",
-    "remote": "sashml/o2l"
-  },
-  {
-    "group": "infra-eco",
-    "name": "rstmdb",
-    "branch": "main",
-    "sha": "a2574c6",
-    "tag": "v0.2.0",
-    "remote": "rstmdb/rstmdb"
-  },
-  {
-    "group": "infra-eco",
-    "name": "rstmdb-studio",
-    "branch": "main",
-    "sha": "01a30bf",
-    "tag": "-",
-    "remote": "rstmdb/rstmdb-studio"
-  },
-  {
-    "group": "infra-eco",
-    "name": "inferense",
-    "branch": "main",
-    "sha": "49a4b87",
-    "tag": "-",
-    "remote": "zombocoder/inferense"
-  },
-  {
-    "group": "infra-eco",
-    "name": "invariantis",
-    "branch": "feature/proto-pregenerated",
-    "sha": "213299a",
-    "tag": "-",
-    "remote": "zombocoder/invariantis"
-  },
-  {
-    "group": "infra-eco",
-    "name": "ctop",
-    "branch": "main",
-    "sha": "68f68af",
-    "tag": "-",
-    "remote": "zombocoder/ctop"
-  },
-  {
-    "group": "infra-eco",
-    "name": "bfc",
-    "branch": "main",
-    "sha": "911db7c",
-    "tag": "v1.3.0",
-    "remote": "zombocoder/bfc"
-  },
-  {
-    "group": "infra-eco",
-    "name": "myria",
-    "branch": "main",
-    "sha": "9327b9a",
-    "tag": "-",
-    "remote": "zombocoder/myria"
-  },
-  {
-    "group": "infra-eco",
-    "name": "vaultura",
-    "branch": "main",
-    "sha": "cec1f99",
-    "tag": "v0.1.0",
-    "remote": "zombocoder/vaultura"
-  },
-  {
-    "group": "infra-eco",
-    "name": "npd-cipher",
-    "branch": "main",
-    "sha": "90d17a2",
-    "tag": "-",
-    "remote": "zombocoder/npd-cipher"
-  },
-  {
-    "group": "infra-eco",
-    "name": "go-freebsd-pf",
-    "branch": "main",
-    "sha": "ac1d67a",
-    "tag": "v0.1.0",
-    "remote": "zombocoder/go-freebsd-pf"
-  },
-  {
-    "group": "prodx",
-    "name": "craftegy-design",
-    "branch": "develop",
-    "sha": "b9ed8c4",
-    "tag": "-",
-    "remote": "svaiml/craftegy-design"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "flowspec",
-    "branch": "develop",
-    "sha": "4b499b17",
-    "tag": "v0.4.008",
-    "remote": "sashml/flowspec"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "codegraph-rust",
-    "branch": "surrealdb-3x-migration",
-    "sha": "8a5bc2f",
-    "tag": "-",
-    "remote": "Jakedismo/codegraph-rus"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "codebase-memory-mcp",
-    "branch": "main",
-    "sha": "bebc6d8",
-    "tag": "v0.6.0",
-    "remote": "DeusData/codebase-memory-mcp"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "haft",
-    "branch": "main",
-    "sha": "0683440",
-    "tag": "v7.0.0",
-    "remote": "m0n0x41d/haf"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "FPF",
-    "branch": "main",
-    "sha": "34b4d63",
-    "tag": "-",
-    "remote": "ailev/FPF"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "fpf-problem-solving-skill",
-    "branch": "feature/fpf-v7-keyword-router",
-    "sha": "2c708b8",
-    "tag": "v2.0.0",
-    "remote": "CodeAlive-AI/fpf-problem-solving-skill"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "quint",
-    "branch": "feature/adr002-errors",
-    "sha": "cfe05c5a",
-    "tag": "v0.32.0",
-    "remote": "informalsystems/quin"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "ghdash",
-    "branch": "main",
-    "sha": "8cd3c41",
-    "tag": "v0.3.1",
-    "remote": "zombocoder/ghdash"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "zacta",
-    "branch": "main",
-    "sha": "fcd1a19",
-    "tag": "-",
-    "remote": "zombocoder/zacta"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "graphify",
-    "branch": "v4",
-    "sha": "7a0a5ac",
-    "tag": "v0.4.23",
-    "remote": "safishamsi/graphify"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "grace-marketplace",
-    "branch": "main",
-    "sha": "9c47745",
-    "tag": "-",
-    "remote": "osovv/grace-marketplace"
-  },
-  {
-    "group": "tools/ai-tools",
-    "name": "grace-skills",
-    "branch": "main",
-    "sha": "3ba026e",
-    "tag": "-",
-    "remote": "BalaBenna/grace-skills"
-  },
-  {
-    "group": "tools/orchestrator",
-    "name": "beads_rust",
-    "branch": "main",
-    "sha": "0d1d2129",
-    "tag": "v0.2.5",
-    "remote": "Dicklesworthstone/beads_rus"
-  },
-  {
-    "group": "tools/orchestrator",
-    "name": "beads_viewer_rust",
-    "branch": "main",
-    "sha": "72b53e4",
-    "tag": "v0.2.1",
-    "remote": "Dicklesworthstone/beads_viewer_rus"
-  },
-  {
-    "group": "tools/orchestrator",
-    "name": "AllBeads",
-    "branch": "main",
-    "sha": "e85caf1",
-    "tag": "v0.10.0",
-    "remote": "thrashr888/AllBeads"
-  },
-  {
-    "group": "tools/orchestrator",
-    "name": "PaperClip",
-    "branch": "master",
-    "sha": "76f09c8e",
-    "tag": "canary/v2026.430.0-canary.7",
-    "remote": "paperclipai/paperclip"
-  },
-  {
-    "group": "tools/orchestrator",
-    "name": "gsd-2",
-    "branch": "main",
-    "sha": "84c045fd2",
-    "tag": "v2.78.1",
-    "remote": "gsd-build/gsd-2"
-  }
+    {
+        "group": "apps",
+        "name": "code-catalyst",
+        "branch": "main",
+        "sha": "6c5d08e",
+        "tag": "-",
+        "remote": "svaiml/code-catalys"
+    },
+    {
+        "group": "apps",
+        "name": "reasoning-apps",
+        "branch": "feature/polymarket-temporal-poc",
+        "sha": "f79bdad",
+        "tag": "-",
+        "remote": "zombocoder/reasoning-apps"
+    },
+    {
+        "group": "reasoning-universe",
+        "name": "infer",
+        "branch": "feature/example-outputs-emex",
+        "sha": "715da24",
+        "tag": "-",
+        "remote": "zombocoder/infer"
+    },
+    {
+        "group": "reasoning-universe",
+        "name": "pctl-rs",
+        "branch": "feature/belnap-six-value",
+        "sha": "591fc35",
+        "tag": "-",
+        "remote": "zombocoder/pctl-rs"
+    },
+    {
+        "group": "reasoning-universe",
+        "name": "zz-notation",
+        "branch": "develop",
+        "sha": "83e023c",
+        "tag": "-",
+        "remote": "zombocoder/zz-notation"
+    },
+    {
+        "group": "reasoning-universe",
+        "name": "fpf-cards",
+        "branch": "develop",
+        "sha": "7512ecd",
+        "tag": "-",
+        "remote": "svaiml/fpf-cards"
+    },
+    {
+        "group": "reasoning-universe",
+        "name": "axiomvm",
+        "branch": "main",
+        "sha": "38032f9",
+        "tag": "v0.0.1",
+        "remote": "zombocoder/axiomvm"
+    },
+    {
+        "group": "reasoning-universe",
+        "name": "aivm",
+        "branch": "main",
+        "sha": "4b28ac0",
+        "tag": "-",
+        "remote": "zombocoder/aivm"
+    },
+    {
+        "group": "reasoning-universe",
+        "name": "craftegy-algo",
+        "branch": "feature/graph-causal-whatif",
+        "sha": "e15bd48",
+        "tag": "-",
+        "remote": "svaiml/craftegy-algo"
+    },
+    {
+        "group": "reasoning-universe",
+        "name": "obstruct",
+        "branch": "main",
+        "sha": "231aaae",
+        "tag": "-",
+        "remote": "zombocoder/obstruc"
+    },
+    {
+        "group": "epistemic-universe",
+        "name": "criterium",
+        "branch": "feature/workspace-scaffold",
+        "sha": "02664ad",
+        "tag": "-",
+        "remote": "svaiml/criterium"
+    },
+    {
+        "group": "infra-eco",
+        "name": "o2l",
+        "branch": "develop",
+        "sha": "2771875",
+        "tag": "v0.0.1",
+        "remote": "sashml/o2l"
+    },
+    {
+        "group": "infra-eco",
+        "name": "rstmdb",
+        "branch": "main",
+        "sha": "a2574c6",
+        "tag": "v0.2.0",
+        "remote": "rstmdb/rstmdb"
+    },
+    {
+        "group": "infra-eco",
+        "name": "rstmdb-studio",
+        "branch": "main",
+        "sha": "01a30bf",
+        "tag": "-",
+        "remote": "rstmdb/rstmdb-studio"
+    },
+    {
+        "group": "infra-eco",
+        "name": "inferense",
+        "branch": "main",
+        "sha": "49a4b87",
+        "tag": "-",
+        "remote": "zombocoder/inferense"
+    },
+    {
+        "group": "infra-eco",
+        "name": "invariantis",
+        "branch": "feature/proto-pregenerated",
+        "sha": "213299a",
+        "tag": "-",
+        "remote": "zombocoder/invariantis"
+    },
+    {
+        "group": "infra-eco",
+        "name": "ctop",
+        "branch": "main",
+        "sha": "68f68af",
+        "tag": "-",
+        "remote": "zombocoder/ctop"
+    },
+    {
+        "group": "infra-eco",
+        "name": "bfc",
+        "branch": "main",
+        "sha": "911db7c",
+        "tag": "v1.3.0",
+        "remote": "zombocoder/bfc"
+    },
+    {
+        "group": "infra-eco",
+        "name": "myria",
+        "branch": "main",
+        "sha": "9327b9a",
+        "tag": "-",
+        "remote": "zombocoder/myria"
+    },
+    {
+        "group": "infra-eco",
+        "name": "vaultura",
+        "branch": "main",
+        "sha": "cec1f99",
+        "tag": "v0.1.0",
+        "remote": "zombocoder/vaultura"
+    },
+    {
+        "group": "infra-eco",
+        "name": "npd-cipher",
+        "branch": "main",
+        "sha": "90d17a2",
+        "tag": "-",
+        "remote": "zombocoder/npd-cipher"
+    },
+    {
+        "group": "infra-eco",
+        "name": "go-freebsd-pf",
+        "branch": "main",
+        "sha": "ac1d67a",
+        "tag": "v0.1.0",
+        "remote": "zombocoder/go-freebsd-pf"
+    },
+    {
+        "group": "prodx",
+        "name": "craftegy-design",
+        "branch": "develop",
+        "sha": "b9ed8c4",
+        "tag": "-",
+        "remote": "svaiml/craftegy-design"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "flowspec",
+        "branch": "develop",
+        "sha": "4b499b17",
+        "tag": "v0.4.008",
+        "remote": "sashml/flowspec"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "codegraph-rust",
+        "branch": "main",
+        "sha": "8a5bc2f",
+        "tag": "-",
+        "remote": "Jakedismo/codegraph-rus"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "codebase-memory-mcp",
+        "branch": "main",
+        "sha": "bebc6d8",
+        "tag": "v0.6.0",
+        "remote": "DeusData/codebase-memory-mcp"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "haft",
+        "branch": "main",
+        "sha": "0683440",
+        "tag": "v7.0.0",
+        "remote": "m0n0x41d/haf"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "FPF",
+        "branch": "main",
+        "sha": "34b4d63",
+        "tag": "-",
+        "remote": "ailev/FPF"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "fpf-problem-solving-skill",
+        "branch": "feature/fpf-v7-keyword-router",
+        "sha": "2c708b8",
+        "tag": "v2.0.0",
+        "remote": "CodeAlive-AI/fpf-problem-solving-skill"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "quint",
+        "branch": "main",
+        "sha": "cfe05c5a",
+        "tag": "v0.32.0",
+        "remote": "informalsystems/quin"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "ghdash",
+        "branch": "main",
+        "sha": "8cd3c41",
+        "tag": "v0.3.1",
+        "remote": "zombocoder/ghdash"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "zacta",
+        "branch": "main",
+        "sha": "fcd1a19",
+        "tag": "-",
+        "remote": "zombocoder/zacta"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "graphify",
+        "branch": "v4",
+        "sha": "7a0a5ac",
+        "tag": "v0.4.23",
+        "remote": "safishamsi/graphify"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "grace-marketplace",
+        "branch": "main",
+        "sha": "9c47745",
+        "tag": "-",
+        "remote": "osovv/grace-marketplace"
+    },
+    {
+        "group": "tools/ai-tools",
+        "name": "grace-skills",
+        "branch": "main",
+        "sha": "3ba026e",
+        "tag": "-",
+        "remote": "BalaBenna/grace-skills"
+    },
+    {
+        "group": "tools/orchestrator",
+        "name": "beads_rust",
+        "branch": "main",
+        "sha": "0d1d2129",
+        "tag": "v0.2.5",
+        "remote": "Dicklesworthstone/beads_rus"
+    },
+    {
+        "group": "tools/orchestrator",
+        "name": "beads_viewer_rust",
+        "branch": "main",
+        "sha": "72b53e4",
+        "tag": "v0.2.1",
+        "remote": "Dicklesworthstone/beads_viewer_rus"
+    },
+    {
+        "group": "tools/orchestrator",
+        "name": "AllBeads",
+        "branch": "main",
+        "sha": "e85caf1",
+        "tag": "v0.10.0",
+        "remote": "thrashr888/AllBeads"
+    },
+    {
+        "group": "tools/orchestrator",
+        "name": "PaperClip",
+        "branch": "master",
+        "sha": "76f09c8e",
+        "tag": "canary/v2026.430.0-canary.7",
+        "remote": "paperclipai/paperclip"
+    },
+    {
+        "group": "tools/orchestrator",
+        "name": "gsd-2",
+        "branch": "main",
+        "sha": "84c045fd2",
+        "tag": "v2.78.1",
+        "remote": "gsd-build/gsd-2"
+    }
 ]
