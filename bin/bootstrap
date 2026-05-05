@@ -2,14 +2,11 @@
 # ══════════════════════════════════════════════════════════════════════════════
 # ZomboCraftEco Bootstrap — full ecosystem setup in one command
 #
-# Like `uv sync` for Python deps, this installs all tools + clones all repos.
-#
 # Usage:
 #   ./bin/bootstrap           # full setup
 #   ./bin/bootstrap --minimal # gm + repos only (skip flowspec/br/bv)
 #
-# Prerequisites: git, curl
-# Optional: cargo (for building from source if no binary available)
+# Prerequisites: git, gh (GitHub CLI, authenticated)
 # ══════════════════════════════════════════════════════════════════════════════
 
 set -e
@@ -22,104 +19,100 @@ echo "║     ZomboCraftEco Bootstrap v1.0         ║"
 echo "╚══════════════════════════════════════════╝"
 echo ""
 echo "Root: $ROOT"
-echo "Mode: $([ "$MINIMAL" = true ] && echo "minimal (gm + repos)" || echo "full (all tools)")"
 echo ""
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# ── Step 1: Check prerequisites ───────────────────────────────────────────────
 
-install_bin() {
-    local name="$1" repo="$2" bin_name="${3:-$1}"
-    if command -v "$bin_name" &>/dev/null; then
-        echo "  ✓ $name already installed: $(command -v "$bin_name")"
-        return 0
-    fi
-
-    local OS ARCH
-    OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
-    ARCH="$(uname -m)"
-    case "$ARCH" in x86_64) ARCH="x86_64" ;; aarch64|arm64) ARCH="aarch64" ;; esac
-
-    # Try 1: GitHub Release binary
-    local URL="https://github.com/${repo}/releases/latest/download/${bin_name}-${OS}-${ARCH}"
-    if curl -fsSL "$URL" -o "/tmp/${bin_name}-dl" 2>/dev/null; then
-        chmod +x "/tmp/${bin_name}-dl"
-        mkdir -p "${HOME}/.local/bin"
-        mv "/tmp/${bin_name}-dl" "${HOME}/.local/bin/${bin_name}"
-        export PATH="${HOME}/.local/bin:$PATH"
-        echo "  ✓ $name installed from release binary"
-        return 0
-    fi
-
-    # Try 2: cargo install from git
-    if command -v cargo &>/dev/null; then
-        echo "  → $name: building from source (no binary available)..."
-        if cargo install --git "https://github.com/${repo}.git" --bin "$bin_name" --quiet 2>/dev/null; then
-            echo "  ✓ $name installed via cargo"
-            return 0
-        fi
-    fi
-
-    echo "  ✗ $name: FAILED (install cargo from https://rustup.rs)"
-    return 1
-}
-
-# ── Step 1: Rust toolchain ────────────────────────────────────────────────────
-
-echo "── Step 1: Check prerequisites ──"
-if command -v cargo &>/dev/null; then
-    echo "  ✓ cargo $(cargo --version | cut -d' ' -f2)"
-else
-    echo "  ! cargo not found — installing rustup..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --quiet 2>/dev/null
-    source "$HOME/.cargo/env"
-    echo "  ✓ cargo installed"
-fi
-
-if command -v uv &>/dev/null; then
-    echo "  ✓ uv $(uv --version 2>/dev/null | head -1)"
-else
-    echo "  → installing uv..."
-    curl -LsSf https://astral.sh/uv/install.sh | sh 2>/dev/null
-    export PATH="$HOME/.local/bin:$PATH"
-    echo "  ✓ uv installed"
-fi
+echo "── Step 1: Prerequisites ──"
+command -v git &>/dev/null && echo "  ✓ git" || { echo "  ✗ git — install git first"; exit 1; }
+command -v gh &>/dev/null && echo "  ✓ gh (GitHub CLI)" || { echo "  ✗ gh — install: https://cli.github.com"; exit 1; }
+gh auth status &>/dev/null && echo "  ✓ gh authenticated" || { echo "  ✗ gh not authenticated — run: gh auth login"; exit 1; }
 echo ""
 
 # ── Step 2: Install gm ───────────────────────────────────────────────────────
 
-echo "── Step 2: Install gm (git workspace orchestrator) ──"
-install_bin "gm" "svaiml/gm" "gm"
+echo "── Step 2: Install gm ──"
+if command -v gm &>/dev/null; then
+    echo "  ✓ gm already installed: $(gm --version)"
+else
+    INSTALLED=false
+
+    # Try 1: Download pre-built binary from GitHub Release (private repo — needs gh)
+    OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+    ARCH="$(uname -m)"
+    ASSET="gm-${OS}-${ARCH}"
+
+    TMPDIR=$(mktemp -d)
+    if gh release download v0.1.0 --repo svaiml/gm --pattern "$ASSET" --dir "$TMPDIR" 2>/dev/null; then
+        chmod +x "$TMPDIR/$ASSET"
+        mkdir -p "$HOME/.local/bin"
+        mv "$TMPDIR/$ASSET" "$HOME/.local/bin/gm"
+        export PATH="$HOME/.local/bin:$PATH"
+        echo "  ✓ gm installed from release binary"
+        INSTALLED=true
+    fi
+    rm -r "$TMPDIR" 2>/dev/null
+
+    # Try 2: cargo install from git
+    if [ "$INSTALLED" = false ]; then
+        if command -v cargo &>/dev/null; then
+            echo "  → No binary for $ASSET — building from source..."
+            cargo install --git https://github.com/svaiml/gm.git --branch feature/m1-bootstrap --bin gm gm-cli --quiet 2>/dev/null || \
+                cargo install --git https://github.com/svaiml/gm.git --branch feature/m1-bootstrap --bin gm gm-cli
+            echo "  ✓ gm installed via cargo"
+            INSTALLED=true
+        fi
+    fi
+
+    if [ "$INSTALLED" = false ]; then
+        echo "  ✗ Could not install gm. Install cargo (https://rustup.rs) or build manually."
+        exit 1
+    fi
+fi
 echo ""
 
-# ── Step 3: Clone all repos ──────────────────────────────────────────────────
+# ── Step 3: Sync repos ───────────────────────────────────────────────────────
 
 echo "── Step 3: Sync workspace (clone all repos) ──"
 gm --root "$ROOT" sync
 echo ""
 
-# ── Step 4: Install ecosystem tools (skip if --minimal) ──────────────────────
+# ── Step 4: Install ecosystem tools ──────────────────────────────────────────
 
 if [ "$MINIMAL" = false ]; then
 
-    echo "── Step 4: Install flowspec (spec-driven dev CLI) ──"
-    FLOWSPEC_DIR="$ROOT/tools/orchestrator/flowspec"
+    echo "── Step 4: Install flowspec ──"
     if command -v flowspec &>/dev/null; then
-        echo "  ✓ flowspec already installed: $(flowspec --version 2>/dev/null | head -1)"
-    elif [ -d "$FLOWSPEC_DIR" ]; then
-        echo "  → installing flowspec from local checkout..."
-        (cd "$FLOWSPEC_DIR" && uv tool install --editable . --force --quiet 2>/dev/null) && \
-            echo "  ✓ flowspec installed" || echo "  ✗ flowspec install failed"
+        echo "  ✓ flowspec $(flowspec --version 2>/dev/null | head -1)"
     else
-        echo "  ✗ flowspec: $FLOWSPEC_DIR not found (gm sync may have skipped it)"
+        FLOWSPEC="$ROOT/tools/orchestrator/flowspec"
+        if [ -d "$FLOWSPEC" ] && command -v uv &>/dev/null; then
+            (cd "$FLOWSPEC" && uv tool install --editable . --force --quiet 2>/dev/null) && \
+                echo "  ✓ flowspec installed" || echo "  ✗ flowspec failed (install uv: https://astral.sh/uv)"
+        elif ! command -v uv &>/dev/null; then
+            echo "  → installing uv..."
+            curl -LsSf https://astral.sh/uv/install.sh | sh 2>/dev/null
+            export PATH="$HOME/.local/bin:$PATH"
+            (cd "$FLOWSPEC" && uv tool install --editable . --force --quiet 2>/dev/null) && \
+                echo "  ✓ flowspec installed" || echo "  ✗ flowspec failed"
+        fi
     fi
     echo ""
 
-    echo "── Step 5: Install beads tools (issue tracking) ──"
-    install_bin "beads-rust (br)" "Dicklesworthstone/beads_rust" "br" || true
-    install_bin "beads-viewer (bv)" "Dicklesworthstone/beads_viewer_rust" "bv" || true
+    echo "── Step 5: Install beads tools ──"
+    for tool in beads_rust:br beads_viewer_rust:bv; do
+        repo="${tool%%:*}"; bin="${tool##*:}"
+        if command -v "$bin" &>/dev/null; then
+            echo "  ✓ $bin already installed"
+        elif command -v cargo &>/dev/null; then
+            echo "  → installing $bin..."
+            cargo install --git "https://github.com/Dicklesworthstone/${repo}.git" --quiet 2>/dev/null && \
+                echo "  ✓ $bin installed" || echo "  ✗ $bin failed"
+        fi
+    done
     echo ""
 
-    echo "── Step 6: Lock initial workspace state ──"
+    echo "── Step 6: Lock workspace state ──"
     gm --root "$ROOT" lock
     echo ""
 fi
@@ -132,19 +125,8 @@ echo "╚═══════════════════════�
 echo ""
 gm --root "$ROOT" status
 echo ""
-
-if [ "$MINIMAL" = false ]; then
-    echo "Installed tools:"
-    command -v gm       &>/dev/null && echo "  gm       $(gm --version 2>/dev/null | head -1)"
-    command -v flowspec &>/dev/null && echo "  flowspec $(flowspec --version 2>/dev/null | head -1)"
-    command -v br       &>/dev/null && echo "  br       $(br --version 2>/dev/null | head -1)"
-    command -v bv       &>/dev/null && echo "  bv       $(bv --version 2>/dev/null | head -1)"
-    echo ""
-fi
-
 echo "Next:"
 echo "  cd $ROOT"
 echo "  gm status           # see all repos"
 echo "  gm pull             # fetch latest"
 echo "  gm push --plan      # dependency-ordered push"
-echo "  gm lock --diff      # check drift since bootstrap"
