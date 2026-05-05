@@ -1,297 +1,67 @@
-#!/usr/bin/env -S uv run python3
-# /// script
-# requires-python = ">=3.10"
-# dependencies = ["gita"]
-# ///
+#!/usr/bin/env python3
+"""eco-sync — thin shim that delegates to gm.
+
+Migration path:
+  eco-sync status      → gm status
+  eco-sync sync        → gm fetch && gm pull
+  eco-sync delta       → gm lock --diff
+  eco-sync lock        → gm lock
+  eco-sync report X    → gm status --group X
+  eco-sync tree        → gm graph
+  eco-sync fix-remotes → (manual — check workspace.yaml)
+
+If gm binary is not found, falls back to eco-sync-legacy.
 """
-eco-sync: Scan, configure, and sync all repos in zombo-sash-eco ecosystem.
-
-Usage:
-    eco-sync scan          # Discover all git repos and show status
-    eco-sync sync          # Fetch all origins + pull current branch
-    eco-sync status        # Show branch + dirty status for all repos
-    eco-sync tree          # Show ecosystem tree with GitHub URLs
-    eco-sync fix-remotes   # Ensure all remotes use SSH (not HTTPS)
-
-  Setup:
-    eco-sync setup-gita    # Register all repos + configure groups with gita
-
-  Then use gita directly:
-    gita ll                # all repos status
-    gita ll reasoning      # reasoning group only
-    gita fetch             # fetch all repos
-    gita super reasoning pull  # pull all reasoning repos
-
-  Lazygit:
-    eco-sync lg <repo>     # Open lazygit for a specific repo (e.g. eco-sync lg infer)
-"""
-
 import os
-import subprocess
 import sys
-import json
-from pathlib import Path
-from dataclasses import dataclass, field
+import shutil
+import subprocess
 
-ECO_ROOT = Path(__file__).resolve().parent.parent
-GROUPS = {
-    "apps": "apps",
-    "infra-eco": "infra-eco",
-    "reasoning-universe": "reasoning-universe",
-    "tools/ai-tools": "tools/ai-tools",
-    "tools/orchestrator": "tools/orchestrator",
+ECO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+GM_BIN = shutil.which("gm")
+
+# Try finding gm in the workspace build dir
+if not GM_BIN:
+    local_gm = os.path.join(ECO_ROOT, "tools", "sysutils", "gm", "target", "release", "gm")
+    debug_gm = os.path.join(ECO_ROOT, "tools", "sysutils", "gm", "target", "debug", "gm")
+    if os.path.exists(local_gm):
+        GM_BIN = local_gm
+    elif os.path.exists(debug_gm):
+        GM_BIN = debug_gm
+
+CMD_MAP = {
+    "status": ["status"],
+    "sync": ["pull"],
+    "delta": ["lock", "--diff"],
+    "lock": ["lock"],
+    "tree": ["graph"],
+    "scan": ["status"],
 }
 
-
-@dataclass
-class RepoInfo:
-    path: Path
-    name: str
-    group: str
-    branch: str = ""
-    remote_url: str = ""
-    is_dirty: bool = False
-    behind: int = 0
-    ahead: int = 0
-    has_develop: bool = False
-    errors: list = field(default_factory=list)
-
-
-def git(repo_path: Path, *args: str) -> tuple[int, str]:
-    """Run git command in a repo, return (exit_code, output)."""
-    try:
-        result = subprocess.run(
-            ["git", "-C", str(repo_path)] + list(args),
-            capture_output=True, text=True, timeout=30,
-        )
-        return result.returncode, (result.stdout + result.stderr).strip()
-    except subprocess.TimeoutExpired:
-        return 1, "timeout"
-    except Exception as e:
-        return 1, str(e)
-
-
-def discover_repos() -> list[RepoInfo]:
-    """Find all git repos in the ecosystem."""
-    repos = []
-    for group_path, group_name in GROUPS.items():
-        group_dir = ECO_ROOT / group_path
-        if not group_dir.exists():
-            continue
-        for entry in sorted(group_dir.iterdir()):
-            if entry.is_dir() and (entry / ".git").exists():
-                repo = RepoInfo(
-                    path=entry,
-                    name=entry.name,
-                    group=group_name,
-                )
-                # Get current branch
-                rc, out = git(entry, "branch", "--show-current")
-                repo.branch = out if rc == 0 else "detached"
-
-                # Get remote URL
-                rc, out = git(entry, "remote", "get-url", "origin")
-                repo.remote_url = out if rc == 0 else "no remote"
-
-                # Check dirty
-                rc, out = git(entry, "status", "--porcelain")
-                repo.is_dirty = bool(out) if rc == 0 else False
-
-                # Check if develop exists
-                rc, out = git(entry, "branch", "--list", "develop")
-                repo.has_develop = bool(out.strip())
-
-                repos.append(repo)
-    return repos
-
-
-def fix_remote_to_ssh(url: str) -> str:
-    """Convert HTTPS GitHub URL to SSH."""
-    if url.startswith("https://github.com/"):
-        return url.replace("https://github.com/", "git@github.com:")
-    return url
-
-
-def cmd_scan():
-    """Discover and display all repos."""
-    repos = discover_repos()
-    current_group = ""
-    for repo in repos:
-        if repo.group != current_group:
-            current_group = repo.group
-            print(f"\n{'=' * 60}")
-            print(f"  {current_group}/")
-            print(f"{'=' * 60}")
-        dirty = " [DIRTY]" if repo.is_dirty else ""
-        branch_info = f"on {repo.branch}"
-        if repo.has_develop and repo.branch != "develop":
-            branch_info += " (has develop)"
-        print(f"  {repo.name:<30} {branch_info}{dirty}")
-        print(f"    {repo.remote_url}")
-    print(f"\nTotal: {len(repos)} repos")
-
-
-def cmd_status():
-    """Show compact status for all repos."""
-    repos = discover_repos()
-    print(f"{'Repo':<35} {'Branch':<30} {'Status':<10} {'Remote'}")
-    print("-" * 110)
-    for repo in repos:
-        dirty = "dirty" if repo.is_dirty else "clean"
-        short_url = repo.remote_url.replace("git@github.com:", "").replace("https://github.com/", "").rstrip(".git")
-        print(f"{repo.group}/{repo.name:<25} {repo.branch:<30} {dirty:<10} {short_url}")
-
-
-def cmd_sync():
-    """Fetch all origins and pull current branch."""
-    repos = discover_repos()
-    for repo in repos:
-        label = f"{repo.group}/{repo.name}"
-        print(f"\n--- {label} ({repo.branch}) ---")
-
-        # Ensure SSH remote
-        if "https://github.com/" in repo.remote_url:
-            ssh_url = fix_remote_to_ssh(repo.remote_url)
-            rc, out = git(repo.path, "remote", "set-url", "origin", ssh_url)
-            if rc == 0:
-                print(f"  Fixed remote: HTTPS → SSH")
-
-        # Fetch
-        rc, out = git(repo.path, "fetch", "origin")
-        if rc != 0:
-            print(f"  FETCH FAILED: {out}")
-            continue
-        print(f"  fetched")
-
-        # Pull if clean
-        if repo.is_dirty:
-            print(f"  SKIP pull (dirty working tree)")
-        else:
-            rc, out = git(repo.path, "pull", "--ff-only", "origin", repo.branch)
-            if rc == 0:
-                if "Already up to date" in out:
-                    print(f"  up to date")
-                else:
-                    print(f"  pulled: {out.split(chr(10))[-1]}")
-            else:
-                print(f"  PULL FAILED: {out.split(chr(10))[0]}")
-
-
-def cmd_fix_remotes():
-    """Ensure all remotes use SSH."""
-    repos = discover_repos()
-    fixed = 0
-    for repo in repos:
-        if "https://github.com/" in repo.remote_url:
-            ssh_url = fix_remote_to_ssh(repo.remote_url)
-            rc, _ = git(repo.path, "remote", "set-url", "origin", ssh_url)
-            if rc == 0:
-                print(f"  Fixed {repo.group}/{repo.name}: {repo.remote_url} → {ssh_url}")
-                fixed += 1
-    print(f"\nFixed {fixed} repos. {len(repos) - fixed} already SSH.")
-
-
-def cmd_setup_gita():
-    """Register all repos with gita and configure groups."""
-    repos = discover_repos()
-
-    # Register repos
-    paths = [str(repo.path) for repo in repos]
-    print(f"Registering {len(paths)} repos with gita...")
-    subprocess.run(["gita", "add"] + paths, check=False)
-
-    # Set up groups
-    for group_name in set(repo.group for repo in repos):
-        group_repos = [repo.name for repo in repos if repo.group == group_name]
-        safe_group = group_name.replace("/", "-")
-        subprocess.run(["gita", "group", "add", safe_group] + group_repos, check=False)
-        print(f"  Group '{safe_group}': {', '.join(group_repos)}")
-
-    print("\nDone. Use 'gita ll' to see all repos, 'gita super <group> status' to check a group.")
-
-
-def cmd_tree():
-    """Show ecosystem tree with GitHub URLs."""
-    repos = discover_repos()
-    current_group = ""
-
-    print("zombo-sash-eco/")
-    groups = {}
-    for repo in repos:
-        groups.setdefault(repo.group, []).append(repo)
-
-    group_names = list(groups.keys())
-    for gi, group_name in enumerate(group_names):
-        is_last_group = gi == len(group_names) - 1
-        prefix = "└── " if is_last_group else "├── "
-        child_prefix = "    " if is_last_group else "│   "
-
-        print(f"{prefix}{group_name}/")
-        group_repos = groups[group_name]
-        for ri, repo in enumerate(group_repos):
-            is_last = ri == len(group_repos) - 1
-            repo_prefix = "└── " if is_last else "├── "
-            url = repo.remote_url.replace("git@github.com:", "https://github.com/").rstrip(".git")
-            if url == "no remote":
-                url = "(no remote)"
-            branch = f" [{repo.branch}]" if repo.branch != "main" else ""
-            dirty = " *" if repo.is_dirty else ""
-            print(f"{child_prefix}{repo_prefix}{repo.name}{branch}{dirty}  {url}")
-
-    print(f"\n{len(repos)} repos total")
-
-
-def cmd_lazygit():
-    """Open lazygit for a specific repo."""
-    if len(sys.argv) < 3:
-        print("Usage: eco-sync lg <repo-name>")
-        print("Available repos:")
-        for repo in discover_repos():
-            print(f"  {repo.name}")
-        sys.exit(1)
-
-    target = sys.argv[2]
-    repos = discover_repos()
-    match = next((r for r in repos if r.name == target), None)
-    if not match:
-        # Try partial match
-        matches = [r for r in repos if target in r.name]
-        if len(matches) == 1:
-            match = matches[0]
-        elif len(matches) > 1:
-            print(f"Ambiguous: {', '.join(r.name for r in matches)}")
-            sys.exit(1)
-        else:
-            print(f"Repo '{target}' not found")
-            sys.exit(1)
-
-    lazygit = str(ECO_ROOT / "bin" / "lazygit")
-    os.execvp(lazygit, [lazygit, "-p", str(match.path)])
-
-
 def main():
-    if len(sys.argv) < 2:
-        print(__doc__)
+    args = sys.argv[1:]
+    if not args:
+        print("Usage: eco-sync <command> [args]")
+        print("Commands: status, sync, delta, lock, tree, scan, report")
+        print(f"\nDelegates to: {'gm' if GM_BIN else 'eco-sync-legacy (gm not found)'}")
         sys.exit(0)
 
-    cmd = sys.argv[1]
-    commands = {
-        "scan": cmd_scan,
-        "sync": cmd_sync,
-        "status": cmd_status,
-        "setup-gita": cmd_setup_gita,
-        "fix-remotes": cmd_fix_remotes,
-        "tree": cmd_tree,
-        "lg": cmd_lazygit,
-    }
+    cmd = args[0]
 
-    if cmd in commands:
-        commands[cmd]()
+    if not GM_BIN:
+        # Fallback to legacy
+        legacy = os.path.join(os.path.dirname(__file__), "eco-sync-legacy")
+        os.execv(sys.executable, [sys.executable, legacy] + args)
+
+    if cmd == "report" and len(args) > 1:
+        gm_args = ["status", "--group", args[1]]
+    elif cmd in CMD_MAP:
+        gm_args = CMD_MAP[cmd]
     else:
-        print(f"Unknown command: {cmd}")
-        print(f"Available: {', '.join(commands.keys())}")
-        sys.exit(1)
+        # Pass through unknown commands
+        gm_args = args
 
+    subprocess.run([GM_BIN, "--root", ECO_ROOT] + gm_args)
 
 if __name__ == "__main__":
     main()
