@@ -207,6 +207,89 @@ repositories:
     branch: main
     group: tools/sysutils
 
+  # ── external: tools/ai-tools ──
+  - name: FPF
+    path: tools/ai-tools/_external/FPF
+    remote: https://github.com/ailev/FPF.git
+    branch: main
+    group: tools/ai-tools
+  - name: codebase-memory-mcp
+    path: tools/ai-tools/_external/codebase-memory-mcp
+    remote: https://github.com/DeusData/codebase-memory-mcp.git
+    branch: main
+    group: tools/ai-tools
+  - name: fpf-problem-solving-skill
+    path: tools/ai-tools/_external/fpf-problem-solving-skill
+    remote: https://github.com/CodeAlive-AI/fpf-problem-solving-skill.git
+    branch: main
+    group: tools/ai-tools
+  - name: grace-marketplace
+    path: tools/ai-tools/_external/grace-marketplace
+    remote: https://github.com/osovv/grace-marketplace.git
+    branch: main
+    group: tools/ai-tools
+  - name: grace-skills
+    path: tools/ai-tools/_external/grace-skills
+    remote: https://github.com/BalaBenna/grace-skills.git
+    branch: main
+    group: tools/ai-tools
+  - name: graphify
+    path: tools/ai-tools/_external/graphify
+    remote: https://github.com/safishamsi/graphify.git
+    branch: v4
+    group: tools/ai-tools
+  - name: haft
+    path: tools/ai-tools/_external/haft
+    remote: https://github.com/m0n0x41d/haft.git
+    branch: main
+    group: tools/ai-tools
+  - name: quint
+    path: tools/ai-tools/_external/quint
+    remote: https://github.com/informalsystems/quint.git
+    branch: main
+    group: tools/ai-tools
+
+  # ── external: tools/orchestrator ──
+  - name: AllBeads
+    path: tools/orchestrator/_external/AllBeads
+    remote: https://github.com/thrashr888/AllBeads.git
+    branch: main
+    group: tools/orchestrator
+  - name: beads_rust
+    path: tools/orchestrator/_external/beads_rust
+    remote: https://github.com/Dicklesworthstone/beads_rust.git
+    branch: main
+    group: tools/orchestrator
+  - name: beads_viewer_rust
+    path: tools/orchestrator/_external/beads_viewer_rust
+    remote: https://github.com/Dicklesworthstone/beads_viewer_rust.git
+    branch: main
+    group: tools/orchestrator
+
+  # ── external: prodx ──
+  - name: AgentOS
+    path: prodx/_external/AgentOS
+    remote: https://github.com/ag2ai/ag2.git
+    branch: main
+    group: prodx
+  - name: DesignOS
+    path: prodx/_external/DesignOS
+    remote: https://github.com/eclectix7/DesignOS.git
+    branch: main
+    group: prodx
+  - name: open-codesign
+    path: prodx/_external/open-codesign
+    remote: https://github.com/OpenCoworkAI/open-codesign.git
+    branch: main
+    group: prodx
+
+  # ── external: epistemic-universe ──
+  - name: nanoGPT
+    path: epistemic-universe/_external/nanoGPT
+    remote: git@github.com:AITechCraft/nanoGPT.git
+    branch: master
+    group: epistemic-universe
+
 dependencies:
   reasoning-universe/zz-notation:
     - reasoning-universe/infer
@@ -233,3 +316,4 @@ dependencies:
     - epistemic-universe/criterium
     - reasoning-universe/pctl-rs
     - infra-eco/rstmdb
+
