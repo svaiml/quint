@@ -5,27 +5,40 @@
 The ecosystem is organized as a **10-layer dependency stack**. Lower layers provide services to higher layers. Nothing at layer N depends on layer N+1.
 
 ```
-╔══════════════════════════════════════════════════════════════════════════╗
-║  10 — PRODUCTS     prodx/craftegy-design, prodx/external/*              ║
-║  09 — APPS         apps/reasoning-apps                                  ║
-║  08 — EXECUTION    apps/code-catalyst, tools/ai-tools/grace-*           ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║  07 — BRIDGE       tools/orchestrator/{AllBeads, beads_rust, bv_rust}   ║
-║  06 — SPEC         tools/ai-tools/{flowspec, FPF, haft, quint}          ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║  05 — REASONING    reasoning-universe/{infer, axiomvm, aivm,            ║
-║                                        craftegy-algo}                   ║
-║                    epistemic-universe/{criterium, epistemic-game}        ║
-║  04 — KNOWLEDGE    tools/ai-tools/{graphify, codegraph-rust,            ║
-║                                    codebase-memory-mcp}                 ║
-║  03 — MEMORY       infra-eco/{rstmdb, rstmdb-studio}                    ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║  02 — FORMAL       reasoning-universe/{pctl-rs, obstruct, zz-notation}  ║
-║  01 — INFRA        infra-eco/{o2l, npd-cipher, ctop, inferense,         ║
-║                               invariantis}                              ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║  00 — KERNEL-FORGE kernel-forge/{bfc, bfcfs-linux, bfc-httpd}           ║
-╚══════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  10 — PRODUCTS     prodx/craftegy-design                                    ║
+║  09 — APPS         apps/{reasoning-apps, code-catalyst,                     ║
+║                          episteme-platform, research-scaffold}              ║
+║  08 — EXECUTION    tools/orchestrator/_external/{grace-*, PaperClip}        ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  07 — BRIDGE       tools/orchestrator/{flowspec,                            ║
+║                                        _external/beads_rust, _external/bv}  ║
+║  06 — SPEC         tools/ai-tools/_external/{FPF, haft, quint}              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  05 — REASONING    reasoning-universe/{infer, axiomvm, aivm,                ║
+║                                        craftegy-algo, fpf-cards}            ║
+║                    epistemic-universe/{criterium, epistemic-game,            ║
+║                                        episteme-lab, pbelnap,               ║
+║                                        bilattice-relabeler}                 ║
+║  04 — KNOWLEDGE    tools/ai-tools/{codegraph-rust,                          ║
+║                          _external/graphify, _external/codebase-memory-mcp} ║
+║  03 — MEMORY       infra-eco/{rstmdb, rstmdb-studio}                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  02 — FORMAL       reasoning-universe/{pctl-rs, obstruct, zz-notation}      ║
+║  01 — INFRA        infra-eco/{o2l, npd-cipher, ctop, inferense,             ║
+║                               invariantis, bfc, myria}                      ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  00 — KERNEL-FORGE kernel-forge/{bfc, bfcfs-linux}                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+║  SYSUTILS          tools/sysutils/{ghdash, zacta, vaultura}                  ║
+║  OPTIMIZATION      tools/optimization/_external/{baml, dspy, promptfoo,     ║
+║                                                  sammo, dspy-code}          ║
+║  SCIENCE-LIBS      tools/science-libs/_external/{naproche,                  ║
+║                                       algorithmic-algebras-embedding}       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Convention: repos we don't own live under `_external/` within their category.
+Our repos (zombocoder, svaiml, sashml, rstmdb, AITechCraft) sit at the category root.
 ```
 
 **Two sub-stacks feed into each other:**

@@ -37,13 +37,25 @@ from dataclasses import dataclass, field
 
 ECO_ROOT = Path(__file__).resolve().parent.parent
 GROUPS = {
+    # Our repos (category root)
     "apps": "apps",
-    "infra-eco": "infra-eco",
+    "epistemic-universe": "epistemic-universe",
     "reasoning-universe": "reasoning-universe",
+    "infra-eco": "infra-eco",
+    "kernel-forge": "kernel-forge",
     "prodx": "prodx",
-    "prodx/external": "prodx-external",
     "tools/ai-tools": "tools/ai-tools",
     "tools/orchestrator": "tools/orchestrator",
+    "tools/sysutils": "tools/sysutils",
+    "research": "research",
+    # External repos (_external/ subdirs — ADR-008)
+    "epistemic-universe/_external": "epistemic-universe/_external",
+    "prodx/_external": "prodx/_external",
+    "tools/ai-tools/_external": "tools/ai-tools/_external",
+    "tools/orchestrator/_external": "tools/orchestrator/_external",
+    "tools/optimization/_external": "tools/optimization/_external",
+    "tools/science-libs/_external": "tools/science-libs/_external",
+    "research/_external": "research/_external",
 }
 
 

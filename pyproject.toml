@@ -1,0 +1,9 @@
+[project]
+name = "zombo-sash-eco"
+version = "0.1.0"
+description = "Ecosystem management tools for zombo-sash-eco"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["bin"]
