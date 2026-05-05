@@ -14,11 +14,26 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MINIMAL=false
 [ "$1" = "--minimal" ] && MINIMAL=true
 
+# ── Platform detection ──────────────────────────────────────────────────────
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) IS_WINDOWS=true ;;
+  *)                     IS_WINDOWS=false ;;
+esac
+
+if $IS_WINDOWS; then
+  INSTALL_BIN="${LOCALAPPDATA:-$USERPROFILE/AppData/Local}/Programs/bin"
+  EXE=".exe"
+else
+  INSTALL_BIN="$HOME/.local/bin"
+  EXE=""
+fi
+
 echo "╔══════════════════════════════════════════╗"
 echo "║     ZomboCraftEco Bootstrap v1.0         ║"
 echo "╚══════════════════════════════════════════╝"
 echo ""
-echo "Root: $ROOT"
+echo "Root:     $ROOT"
+echo "Platform: $(uname -s) $(uname -m)"
 echo ""
 
 # ── Step 1: Check prerequisites ───────────────────────────────────────────────
@@ -38,20 +53,24 @@ else
     INSTALLED=false
 
     # Try 1: Download pre-built binary from GitHub Release (private repo — needs gh)
-    OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+    if $IS_WINDOWS; then
+        OS="windows"
+    else
+        OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+    fi
     ARCH="$(uname -m)"
-    ASSET="gm-${OS}-${ARCH}"
+    ASSET="gm-${OS}-${ARCH}${EXE}"
 
     TMPDIR=$(mktemp -d)
+    mkdir -p "$INSTALL_BIN"
     if gh release download v0.1.0 --repo svaiml/gm --pattern "$ASSET" --dir "$TMPDIR" 2>/dev/null; then
-        chmod +x "$TMPDIR/$ASSET"
-        mkdir -p "$HOME/.local/bin"
-        mv "$TMPDIR/$ASSET" "$HOME/.local/bin/gm"
-        export PATH="$HOME/.local/bin:$PATH"
+        chmod +x "$TMPDIR/$ASSET" 2>/dev/null || true
+        mv "$TMPDIR/$ASSET" "$INSTALL_BIN/gm${EXE}"
+        export PATH="$INSTALL_BIN:$PATH"
         echo "  ✓ gm installed from release binary"
         INSTALLED=true
     fi
-    rm -r "$TMPDIR" 2>/dev/null
+    rm -rf "$TMPDIR" 2>/dev/null
 
     # Try 2: cargo install from git
     if [ "$INSTALLED" = false ]; then
@@ -91,8 +110,12 @@ if [ "$MINIMAL" = false ]; then
                 echo "  ✓ flowspec installed" || echo "  ✗ flowspec failed (install uv: https://astral.sh/uv)"
         elif ! command -v uv &>/dev/null; then
             echo "  → installing uv..."
-            curl -LsSf https://astral.sh/uv/install.sh | sh 2>/dev/null
-            export PATH="$HOME/.local/bin:$PATH"
+            if $IS_WINDOWS; then
+                powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex" 2>/dev/null
+            else
+                curl -LsSf https://astral.sh/uv/install.sh | sh 2>/dev/null
+            fi
+            export PATH="$INSTALL_BIN:$HOME/.local/bin:$PATH"
             (cd "$FLOWSPEC" && uv tool install --editable . --force --quiet 2>/dev/null) && \
                 echo "  ✓ flowspec installed" || echo "  ✗ flowspec failed"
         fi
