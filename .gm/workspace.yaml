@@ -290,6 +290,93 @@ repositories:
     branch: master
     group: epistemic-universe
 
+  # ── external: tools/optimization ──
+  - name: baml
+    path: tools/optimization/_external/baml
+    remote: https://github.com/BoundaryML/baml.git
+    branch: canary
+    group: tools/optimization
+  - name: dspy
+    path: tools/optimization/_external/dspy
+    remote: https://github.com/stanfordnlp/dspy.git
+    branch: main
+    group: tools/optimization
+  - name: dspy-code
+    path: tools/optimization/_external/dspy-code
+    remote: git@github.com:SuperagenticAI/dspy-code.git
+    branch: main
+    group: tools/optimization
+  - name: promptfoo
+    path: tools/optimization/_external/promptfoo
+    remote: https://github.com/promptfoo/promptfoo.git
+    branch: main
+    group: tools/optimization
+  - name: sammo
+    path: tools/optimization/_external/sammo
+    remote: https://github.com/microsoft/sammo.git
+    branch: main
+    group: tools/optimization
+
+  # ── external: tools/science-libs ──
+  - name: naproche
+    path: tools/science-libs/_external/naproche
+    remote: https://github.com/naproche/naproche.git
+    branch: master
+    group: tools/science-libs
+  - name: algorithmic-algebras-embedding
+    path: tools/science-libs/_external/algorithmic-algebras-embedding
+    remote: https://github.com/ips-kyiv/algorithmic-algebras-embedding.git
+    branch: master
+    group: tools/science-libs
+
+  # ── external: tools/orchestrator (missing) ──
+  - name: PaperClip
+    path: tools/orchestrator/_external/PaperClip
+    remote: https://github.com/paperclipai/paperclip.git
+    branch: master
+    group: tools/orchestrator
+  - name: gsd-2
+    path: tools/orchestrator/_external/gsd-2
+    remote: https://github.com/gsd-build/gsd-2.git
+    branch: main
+    group: tools/orchestrator
+
+  # ── kernel-forge ──
+  - name: bfc-kernel
+    path: kernel-forge/bfc
+    remote: git@github.com:zombocoder/bfc.git
+    branch: main
+    group: kernel-forge
+  - name: bfcfs-linux
+    path: kernel-forge/bfcfs-linux
+    remote: git@github.com:zombocoder/bfcfs-linux.git
+    branch: main
+    group: kernel-forge
+
+  # ── research (ours) ──
+  - name: CoreFoundation
+    path: research/CoreFoundation
+    remote: ""
+    branch: main
+    group: research
+  - name: feature-factory
+    path: research/feature-factory
+    remote: ""
+    branch: main
+    group: research
+
+  # ── external: research ──
+  - name: contextflow-forge
+    path: research/_external/contextflow-forge
+    remote: https://github.com/Craftegy-NextGen/contextflow-forge.git
+    branch: develop
+    group: research
+  - name: specmem
+    path: research/_external/specmem
+    remote: https://github.com/SuperagenticAI/specmem.git
+    branch: develop
+    group: research
+
 dependencies:
   reasoning-universe/zz-notation:
     - reasoning-universe/infer
