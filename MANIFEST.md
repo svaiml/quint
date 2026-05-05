@@ -15,6 +15,11 @@ Actual branch, SHA, and version for each repo.
 | reasoning-universe | **craftegy-algo** | `feature/graph-causal-whatif` | `e15bd48` | - | svaiml/craftegy-algo |
 | reasoning-universe | **obstruct** | `main` | `231aaae` | - | zombocoder/obstruc |
 | epistemic-universe | **criterium** | `feature/workspace-scaffold` | `02664ad` | - | svaiml/criterium |
+| epistemic-universe | **episteme-platform** | `master` | `b06be5c` | - | sashml/episteme-platform |
+| inductive-rnd | **episteme-lab** | `master` | `8cf470a` | - | AITechCraft/episteme-lab |
+| inductive-rnd | **pbelnap** | `main` | `5b62056` | - | AITechCraft/pbelnap |
+| inductive-rnd | **bilattice-relabeler** | `main` | `4c7d4b4` | - | AITechCraft/bilattice-relabeler |
+| inductive-rnd | **nanoGPT** | `master` | `3adf61e` | - | AITechCraft/nanoGPT |
 | infra-eco | **o2l** | `develop` | `2771875` | v0.0.1 | sashml/o2l |
 | infra-eco | **rstmdb** | `main` | `a2574c6` | v0.2.0 | rstmdb/rstmdb |
 | infra-eco | **rstmdb-studio** | `main` | `01a30bf` | - | rstmdb/rstmdb-studio |
@@ -45,4 +50,4 @@ Actual branch, SHA, and version for each repo.
 | tools/orchestrator | **PaperClip** | `master` | `76f09c8e` | canary/v2026.430.0-canary.7 | paperclipai/paperclip |
 | tools/orchestrator | **gsd-2** | `main` | `84c045fd2` | v2.78.1 | gsd-build/gsd-2 |
 
-40 repos total.
+45 repos total.
