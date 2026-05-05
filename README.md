@@ -9,18 +9,23 @@
 git clone git@github.com:svaiml/ZomboCraftEco.git ~/zombo-sash-eco
 cd ~/zombo-sash-eco
 
-# 2. Bootstrap (installs gm + clones all repos)
+# 2. Bootstrap (installs gm + clones all 64 repos + tools)
 ./bin/bootstrap
 ```
 
-That's it. `bootstrap` clones `gm`, builds it, then runs `gm sync` to clone all 34 repos.
+That's it. Bootstrap downloads the `gm` binary from GitHub Releases (or builds from source), then `gm sync` clones all 64 repos.
 
-**Prerequisites**: `git`, `cargo` ([install Rust](https://rustup.rs))
+**Prerequisites**: `git`, `gh` (GitHub CLI, authenticated — [install](https://cli.github.com))
+
+```bash
+# Or minimal (just gm + repos, skip flowspec/br/bv)
+./bin/bootstrap --minimal
+```
 
 ## Daily Workflow
 
 ```bash
-gm status                          # 34 repos: 28 clean, 6 dirty, 0 behind
+gm status                          # 64 repos: 28 clean, 6 dirty, 0 behind
 gm pull                            # fetch + merge all repos
 gm push --plan                     # show dependency-ordered push plan
 gm push --apply                    # push in order, abort on failure
@@ -103,7 +108,7 @@ Convention: repos we don't own live under `_external/` ([ADR-008](docs/adr/ADR-0
 
 | File | What |
 |------|------|
-| `.gm/workspace.yaml` | Repo manifest: 34 repos, 9 groups, 8 dependency edges |
+| `.gm/workspace.yaml` | Repo manifest: 64 repos, 9 groups, 8 dependency edges |
 | `.gm/workspace.lock` | Deterministic state snapshot (run `gm lock`) |
 | `ECOSYSTEM.md` | Prometey Stack 10-layer architecture |
 | `AGENTS.md` | Agent onboarding with directory map |
