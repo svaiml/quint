@@ -4,6 +4,13 @@
 
 One repo to clone them all. Contains the tooling, scripts, and index files needed to bootstrap the full 42-repo ecosystem on any machine.
 
+## Prerequisites
+
+- **Git** with SSH keys configured for github.com
+- **Python 3.10+** and [uv](https://docs.astral.sh/uv/) (for `eco-sync` and `flowspec`)
+- **Rust/Cargo** (for `br`, `bvr`, `ghdash`)
+- **Windows**: Run all shell scripts via **Git Bash** (included with [Git for Windows](https://gitforwindows.org/))
+
 ## Quick Start
 
 ```bash
@@ -13,6 +20,14 @@ cd ZomboCraftEco
 ```
 
 This creates the full directory structure and clones all 42 repos.
+
+### Windows (Git Bash)
+
+```bash
+git clone git@github.com:svaiml/ZomboCraftEco.git
+cd ZomboCraftEco
+./bin/clone-ecosystem.sh "$USERPROFILE/zombo-sash-eco"
+```
 
 ## What's Inside
 
@@ -60,6 +75,22 @@ flowspec board --top 3
 | `sashml` | Secondary — o2l, flowspec upstream | o2l, flowspec |
 | `rstmdb` | RSTMDB org | rstmdb, rstmdb-studio |
 | External | Read-only references | quint, haft, FPF, codegraph-rust, beads_rust, ... |
+
+## Platform Support
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| Linux (Ubuntu 22.04+) | Full | Native shell scripts |
+| macOS 14+ | Full | Native shell scripts |
+| Windows 10/11 | Supported | Requires Git Bash; `eco-sync` runs cross-platform via Python |
+| FreeBSD 14 | Supported | See ADR-005 |
+
+### Windows Notes
+
+- All `.sh` scripts require **Git Bash** (ships with Git for Windows)
+- `eco-sync` (Python) works natively on Windows — no Git Bash needed for `uv run python bin/eco-sync`
+- `cargo install` and `uv tool install` work natively on Windows
+- Install paths default to `%LOCALAPPDATA%\Programs\bin` on Windows (vs `~/.local/bin` on Unix)
 
 ## License
 

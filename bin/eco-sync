@@ -29,10 +29,14 @@ Usage:
 """
 
 import os
+import platform
+import shutil
 import subprocess
 import sys
 import json
 from pathlib import Path
+
+IS_WINDOWS = platform.system() == "Windows"
 from dataclasses import dataclass, field
 
 ECO_ROOT = Path(__file__).resolve().parent.parent
@@ -583,8 +587,19 @@ def cmd_lazygit():
             print(f"Repo '{target}' not found")
             sys.exit(1)
 
-    lazygit = str(ECO_ROOT / "bin" / "lazygit")
-    os.execvp(lazygit, [lazygit, "-p", str(match.path)])
+    # Find lazygit: prefer bin/ local copy, fall back to PATH
+    local_lg = ECO_ROOT / "bin" / ("lazygit.exe" if IS_WINDOWS else "lazygit")
+    lazygit = str(local_lg) if local_lg.exists() else shutil.which("lazygit")
+    if not lazygit:
+        print("Error: lazygit not found. Install it or place it in bin/.")
+        print("  Windows:  scoop install lazygit  (or winget install lazygit)")
+        print("  Linux:    https://github.com/jesseduffield/lazygit#installation")
+        print("  macOS:    brew install lazygit")
+        sys.exit(1)
+    if IS_WINDOWS:
+        sys.exit(subprocess.call([lazygit, "-p", str(match.path)]))
+    else:
+        os.execvp(lazygit, [lazygit, "-p", str(match.path)])
 
 
 def main():

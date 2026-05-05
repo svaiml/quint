@@ -48,7 +48,6 @@ $flow-assess -> $flow-specify -> $flow-plan -> $flow-implement -> $flow-validate
 Run `$flow-gate` before implementation to validate spec quality.
 Run `$flow-triage` at session start for project context.
 
-<<<<<<< HEAD
 ## Ecosystem Directory Map
 
 ```
@@ -117,8 +116,7 @@ zombo-sash-eco/
 Convention: repos we don't own live under `_external/` within their category.
 Our orgs: `zombocoder`, `svaiml`, `sashml`, `rstmdb`, `AITechCraft`.
 
-=======
->>>>>>> 408d07a (docs: ecosystem scaffold — ADRs, PRDs, research, assessments, config)
+
 ## Task Tracking — Beads-rust
 
 | System | CLI | When to use |
