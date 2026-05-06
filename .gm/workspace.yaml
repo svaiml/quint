@@ -354,16 +354,17 @@ repositories:
     group: kernel-forge
 
   # ── research (ours) ──
-  - name: CoreFoundation
-    path: research/CoreFoundation
-    remote: ""
-    branch: main
-    group: research
-  - name: feature-factory
-    path: research/feature-factory
-    remote: ""
-    branch: main
-    group: research
+  # TODO: repos not yet created on GitHub
+  # - name: CoreFoundation
+  #   path: research/CoreFoundation
+  #   remote: ""
+  #   branch: main
+  #   group: research
+  # - name: feature-factory
+  #   path: research/feature-factory
+  #   remote: ""
+  #   branch: main
+  #   group: research
 
   # ── external: research ──
   - name: contextflow-forge
