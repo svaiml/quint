@@ -70,7 +70,7 @@ repositories:
 - name: episteme-platform
   path: apps/episteme-platform
   remote: git@github.com:sashml/episteme-platform.git
-  branch: main
+  branch: master
   group: apps
 - name: criterium
   path: epistemic-universe/criterium
