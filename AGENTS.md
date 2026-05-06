@@ -71,3 +71,37 @@ bv -robot-suggest               # Duplicate/related issue detection
 bv -robot-blocker-chain <id>    # Blocker chain for a task
 bv -robot-forecast <id>         # ETA forecast
 ```
+
+## Ecosystem Setup (gm)
+
+`gm` is the git workspace orchestrator. It uses `gh repo clone` (HTTPS + OAuth) for all cloning — no SSH keys needed.
+
+### First-time setup
+
+```bash
+gh auth login                                    # authenticate
+gh config set git_protocol https --host github.com  # HTTPS mode
+gh auth switch --user USER                      # account with access to all 5 orgs
+./bin/bootstrap                                   # clones 62 repos + installs tools
+```
+
+### Common commands
+
+```bash
+gm status                    # all repos: branch, dirty, ahead/behind
+gm sync                      # clone missing repos (parallel)
+gm pull                      # fetch + merge all
+gm lock                      # snapshot state → .gm/workspace.lock
+gm lock --diff               # drift since last lock
+gm push --plan               # dependency-ordered push plan
+gm exec "cargo test" --group reasoning  # run command across group
+```
+
+### Troubleshooting for agents
+
+| Problem | Fix |
+|---------|-----|
+| SSH passphrase prompts | `gh config set git_protocol https --host github.com` |
+| Repos not cloning | `gh auth switch --user USER` (has access to all orgs) |
+| `gm` not found | `cargo install --git https://github.com/svaiml/gm.git --branch feature/m1-bootstrap --bin gm gm-cli` |
+| Windows path errors | gm v0.1.0+ strips `\\?\` prefix automatically |

@@ -18,8 +18,21 @@ That's it. Bootstrap downloads the `gm` binary from GitHub Releases (or builds f
 **Prerequisites**: `git`, `gh` (GitHub CLI, authenticated — [install](https://cli.github.com))
 
 ```bash
+# IMPORTANT: set HTTPS protocol before first run (avoids SSH passphrase prompts)
+gh auth login                      # authenticate with GitHub
+gh config set git_protocol https   # use OAuth tokens, not SSH keys
+
 # Or minimal (just gm + repos, skip flowspec/br/bv)
 ./bin/bootstrap --minimal
+```
+
+### Windows (Git Bash)
+
+```bash
+git clone https://github.com/svaiml/ZomboCraftEco.git ~/zombo-sash-eco
+cd ~/zombo-sash-eco
+gh config set git_protocol https --host github.com
+./bin/bootstrap
 ```
 
 ## Daily Workflow
@@ -122,3 +135,50 @@ Convention: repos we don't own live under `_external/` ([ADR-008](docs/adr/ADR-0
 | `sashml` | Secondary — o2l, flowspec, episteme-platform |
 | `rstmdb` | RSTMDB org |
 | `AITechCraft` | Python R&D — episteme-lab, pbelnap, bilattice-relabeler |
+
+## Platform Support
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| Linux (Ubuntu 22.04+) | Full | Native shell scripts |
+| macOS 14+ | Full | Native shell scripts |
+| Windows 10/11 | Supported | Requires Git Bash for `.sh` scripts; `gm` works natively |
+| FreeBSD 14 | Supported | See ADR-005 |
+
+## Troubleshooting
+
+### SSH passphrase prompted for every repo
+
+`gm sync` uses `gh repo clone` which respects your `gh` protocol setting. If you're getting SSH prompts:
+
+```bash
+# Fix: switch to HTTPS (uses OAuth token, zero prompts)
+gh config set git_protocol https --host github.com
+
+# Verify
+gh auth status
+# Should show: Git operations protocol: https
+```
+
+### Repos not cloning (access denied)
+
+`gm` uses the active `gh` account. If some repos belong to a different org:
+
+```bash
+# Check active account
+gh auth status
+
+# Switch account (if you have multiple)
+gh auth switch --user USER
+
+# Re-run sync
+gm sync
+```
+
+Use the account that has access to all 5 orgs (`zombocoder`, `svaiml`, `sashml`, `rstmdb`, `AITechCraft`).
+
+### Windows-specific
+
+- Run `./bin/bootstrap` from **Git Bash** (not PowerShell or CMD)
+- `gm.exe` works natively in any terminal
+- If `gm` not found after bootstrap: add `%LOCALAPPDATA%\Programs\bin` to PATH
