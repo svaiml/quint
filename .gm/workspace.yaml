@@ -3,280 +3,296 @@ workspace:
   name: zombo-sash-eco
   convention: _external
   default_profile: dev
-profiles:
-  full:
-    include:
-    - '*'
-  dev:
-    include:
-    - '*'
-    exclude:
-    - prodx/_external/*
-    - tools/optimization/_external/*
-    - tools/science-libs/_external/*
-    - research/_external/*
-  minimal:
-    include:
-    - reasoning-universe/*
-    - epistemic-universe/*
-    - infra-eco/*
-    - apps/*
-  ci:
-    include:
-    - reasoning-universe/*
-    - epistemic-universe/criterium
-    - infra-eco/rstmdb
-    - infra-eco/inferense
-  research:
-    include:
-    - '*'
-    exclude:
-    - prodx/_external/*
 groups:
-  apps:
-    path: apps
-  epistemic-universe:
-    path: epistemic-universe
-  reasoning-universe:
-    path: reasoning-universe
-  infra-eco:
-    path: infra-eco
-  kernel-forge:
-    path: kernel-forge
-  prodx:
-    path: prodx
   tools/ai-tools:
     path: tools/ai-tools
+  apps:
+    path: apps
   tools/orchestrator:
     path: tools/orchestrator
+  kernel-forge:
+    path: kernel-forge
   tools/sysutils:
     path: tools/sysutils
+  reasoning-universe:
+    path: reasoning-universe
+  prodx:
+    path: prodx
+  infra-eco:
+    path: infra-eco
+  epistemic-universe:
+    path: epistemic-universe
 repositories:
 - name: code-catalyst
   path: apps/code-catalyst
   remote: git@github.com:svaiml/code-catalyst.git
   branch: main
   group: apps
+  profile: null
 - name: reasoning-apps
   path: apps/reasoning-apps
   remote: git@github.com:zombocoder/reasoning-apps.git
   branch: develop
   group: apps
+  profile: null
 - name: research-scaffold
   path: apps/research-scaffold
   remote: git@github.com:svaiml/research-scaffold.git
   branch: main
   group: apps
+  profile: null
 - name: episteme-platform
   path: apps/episteme-platform
   remote: git@github.com:sashml/episteme-platform.git
   branch: master
   group: apps
+  profile: null
 - name: criterium
   path: epistemic-universe/criterium
   remote: git@github.com:svaiml/criterium.git
   branch: develop
   group: epistemic-universe
+  profile: null
 - name: epistemic-game
   path: epistemic-universe/epistemic-game
   remote: git@github.com:svaiml/epistemic-game.git
   branch: main
   group: epistemic-universe
+  profile: null
 - name: episteme-lab
   path: epistemic-universe/episteme-lab
   remote: git@github.com:AITechCraft/episteme-lab.git
   branch: master
   group: epistemic-universe
+  profile: null
 - name: pbelnap
   path: epistemic-universe/pbelnap
   remote: git@github.com:AITechCraft/pbelnap.git
   branch: main
   group: epistemic-universe
+  profile: null
 - name: bilattice-relabeler
   path: epistemic-universe/bilattice-relabeler
   remote: git@github.com:AITechCraft/bilattice-relabeler.git
   branch: main
   group: epistemic-universe
+  profile: null
 - name: infer
   path: reasoning-universe/infer
   remote: git@github.com:zombocoder/infer.git
   branch: develop
   group: reasoning-universe
+  profile: null
 - name: pctl-rs
   path: reasoning-universe/pctl-rs
   remote: git@github.com:zombocoder/pctl-rs.git
   branch: develop
   group: reasoning-universe
+  profile: null
 - name: zz-notation
   path: reasoning-universe/zz-notation
   remote: git@github.com:zombocoder/zz-notation.git
   branch: develop
   group: reasoning-universe
+  profile: null
 - name: obstruct
   path: reasoning-universe/obstruct
   remote: git@github.com:zombocoder/obstruct.git
   branch: main
   group: reasoning-universe
+  profile: null
 - name: craftegy-algo
   path: reasoning-universe/craftegy-algo
   remote: git@github.com:svaiml/craftegy-algo.git
   branch: develop
   group: reasoning-universe
+  profile: null
 - name: fpf-cards
   path: reasoning-universe/fpf-cards
   remote: git@github.com:svaiml/fpf-cards.git
   branch: develop
   group: reasoning-universe
+  profile: null
 - name: aivm
   path: reasoning-universe/aivm
   remote: git@github.com:zombocoder/aivm.git
   branch: main
   group: reasoning-universe
+  profile: null
 - name: axiomvm
   path: reasoning-universe/axiomvm
   remote: git@github.com:zombocoder/axiomvm.git
   branch: main
   group: reasoning-universe
+  profile: null
 - name: rstmdb
   path: infra-eco/rstmdb
   remote: git@github.com:rstmdb/rstmdb.git
   branch: main
   group: infra-eco
+  profile: null
 - name: rstmdb-studio
   path: infra-eco/rstmdb-studio
   remote: git@github.com:rstmdb/rstmdb-studio.git
   branch: main
   group: infra-eco
+  profile: null
 - name: inferense
   path: infra-eco/inferense
   remote: git@github.com:zombocoder/inferense.git
   branch: main
   group: infra-eco
+  profile: null
 - name: invariantis
   path: infra-eco/invariantis
   remote: git@github.com:zombocoder/invariantis.git
   branch: develop
   group: infra-eco
+  profile: null
 - name: o2l
   path: infra-eco/o2l
   remote: git@github.com:sashml/o2l.git
   branch: develop
   group: infra-eco
+  profile: null
 - name: bfc
   path: infra-eco/bfc
   remote: git@github.com:zombocoder/bfc.git
   branch: main
   group: infra-eco
+  profile: null
 - name: ctop
   path: infra-eco/ctop
   remote: git@github.com:zombocoder/ctop.git
   branch: main
   group: infra-eco
+  profile: null
 - name: myria
   path: infra-eco/myria
   remote: git@github.com:zombocoder/myria.git
   branch: main
   group: infra-eco
+  profile: null
 - name: npd-cipher
   path: infra-eco/npd-cipher
   remote: git@github.com:zombocoder/npd-cipher.git
   branch: main
   group: infra-eco
+  profile: null
 - name: go-freebsd-pf
   path: infra-eco/go-freebsd-pf
   remote: git@github.com:zombocoder/go-freebsd-pf.git
   branch: main
   group: infra-eco
+  profile: null
 - name: craftegy-design
   path: prodx/craftegy-design
   remote: git@github.com:svaiml/craftegy-design.git
   branch: develop
   group: prodx
+  profile: null
 - name: codegraph-rust
   path: tools/ai-tools/codegraph-rust
   remote: git@github.com:sashml/codegraph-rust.git
   branch: main
   group: tools/ai-tools
+  profile: null
 - name: flowspec
   path: tools/orchestrator/flowspec
   remote: git@github.com:sashml/flowspec.git
   branch: develop
   group: tools/orchestrator
+  profile: null
 - name: gm
   path: tools/sysutils/gm
   remote: git@github.com:svaiml/gm.git
   branch: develop
   group: tools/sysutils
+  profile: null
 - name: ghdash
   path: tools/sysutils/ghdash
   remote: git@github.com:zombocoder/ghdash.git
   branch: main
   group: tools/sysutils
+  profile: null
 - name: zacta
   path: tools/sysutils/zacta
   remote: git@github.com:zombocoder/zacta.git
   branch: main
   group: tools/sysutils
+  profile: null
 - name: vaultura
   path: tools/sysutils/vaultura
   remote: git@github.com:zombocoder/vaultura.git
   branch: main
   group: tools/sysutils
+  profile: null
 - name: FPF
   path: tools/ai-tools/_external/FPF
   remote: https://github.com/ailev/FPF.git
   branch: main
   group: tools/ai-tools
+  profile: null
 - name: codebase-memory-mcp
   path: tools/ai-tools/_external/codebase-memory-mcp
   remote: https://github.com/DeusData/codebase-memory-mcp.git
   branch: main
   group: tools/ai-tools
+  profile: null
 - name: fpf-problem-solving-skill
   path: tools/ai-tools/_external/fpf-problem-solving-skill
   remote: https://github.com/CodeAlive-AI/fpf-problem-solving-skill.git
   branch: main
   group: tools/ai-tools
+  profile: null
 - name: grace-marketplace
   path: tools/ai-tools/_external/grace-marketplace
   remote: https://github.com/osovv/grace-marketplace.git
   branch: main
   group: tools/ai-tools
+  profile: null
 - name: grace-skills
   path: tools/ai-tools/_external/grace-skills
   remote: https://github.com/BalaBenna/grace-skills.git
   branch: main
   group: tools/ai-tools
+  profile: null
 - name: graphify
   path: tools/ai-tools/_external/graphify
   remote: https://github.com/safishamsi/graphify.git
   branch: v4
   group: tools/ai-tools
+  profile: null
 - name: haft
   path: tools/ai-tools/_external/haft
   remote: https://github.com/m0n0x41d/haft.git
   branch: main
   group: tools/ai-tools
+  profile: null
 - name: quint
   path: tools/ai-tools/_external/quint
   remote: https://github.com/informalsystems/quint.git
   branch: main
   group: tools/ai-tools
+  profile: null
 - name: AllBeads
   path: tools/orchestrator/_external/AllBeads
   remote: https://github.com/thrashr888/AllBeads.git
   branch: main
   group: tools/orchestrator
+  profile: null
 - name: beads_rust
   path: tools/orchestrator/_external/beads_rust
   remote: https://github.com/Dicklesworthstone/beads_rust.git
   branch: main
   group: tools/orchestrator
+  profile: null
 - name: beads_viewer_rust
   path: tools/orchestrator/_external/beads_viewer_rust
   remote: https://github.com/Dicklesworthstone/beads_viewer_rust.git
   branch: main
   group: tools/orchestrator
+  profile: null
 - name: AgentOS
   path: prodx/_external/AgentOS
   remote: https://github.com/ag2ai/ag2.git
@@ -288,16 +304,19 @@ repositories:
   remote: https://github.com/eclectix7/DesignOS.git
   branch: main
   group: prodx
+  profile: null
 - name: open-codesign
   path: prodx/_external/open-codesign
   remote: https://github.com/OpenCoworkAI/open-codesign.git
   branch: main
   group: prodx
+  profile: null
 - name: nanoGPT
   path: epistemic-universe/_external/nanoGPT
   remote: git@github.com:AITechCraft/nanoGPT.git
   branch: master
   group: epistemic-universe
+  profile: null
 - name: baml
   path: tools/optimization/_external/baml
   remote: https://github.com/BoundaryML/baml.git
@@ -345,21 +364,25 @@ repositories:
   remote: https://github.com/paperclipai/paperclip.git
   branch: master
   group: tools/orchestrator
+  profile: null
 - name: gsd-2
   path: tools/orchestrator/_external/gsd-2
   remote: https://github.com/gsd-build/gsd-2.git
   branch: main
   group: tools/orchestrator
+  profile: null
 - name: bfc-kernel
   path: kernel-forge/bfc
   remote: git@github.com:zombocoder/bfc.git
   branch: main
   group: kernel-forge
+  profile: null
 - name: bfcfs-linux
   path: kernel-forge/bfcfs-linux
   remote: git@github.com:zombocoder/bfcfs-linux.git
   branch: main
   group: kernel-forge
+  profile: null
 - name: contextflow-forge
   path: research/_external/contextflow-forge
   remote: https://github.com/Craftegy-NextGen/contextflow-forge.git
@@ -372,29 +395,67 @@ repositories:
   branch: develop
   group: research
   profile: full
+- name: open-design
+  path: prodx/_external/open-design
+  remote: git@github.com:nexu-io/open-design.git
+  branch: main
+  group: prodx
+  profile: null
 dependencies:
   reasoning-universe/zz-notation:
   - reasoning-universe/infer
-  reasoning-universe/fpf-cards:
-  - reasoning-universe/infer
-  epistemic-universe/criterium:
-  - reasoning-universe/infer
-  - reasoning-universe/zz-notation
-  - reasoning-universe/pctl-rs
-  infra-eco/inferense:
-  - reasoning-universe/infer
-  infra-eco/rstmdb-studio:
-  - infra-eco/rstmdb
   apps/reasoning-apps:
   - reasoning-universe/infer
   - infra-eco/rstmdb
   - reasoning-universe/pctl-rs
-  apps/code-catalyst:
+  epistemic-universe/criterium:
   - reasoning-universe/infer
-  - tools/ai-tools/codegraph-rust
+  - reasoning-universe/zz-notation
+  - reasoning-universe/pctl-rs
   apps/episteme-platform:
   - reasoning-universe/infer
   - reasoning-universe/zz-notation
   - epistemic-universe/criterium
   - reasoning-universe/pctl-rs
   - infra-eco/rstmdb
+  apps/code-catalyst:
+  - reasoning-universe/infer
+  - tools/ai-tools/codegraph-rust
+  infra-eco/inferense:
+  - reasoning-universe/infer
+  reasoning-universe/fpf-cards:
+  - reasoning-universe/infer
+  infra-eco/rstmdb-studio:
+  - infra-eco/rstmdb
+profiles:
+  dev:
+    include:
+    - '*'
+    exclude:
+    - prodx/_external/*
+    - tools/optimization/_external/*
+    - tools/science-libs/_external/*
+    - research/_external/*
+  ci:
+    include:
+    - reasoning-universe/*
+    - epistemic-universe/criterium
+    - infra-eco/rstmdb
+    - infra-eco/inferense
+    exclude: []
+  full:
+    include:
+    - '*'
+    exclude: []
+  research:
+    include:
+    - '*'
+    exclude:
+    - prodx/_external/*
+  minimal:
+    include:
+    - reasoning-universe/*
+    - epistemic-universe/*
+    - infra-eco/*
+    - apps/*
+    exclude: []
