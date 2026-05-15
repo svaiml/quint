@@ -2,12 +2,6 @@
   "mcpServers": {
     "_comment_required": "=== REQUIRED SERVERS (Core Functionality) ===",
 
-    "backlog": {
-      "command": "backlog",
-      "args": ["mcp", "start"],
-      "env": {},
-      "description": "Task management: create, update, search tasks with kanban board integration. Required for all /flow:* workflows."
-    },
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
@@ -68,7 +62,7 @@
   },
   "_configuration": {
     "categories": {
-      "required": ["backlog", "github", "serena"],
+      "required": ["github", "serena"],
       "recommended": ["playwright-test", "trivy", "semgrep"],
       "optional": ["shadcn-ui", "chrome-devtools"],
       "python_only": ["flowspec-security"]

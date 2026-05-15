@@ -392,7 +392,7 @@ repositories:
 - name: specmem
   path: research/_external/specmem
   remote: https://github.com/SuperagenticAI/specmem.git
-  branch: develop
+  branch: main
   group: research
   profile: full
 - name: open-design

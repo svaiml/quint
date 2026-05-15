@@ -1,6 +1,7 @@
 [versions]
-flowspec = "0.7.3"
-beads = "br 0.1.45"
+flowspec = "0.8.0"
+beads = "br 0.2.5"
 
 [metadata]
-installed_at = "2026-04-21T02:10:53.708844+00:00"
+installed_at = "2026-05-14T21:55:47.965644+00:00"
+upgraded_at = "2026-05-14T21:33:56.391413+00:00"
