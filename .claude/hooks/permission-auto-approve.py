@@ -6,12 +6,12 @@ to reduce friction for common documentation and task management operations.
 
 Approved Directories:
 - docs/           - Documentation files
-- backlog/        - Task management files
+- .beads/         - Beads issue tracker data
 - templates/      - Template files
 - .flowspec/       - Flowspec configuration
 
 Also approves:
-- Bash commands using the 'backlog' CLI tool
+- Bash commands using the 'br' (beads-rust) CLI tool
 
 All other operations require normal approval flow.
 
@@ -31,7 +31,7 @@ from logging_helper import setup_hook_logging
 # Directories where Read is always safe
 SAFE_READ_DIRECTORIES = [
     "docs/",
-    "backlog/",
+    ".beads/",
     "templates/",
     ".flowspec/",
     ".github/prompts/",  # GitHub prompts for slash commands
@@ -40,8 +40,8 @@ SAFE_READ_DIRECTORIES = [
 
 # Bash command patterns that are safe to auto-approve
 SAFE_BASH_PATTERNS = [
-    r"^backlog\s+(task\s+)?(list|show|view|search|get)\b",  # Read-only backlog commands
-    r"^backlog\s+task\s+\d+\s+--plain\b",  # View task details (read-only)
+    r"^br\s+(list|show|search|ready|stats|blocked)\b",  # Read-only br commands
+    r"^br\s+show\s+\S+\b",  # View issue details (read-only)
     r"^specify\s+hooks\s+(list|audit|validate)",  # Read-only hooks commands
     r"^git\s+status",  # Git status is read-only
     r"^git\s+log\b",  # Git log is read-only
@@ -52,7 +52,7 @@ SAFE_BASH_PATTERNS = [
 
 def allow(reason: str = "") -> None:
     """Output allow decision and exit."""
-    result = {"decision": "allow"}
+    result = {"continue": True}
     if reason:
         result["reason"] = reason
     print(json.dumps(result))
@@ -61,7 +61,7 @@ def allow(reason: str = "") -> None:
 
 def pass_through(reason: str = "") -> None:
     """Let the default permission flow handle this."""
-    result = {"decision": "pass"}
+    result = {"continue": True}
     if reason:
         result["reason"] = reason
     print(json.dumps(result))
@@ -168,9 +168,7 @@ def main():
 
     except Exception as e:
         # Fail-open: on any error, pass through to normal flow
-        print(
-            json.dumps({"decision": "pass", "reason": f"Hook error (fail-open): {e}"})
-        )
+        print(json.dumps({"continue": True, "reason": f"Hook error (fail-open): {e}"}))
         sys.exit(0)
 
 

@@ -133,6 +133,6 @@ Always document expectations for:
 For every significant decision:
 
 1. Create an ADR in `docs/adr/`
-2. Link to related tasks in backlog
+2. Link to related beads issues
 3. Update architecture diagrams
 4. Communicate to stakeholders

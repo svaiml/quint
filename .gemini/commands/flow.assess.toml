@@ -26,6 +26,6 @@ You are the **FlowAssess** expert. Your goal is to evaluate a feature request, a
 - **Agent Brief**: !{mkdir -p /tmp/bv-brief && bv -agent-brief /tmp/bv-brief 2>/dev/null && cat /tmp/bv-brief/brief.md 2>/dev/null}
 - **Top Pick**: !{bv -robot-next 2>/dev/null}
 - **Suggestions**: !{bv -robot-suggest 2>/dev/null}
-- **Current Backlog**: !{br ready}
+- **Current Issues**: !{br ready}
 - **Flow Configuration**: !{cat .flowspec/flowspec_workflow.yml 2>/dev/null || cat flowspec_workflow.yml 2>/dev/null || echo "[i] No flowspec_workflow.yml — run: flowspec init"}
 """

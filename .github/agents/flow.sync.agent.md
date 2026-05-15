@@ -1,6 +1,6 @@
 ---
 name: FlowSync
-description: "Sync tasks between backlog.md and beads issue tracker."
+description: "Sync tasks in beads issue tracker."
 target: "chat"
 tools:
   - "Read"
@@ -9,11 +9,10 @@ tools:
   - "Grep"
   - "Glob"
   - "Bash"
-  - "mcp__backlog__*"
   - "Skill"
 
 ## Context
-Use this agent to synchronize state between the human-readable `backlog.md` and the high-performance `beads` (Rust) issue tracker.
+Use this agent to synchronize state in the `beads` (Rust) issue tracker.
 
 ## Execution
 Run the synchronization command:

@@ -3,7 +3,7 @@
 # SessionStart hook: Environment setup and context display
 #
 # This hook runs when starting or resuming a Claude Code session.
-# It verifies key dependencies and displays active backlog tasks.
+# It verifies key dependencies and displays active beads issues.
 #
 # Output: JSON with decision "allow" and contextual information
 # Exit code: Always 0 (fail-open principle - never block sessions)
@@ -64,69 +64,56 @@ else
     info+=("uv: ${uv_version_line:-installed}")
 fi
 
-# Check for backlog CLI
-if ! command -v backlog &> /dev/null; then
-    warnings+=("backlog CLI not installed - task management unavailable")
+# Check for br (beads-rust) CLI
+if ! command -v br &> /dev/null; then
+    warnings+=("br CLI not installed - issue tracking unavailable")
 else
-    # Get backlog version
-    backlog_version=$(backlog --version 2>/dev/null || echo "unknown")
-    info+=("backlog: $backlog_version")
+    # Get br version
+    br_version=$(br version 2>/dev/null || echo "unknown")
+    info+=("br: $br_version")
 
-    # Get active "In Progress" tasks
+    # Get active "in_progress" issues
     cd "$PROJECT_DIR" 2>/dev/null || true
-    tasks_output=$(run_with_timeout "$TIMEOUT" backlog task list --plain -s "In Progress" 2>/dev/null) || tasks_output=""
+    tasks_output=$(run_with_timeout "$TIMEOUT" br list -s in_progress 2>/dev/null) || tasks_output=""
 
     if [[ -n "$tasks_output" ]]; then
-        # Count actual task lines (skip header lines like "In Progress:")
-        # Task lines match pattern: [PRIORITY] task-XXX - Title or task-XXX - Title
-        task_count=$(echo "$tasks_output" | grep -cE '^\s*(\[.+\]\s+)?task-[0-9]+' 2>/dev/null || echo "0")
+        # Count actual task lines
+        # Task lines in br list usually match: br-XXX or bd-XXX
+        task_count=$(echo "$tasks_output" | grep -cE '^(br|bd)-[0-9a-f]+' 2>/dev/null || echo "0")
         # Ensure task_count is a valid number
         [[ "$task_count" =~ ^[0-9]+$ ]] || task_count=0
 
         if [[ "$task_count" -gt 0 ]]; then
-            info+=("Active tasks: $task_count in progress")
-            # Add task details and inject task memory
+            info+=("Active issues: $task_count in progress")
+            # Add issue details
             while IFS= read -r task_line; do
-                # Skip header lines (e.g., "In Progress:")
-                [[ "$task_line" =~ :$ ]] && continue
                 [[ -z "$task_line" ]] && continue
 
-                # Extract task ID and title from plain output
-                # Format: "  [HIGH] task-579 - Title" or "  task-579 - Title"
-                # Remove leading whitespace and optional priority prefix
-                cleaned_line=$(echo "$task_line" | sed 's/^[[:space:]]*//' | sed 's/^\[[^]]*\][[:space:]]*//')
-
-                # Match "task-XXX - Title"
-                if [[ "$cleaned_line" =~ ^(task-[0-9]+)[[:space:]]*-[[:space:]]*(.+)$ ]]; then
+                # Match "br-XXX  Title"
+                if [[ "$task_line" =~ ^((br|bd)-[0-9a-f]+)[[:space:]]+(.+)$ ]]; then
                     task_id="${BASH_REMATCH[1]}"
-                    task_title="${BASH_REMATCH[2]}"
+                    task_title="${BASH_REMATCH[3]}"
                     info+=("  - $task_id: $task_title")
-
-                    # Check if task memory exists
-                    memory_file="$PROJECT_DIR/backlog/memory/$task_id.md"
-                    if [[ -f "$memory_file" ]]; then
-                        info+=("    ✓ Task memory available: $memory_file")
-                    fi
                 fi
             done <<< "$tasks_output"
         else
-            info+=("No active tasks")
+            info+=("No active issues")
         fi
     else
-        # Empty output or error - check if backlog.md exists
-        if [[ -f "$PROJECT_DIR/backlog/backlog.md" ]]; then
-            info+=("No tasks in 'In Progress' status")
+        # Empty output or error - check if .beads exists
+        if [[ -d "$PROJECT_DIR/.beads" ]]; then
+            info+=("No issues in 'in_progress' status")
         else
-            warnings+=("backlog.md not found in project - task tracking not initialized")
+            warnings+=(".beads directory not found in project - beads tracking not initialized")
         fi
     fi
 
-    # Inject first active task memory into CLAUDE.md (if any exist)
-    # This makes task context available automatically via @import
+    # Inject first active issue memory into CLAUDE.md (if any exist)
+    # This makes issue context available automatically via @import
     # Uses token-aware truncation (max 2000 tokens)
     if [[ "$task_count" -gt 0 ]] && [[ -n "$tasks_output" ]]; then
-        # Extract first task ID from output (skip header lines, find first task-XXX)
-        first_task_id=$(echo "$tasks_output" | grep -oE 'task-[0-9]+' | head -n1 || echo "")
+        # Extract first issue ID from output (skip header lines, find first br-XXX or bd-XXX)
+        first_task_id=$(echo "$tasks_output" | grep -oE '(br|bd)-[0-9a-f]+' | head -n1 || echo "")
         if [[ -n "$first_task_id" ]] && command -v python3 &> /dev/null; then
             # Use Python to inject task memory via ContextInjector with truncation
             # Wrapped in subshell with || true for fail-open

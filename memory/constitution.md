@@ -1,4 +1,4 @@
-# zombo-sash-eco Constitution
+# ZomboCraftEco Constitution
 <!-- TIER: Medium - Standard controls for typical business projects -->
 <!-- NEEDS_VALIDATION: Project name -->
 
@@ -92,6 +92,6 @@ A task is complete when:
 This constitution guides team practices. Changes require team consensus.
 
 **Version**: 1.0.0
-**Ratified**: 2026-04-21
-**Last Amended**: 2026-04-21
+**Ratified**: 2026-05-14
+**Last Amended**: 2026-05-14
 <!-- NEEDS_VALIDATION: Version and dates -->

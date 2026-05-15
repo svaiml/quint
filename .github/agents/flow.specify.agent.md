@@ -9,7 +9,6 @@ tools:
   - "Grep"
   - "Glob"
   - "Bash"
-  - "mcp__backlog__*"
   - "mcp__serena__*"
   - "Skill"
 
@@ -41,27 +40,27 @@ This command creates feature specifications following SVPG product management pr
 2. Have a clear feature description or user problem to solve
 
 **Workflow:**
-1. Discover existing backlog tasks related to this feature
+1. Discover existing br issues related to this feature
 2. Create a comprehensive PRD with:
    - Executive summary and problem statement
    - User stories with acceptance criteria
    - DVF+V risk assessment (Value, Usability, Feasibility, Viability)
    - Functional and non-functional requirements
-   - Task breakdown using backlog CLI
-3. Create implementation tasks in the backlog
+   - Task breakdown using br CLI
+3. Create implementation tasks in br
 
 **Key Commands:**
 ```bash
 # Search for existing tasks
-backlog search "$ARGUMENTS" --plain
+br list --plain
 
-# Create implementation tasks
-backlog task create "Implement [Feature]"   -d "Description"   --ac "Acceptance criterion 1"   --ac "Acceptance criterion 2"   -l implement,backend   --priority high
+# Create implementation issues
+br create "Implement [Feature]"   --description "Description"   --ac "Acceptance criterion 1"   --ac "Acceptance criterion 2"   --label implement,backend   --priority 1
 ```
 
 **Output:**
 - PRD document in `docs/prd/`
-- Implementation tasks in backlog with acceptance criteria
+- Implementation tasks in br with acceptance criteria
 - Workflow state updated to `Specified`
 
 After completion, suggest running `/flow:plan` to create technical design.

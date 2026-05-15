@@ -243,7 +243,7 @@ ELSE:
 **Key Findings:**
 - [N] Critical vulnerabilities requiring immediate attention
 - [N] High severity issues to address within 30 days
-- [N] Medium/Low issues for backlog
+- [N] Medium/Low issues for beads (deferred priority)
 
 **Business Impact:**
 [Brief description of what these vulnerabilities mean for the business]
@@ -443,7 +443,7 @@ ELSE:
 - `docs/security/audit-report.md` - Primary report
 - `docs/security/audit-report.html` - HTML export
 - `docs/security/audit-report.pdf` - PDF export
-- `docs/security/remediation-tasks.json` - Backlog task data
+- `docs/security/remediation-tasks.json` - Beads issue data
 
 ## Best Practices
 

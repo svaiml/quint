@@ -78,9 +78,6 @@ bv -robot-suggest 2>/dev/null
 # Beads-rust status
 br ready
 br stats 2>/dev/null
-
-# Backlog (fallback)
-backlog task list -s "To Do" --plain 2>/dev/null | head -10
 ```
 
 > **[bv]** Use `bv -robot-suggest` to detect potential duplicates before creating new assessment tasks.
@@ -399,6 +396,6 @@ flowspec hooks emit workflow.assessed \
   -f docs/assess/$FEATURE_ID-assessment.md
 ```
 
-Replace `$FEATURE_ID` with the feature being assessed and `$TASK_ID` with the backlog task ID if available.
+Replace `$FEATURE_ID` with the feature being assessed and `$TASK_ID` with the beads issue ID if available.
 
 This triggers any configured hooks in `.flowspec/hooks/hooks.yaml` (e.g., notifications, workflow tracking).

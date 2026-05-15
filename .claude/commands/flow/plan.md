@@ -49,7 +49,7 @@ This command creates comprehensive architectural and platform planning using two
 **For /flow:plan**: Required input states are `workflow:Specified` OR `workflow:Researched`. Output state will be `workflow:Planned`.
 
 > **[!] Two separate systems — never mix:**
-> - `workflow:*` labels → **backlog only**: `backlog task edit <id> -l workflow:Planned`
+> - `workflow:*` labels → use `br update <id> --label workflow:Planned`
 > - `br` statuses → **beads-rust only**: `br update <id> --status=in_progress` (valid: `open`, `in_progress`, `blocked`, `deferred`, `closed`)
 > - **NEVER** `br update <id> --status=planned` — that is NOT a valid br status.
 
@@ -97,9 +97,9 @@ Store these contents as `$ASSESS_CONTENT`, `$PRD_CONTENT` for use in agent promp
 > - Integration complexity and dependency management
 > - Alternative approaches and their consequences
 
-### Step 1: Backlog Task Discovery
+### Step 1: Beads Issue Discovery
 
-Before launching the planning agents, discover existing backlog tasks related to the feature being planned:
+Before launching the planning agents, discover existing beads issues related to the feature being planned:
 
 ```bash
 # Session-start: bv agent brief for project intelligence
@@ -119,15 +119,15 @@ bv -robot-label-attention 2>/dev/null
 bv -robot-label-health 2>/dev/null
 
 # Search for tasks related to the current feature
-backlog search "$FEATURE_SLUG" --plain
+br list  # search "$FEATURE_SLUG" --plain
 
-# List all open tasks ready to work (beads-rust preferred, backlog as fallback)
+# List all open tasks ready to work (beads-rust preferred, beads-rust)
 br ready
-backlog task list -s "To Do" --plain
+br list --status open
 
 # List tasks currently in progress
 br list --status=in_progress
-backlog task list -s "In Progress" --plain
+br list --status in_progress
 ```
 
 Review the discovered tasks to understand:
@@ -198,13 +198,13 @@ Context from loaded documents (Step 0):
 - bv execution plan: [paste bv -robot-plan output from Step 1]
 - bv insights: [paste bv -robot-insights output from Step 1]
 - Existing ADRs: [list from docs/adr/]
-- Discovered backlog tasks: [from Step 1 discovery]
+- Discovered beads issues: [from Step 1 discovery]
 
 **IMPORTANT**: Your ADRs MUST be saved to `docs/adr/ADR-NNN-<decision-slug>.md` using sequential numbering. Check existing ADRs first to determine the next number.
 
-## Backlog Task Management Requirements
+## Beads Issue Management Requirements
 
-As you work through the architecture planning, you MUST create tasks in the backlog to track your deliverables:
+As you work through the architecture planning, you MUST create issues in beads to track your deliverables:
 
 **Architecture Tasks to Create:**
 1. **Architecture Decision Records (ADRs)** - One task per major decision
@@ -371,13 +371,13 @@ Context from loaded documents (Step 0):
 - bv execution plan: [paste bv -robot-plan output]
 - bv capacity: [paste bv -robot-capacity output if available]
 - Architect decisions: [paste key technology choices from Architect agent output — WAIT for architect to complete first if running sequentially]
-- Discovered backlog tasks: [from Step 1 discovery]
+- Discovered beads issues: [from Step 1 discovery]
 
 **IMPORTANT**: Platform design document MUST be saved to `docs/platform/$FEATURE_SLUG-platform.md`.
 
-## Backlog Task Management Requirements
+## Beads Issue Management Requirements
 
-As you work through the platform planning, you MUST create tasks in the backlog to track your deliverables:
+As you work through the platform planning, you MUST create issues in beads to track your deliverables:
 
 **Infrastructure Tasks to Create:**
 1. **CI/CD Pipeline Setup** - Tasks for pipeline stages
@@ -518,7 +518,7 @@ Each ADR must contain:
    echo "Plan quality gate: $? (0=passed, 1=failed)"
 
    # Update workflow state label to "Planned"
-   backlog task edit "$CURRENT_TASK" -l workflow:Planned
+   br update "$CURRENT_TASK" --label workflow:Planned
 
    echo "[Y] Workflow state updated to: Planned"
    echo "  Next step: /flow:implement"
@@ -536,6 +536,6 @@ flowspec hooks emit plan.created \
   -f docs/platform/$FEATURE_ID-platform.md
 ```
 
-Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the backlog task ID if available.
+Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the beads issue ID if available.
 
 This triggers any configured hooks in `.flowspec/hooks/hooks.yaml` (e.g., notifications, quality gates).

@@ -22,7 +22,7 @@ $ARGUMENTS
 **For /flow:validate**: Required input state is `workflow:In Implementation`. Output state will be `workflow:Validated`.
 
 > **[!] Two separate systems — never mix:**
-> - `workflow:*` labels → **backlog only**: `backlog task edit <id> -l workflow:Validated`
+> - `workflow:*` labels → use `br update <id> --label workflow:Validated`
 > - `br` statuses → **beads-rust only**: `br close <id>` or `br update <id> --status=closed` (valid: `open`, `in_progress`, `blocked`, `deferred`, `closed`)
 > - **NEVER** `br update <id> --status=validated` — that is NOT a valid br status.
 
@@ -88,9 +88,9 @@ TASK_ID="$ARGUMENTS"
 
 # Otherwise, discover in-progress task
 if [ -z "$TASK_ID" ]; then
-  # Find tasks in "In Progress" status (beads-rust preferred, backlog as fallback)
+  # Find tasks in "In Progress" status (beads-rust preferred, beads-rust)
   br list --status=in_progress
-  backlog task list -s "In Progress" --plain
+  br list --status in_progress
 fi
 ```
 
@@ -109,7 +109,7 @@ fi
 
 ```bash
 # Load complete task data
-backlog task <task-id> --plain
+br show <task-id>
 ```
 
 **Parse critical fields**:
@@ -595,11 +595,11 @@ Store this information for Phase 6 PR generation.
 
 **IMPORTANT**: Launch QA and Security agents in parallel for efficiency using the Task tool.
 
-#### Backlog Instructions Template
+#### Beads Instructions Template
 
-Each validator agent context below includes `{{BACKLOG_INSTRUCTIONS}}` which must be replaced with the content from `.claude/partials/flow/_backlog-instructions.md`. This ensures all agents have consistent backlog task management instructions.
+Each validator agent context below includes `{{BEADS_INSTRUCTIONS}}` which must be replaced with the content from `.claude/partials/flow/_beads-instructions.md`. This ensures all agents have consistent beads issue management instructions.
 
-**When executing this command, include the full content of `_backlog-instructions.md` in place of each `{{BACKLOG_INSTRUCTIONS}}` marker.**
+**When executing this command, include the full content of `_beads-instructions.md` in place of each `{{BEADS_INSTRUCTIONS}}` marker.**
 
 #### Agent 1: Quality Guardian (QA Testing)
 
@@ -625,7 +625,7 @@ You are the Quality Guardian, a vigilant protector of system integrity, user tru
 
 ## Risk Dimensions
 
-{{BACKLOG_INSTRUCTIONS}}
+{{BEADS_INSTRUCTIONS}}
 - Technical: Scalability, performance, reliability, concurrency
 - Security: Vulnerabilities, attack surfaces, data exposure
 - Business: Cost overruns, market timing, operational complexity
@@ -637,15 +637,15 @@ You are the Quality Guardian, a vigilant protector of system integrity, user tru
 Code and Artifacts:
 
 
-Backlog Context:
-[Include backlog task details from discovery phase if applicable]
+Beads Context:
+[Include beads issue details from discovery phase if applicable]
 
 Validation Requirements:
 
 1. **Functional Testing & Acceptance Criteria Validation**
-   - **Verify all backlog task acceptance criteria are met**
+   - **Verify all beads issue acceptance criteria are met**
    - Cross-reference test results with AC requirements
-   - **Mark ACs complete via backlog CLI as validation succeeds**
+   - **Mark ACs complete via br CLI as validation succeeds**
    - Test user workflows end-to-end
    - Validate edge cases and boundary conditions
    - Test error handling and recovery
@@ -728,22 +728,22 @@ You are a Secure-by-Design Engineer, an experienced security specialist focused 
 - **Medium**: Information disclosure, DoS, weak crypto
 - **Low**: Config issues, missing headers
 
-{{BACKLOG_INSTRUCTIONS}}
+{{BEADS_INSTRUCTIONS}}
 
 # TASK: Conduct comprehensive security assessment for: [USER INPUT FEATURE]
 
 Code and Infrastructure:
 [Include implementation code, infrastructure configs, dependencies]
 
-Backlog Context:
-[Include backlog task details with security-related acceptance criteria]
+Beads Context:
+[Include beads issue details with security-related acceptance criteria]
 
 Security Validation Requirements:
 
-0. **Backlog Task Security Validation**
+0. **Beads Issue Security Validation**
    - Validate security-related acceptance criteria
    - Cross-reference security tests with task ACs
-   - Mark security ACs complete via backlog CLI as validations pass
+   - Mark security ACs complete via br CLI as validations pass
    - Update task notes with security findings
 
 1. **Code Security Review**
@@ -827,19 +827,19 @@ You are a Senior Technical Writer with deep expertise in creating clear, accurat
 - Searchable and navigable
 - Accessible (alt text, headings, etc.)
 
-{{BACKLOG_INSTRUCTIONS}}
+{{BEADS_INSTRUCTIONS}}
 
 # TASK: Create comprehensive documentation for: [USER INPUT FEATURE]
 
 Context:
 [Include feature description, implementation details, API specs, test results, security findings]
 
-Backlog Context:
-[Include backlog task details for documentation requirements]
+Beads Context:
+[Include beads issue details for documentation requirements]
 
 ## Documentation Task Management
 
-Create backlog tasks for major documentation work:
+Create beads issues for major documentation work:
 
 ```bash
 # Create documentation task using WHAT-WHY-HOW style
@@ -863,7 +863,7 @@ br update "$TASK_ID" --acceptance-criteria $'- [ ] All endpoints documented with
 
 As you complete documentation sections, mark corresponding ACs:
 ```bash
-backlog task edit <id> --check-ac 1  # API documentation complete
+br update <id> --notes "Completed AC 1"  # API documentation complete
 ```
 
 Documentation Deliverables:
@@ -929,7 +929,7 @@ This phase systematically verifies all task acceptance criteria are met.
 
 ```bash
 # Reload task to get latest AC status
-backlog task <task-id> --plain
+br show <task-id>
 ```
 
 #### Step 2: Parse Acceptance Criteria
@@ -951,13 +951,13 @@ For each unchecked acceptance criterion:
 
 **Automated ACs** (can be verified by test results):
 - Check if corresponding tests passed in Phase 1
-- If tests passed, mark AC complete: `backlog task edit <task-id> --check-ac N`
+- If tests passed, mark AC complete: `beads issue edit <task-id> --check-ac N`
 
 **Manual ACs** (require human verification):
 - Present AC to user
 - Show relevant evidence (test output, code changes, agent reports)
 - Ask user: "Has this acceptance criterion been met? [y/N]"
-- If yes, mark complete: `backlog task edit <task-id> --check-ac N`
+- If yes, mark complete: `beads issue edit <task-id> --check-ac N`
 - If no, halt and report which AC failed
 
 #### Step 4: Verify 100% Completion
@@ -965,7 +965,7 @@ For each unchecked acceptance criterion:
 After verification loop:
 ```bash
 # Reload task to confirm all ACs checked
-backlog task <task-id> --plain
+br show <task-id>
 ```
 
 **Success criteria**: All ACs must have `"checked": true`
@@ -1037,7 +1037,7 @@ Commands executed:
 #### Step 2: Add Implementation Notes
 
 ```bash
-backlog task edit <task-id> --notes $'<implementation-summary>'
+br update <task-id> --notes $'<implementation-summary>'
 ```
 
 #### Step 3: Mark Task as Done
@@ -1046,11 +1046,11 @@ backlog task edit <task-id> --notes $'<implementation-summary>'
 
 ```bash
 # Check current status first
-backlog task <task-id> --plain
+br show <task-id>
 
 # If status is "In Progress", mark Done
 if [ "$status" == "In Progress" ]; then
-  backlog task edit <task-id> -s Done
+  br close <task-id>
 fi
 ```
 
@@ -1718,7 +1718,7 @@ If a phase fails, fix the issue and re-run the command. The workflow will resume
 **See Also**:
 - `/flow:implement` - Implementation workflow
 - `/flow:plan` - Planning workflow
-- `backlog task` - Task management commands
+- `beads issue` - Task management commands
 
 ## Post-Completion: Emit Workflow Event
 
@@ -1732,7 +1732,7 @@ flowspec hooks emit validate.completed \
   -f docs/security/$FEATURE_ID-security-report.md
 ```
 
-Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the backlog task ID if available.
+Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the beads issue ID if available.
 
 This triggers any configured hooks in `.flowspec/hooks/hooks.yaml` (e.g., notifications, deployment triggers).
 

@@ -10,7 +10,6 @@ tools:
   - "Glob"
   - "Bash"
   - "mcp__github__*"
-  - "mcp__backlog__*"
   - "mcp__serena__*"
   - "Skill"
 ---

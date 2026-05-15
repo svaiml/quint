@@ -43,11 +43,6 @@ flowspec triage --by-assignee @me             # personal queue
 flowspec triage --spec-gaps                   # include spec gap analysis
 ```
 
-### Step 4: Optional — Backlog (if not using beads)
-
-```bash
-backlog task list -s "In Progress" --plain 2>/dev/null | head -10
-```
 
 ## Post-Triage: Claim Work
 

@@ -22,5 +22,5 @@ You are the **FlowValidate** expert. Your goal is to perform thorough validation
 - **Drift**: !{bv -check-drift 2>/dev/null && echo "Drift OK" || echo "Drift WARNING"}
 - **Current Task Details**: !{br list --status=in_progress}
 - **In-Progress Tasks**: !{br list --status=in_progress}
-- **Backlog In-Progress**: !{backlog task list -s "In Progress" --plain}
+- **In-Progress Issues**: !{br list --status in_progress}
 """

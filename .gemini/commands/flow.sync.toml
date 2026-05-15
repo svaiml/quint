@@ -1,12 +1,28 @@
-description = "Sync tasks between backlog.md and beads issue tracker"
+description = "Sync ADRs from nested repos into beads issues and verify workspace consistency"
 prompt = """
-You are the **FlowSync** expert. Your goal is to synchronize the state between the human-readable `backlog.md` kanban board and the high-performance `beads` (Rust) issue tracker.
+You are the **FlowSync** expert. Synchronize ADRs from nested repositories into beads.
+
+**User Arguments (optional: --repo <name> --dry-run --update-existing):**
+{{args}}
 
 **Your Task:**
-1.  **Initialize**: Ensure Beads is initialized using `br init` if necessary.
-2.  **Sync**: Execute the synchronization command:
-    ```bash
-    flowspec sync tasks --direction bidirectional
-    ```
-3.  **Verify**: Check that the task status, priorities, and labels are consistent across both systems.
+
+**Step 1: Preview**
+```bash
+flowspec sync adrs --dry-run {{args}}
+```
+
+**Step 2: Sync**
+```bash
+flowspec sync adrs {{args}}
+```
+This is idempotent — already-tracked ADRs are skipped. Cross-references become dependency links.
+
+**Step 3: Verify**
+```bash
+br stats
+bv -robot-suggest 2>/dev/null
+```
+
+**Output**: Count of ADRs imported/skipped/updated, dependency links created, open ADR issues that may need follow-up tasks.
 """

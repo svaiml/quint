@@ -36,7 +36,7 @@ See `templates/prd-template.md` for the standard PRD format.
 
 1. Run `/flow:specify` after assessment is complete
 2. PRD is generated in this directory
-3. Backlog tasks are created from user stories
+3. Beads issues are created from user stories
 4. Proceed to research or planning phase
 
 ## Validation

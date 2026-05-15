@@ -16,12 +16,12 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Execution Instructions
 
-This command implements features using specialized engineering agents with integrated code review. **Engineers work exclusively from backlog tasks.**
+This command implements features using specialized engineering agents with integrated code review. **Engineers work exclusively from beads issues.**
 
 **For /flow:implement**: Required input state is `workflow:Planned`. Output state will be `workflow:In Implementation`.
 
 > **[!] Two separate systems — never mix:**
-> - `workflow:*` labels → **backlog only**: `backlog task edit <id> -l workflow:In Implementation`
+> - `workflow:*` labels → use `br update <id> --label workflow:In Implementation`
 > - `br` statuses → **beads-rust only**: `br update <id> --status=in_progress` (valid: `open`, `in_progress`, `blocked`, `deferred`, `closed`)
 > - **NEVER** `br update <id> --status=planned` or `--status=in-implementation` — those are NOT valid br statuses.
 
@@ -31,9 +31,9 @@ If the task doesn't have the required workflow state, inform the user:
 
 **Proceed to Step 1 ONLY if workflow validation passes.**
 
-### Step 1: Discover Backlog Tasks
+### Step 1: Discover Beads Issues
 
-**[!] CRITICAL: This command REQUIRES existing backlog tasks to work on.**
+**[!] CRITICAL: This command REQUIRES existing beads issues to work on.**
 
 Discover tasks for implementation:
 
@@ -54,7 +54,7 @@ bv -robot-forecast <TASK_ID> 2>/dev/null
 # bv -robot-impact "src/module/file.py,src/other.py" 2>/dev/null
 
 # Search for implementation tasks related to this feature
-backlog search "$ARGUMENTS" --plain
+br list
 
 # List available tasks to work on
 br list --status=open
@@ -66,9 +66,9 @@ br list --status=in_progress
 **If no relevant tasks are found:**
 
 ```
-[!] No backlog tasks found for: [FEATURE NAME]
+[!] No beads issues found for: [FEATURE NAME]
 
-This command requires existing backlog tasks with defined acceptance criteria.
+This command requires existing beads issues with defined acceptance criteria.
 Please run /flow:specify first to create implementation tasks, or create
 tasks manually using:
 
@@ -98,7 +98,7 @@ grep -rl "$ARGUMENTS" docs/specs/ 2>/dev/null || echo "No matching specs"
 ls -la docs/adr/ 2>/dev/null || echo "No ADRs found"
 grep -rl "$ARGUMENTS" docs/adr/ 2>/dev/null || echo "No matching ADRs"
 
-# Search backlog task descriptions for spec/ADR references
+# Search beads issue descriptions for spec/ADR references
 br list --status=open 2>/dev/null | grep -i "prd\|spec\|adr"
 ```
 
@@ -303,21 +303,21 @@ fi
 - **Dependency Isolation**: Different virtual environments per worktree
 - **Reduced Context Switching**: No git checkout overhead
 
-#### Validation: Backlog Task Linkage
+#### Validation: Beads Issue Linkage
 
 ```bash
-# Validate backlog task exists (EXEC-004)
+# Validate beads issue exists (EXEC-004)
 TASK_ID=$(echo "$BRANCH" | grep -Eo 'task-[0-9]+' || echo "")
 
 if [ -z "$TASK_ID" ]; then
   echo "[X] RIGOR VIOLATION (EXEC-004): No task ID in branch name"
-  echo "All implementation work must be linked to a backlog task"
+  echo "All implementation work must be linked to a beads issue"
   exit 1
 fi
 
-backlog task "$TASK_ID" --plain > /dev/null 2>&1
+br show "$TASK_ID" > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-  echo "[X] RIGOR VIOLATION (EXEC-004): Backlog task not found: $TASK_ID"
+  echo "[X] RIGOR VIOLATION (EXEC-004): Beads issue not found: $TASK_ID"
   echo ""
   echo "Fix: Create the task first using br:"
   echo "  br create --title='Feature description' --type=task --priority=2 -l 'backend' \\"
@@ -325,11 +325,11 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "[Y] Backlog task validation passed: $TASK_ID"
+echo "[Y] Beads issue validation passed: $TASK_ID"
 ```
 
 **Why this matters**:
-- **No Rogue Work**: All coding aligns with planned backlog
+- **No Rogue Work**: All coding aligns with planned beads issues
 - **Prioritization**: Work is tracked and prioritized
 - **Context Preservation**: Task contains acceptance criteria and context
 
@@ -362,9 +362,9 @@ if echo "$INPUT" | grep -Eq '^task-[0-9]+$'; then
   TASK_ID="$INPUT"
   echo "[Y] Using task ID: $TASK_ID"
 else
-  # Treat input as a feature description - try to resolve via backlog search
-  echo "[?] '$INPUT' is not a task ID. Searching backlog for matching tasks..."
-  RESOLVED_ID=$(backlog search "$INPUT" --plain 2>/dev/null | awk '/^task-[0-9]+/ {print $1; exit}')
+  # Treat input as a feature description - try to resolve via br list  # search
+  echo "[?] '$INPUT' is not a task ID. Searching beads for matching issues..."
+  RESOLVED_ID=$(br list  # search "$INPUT" --plain 2>/dev/null | awk '/^task-[0-9]+/ {print $1; exit}')
 
   if [ -n "$RESOLVED_ID" ]; then
     TASK_ID="$RESOLVED_ID"
@@ -528,16 +528,16 @@ You are a Senior Frontend Engineer with deep expertise in React, React Native, m
 Context:
 [If PRP loaded: The PRP document (docs/prp/${TASK_ID}.md) contains all context needed]
 [Include architecture, PRD, design specs, API contracts from PRP or discovered docs]
-[Include backlog task IDs discovered in Step 1]
+[Include beads issue IDs discovered in Step 1]
 
-## Backlog Task Management (REQUIRED)
+## Beads Issue Management (REQUIRED)
 
 **Your Agent Identity**: @frontend-engineer
 
 Before coding, you MUST:
-1. **Pick a task**: `backlog task <task-id> --plain` to review details
-2. **Assign yourself**: `backlog task edit <task-id> -s "In Progress" -a @frontend-engineer`
-3. **Add implementation plan**: `backlog task edit <task-id> --plan $'1. Step 1\n2. Step 2'`
+1. **Pick a task**: `br show <task-id>` to review details
+2. **Assign yourself**: `br update <task-id> --status in_progress --assignee frontend-engineer`
+3. **Add implementation plan**: `br update <task-id> --notes $'1. Step 1\n2. Step 2'`
 
 **Project Intelligence (bv)**:
 - Blocker check: `bv -robot-blocker-chain <id>` before starting
@@ -545,12 +545,12 @@ Before coding, you MUST:
 - Forecast: `bv -robot-forecast <id>` for ETA estimate
 
 During implementation:
-- **Check ACs as you complete them**: `backlog task edit <task-id> --check-ac 1`
-- **Check multiple ACs**: `backlog task edit <task-id> --check-ac 1 --check-ac 2`
+- **Check ACs as you complete them**: `br update <task-id> --notes "Completed AC 1"`
+- **Check multiple ACs**: `br update <task-id> --notes "Completed ACs 1 and 2"`
 
 After implementation:
-- **Add implementation notes**: `backlog task edit <task-id> --notes $'Implemented X with Y pattern\n\nKey changes:\n- File A modified\n- File B created'`
-- **Verify all ACs checked**: `backlog task <task-id> --plain` (all should show `[x]`)
+- **Add implementation notes**: `br update <task-id> --notes $'Implemented X with Y pattern\n\nKey changes:\n- File A modified\n- File B created'`
+- **Verify all ACs checked**: `br show <task-id>` (all should show `[x]`)
 
 Implementation Requirements:
 
@@ -697,16 +697,16 @@ Before completing ANY implementation, you MUST:
 Context:
 [If PRP loaded: The PRP document (docs/prp/${TASK_ID}.md) contains all context needed]
 [Include architecture, PRD, API specs, data models from PRP or discovered docs]
-[Include backlog task IDs discovered in Step 1]
+[Include beads issue IDs discovered in Step 1]
 
-## Backlog Task Management (REQUIRED)
+## Beads Issue Management (REQUIRED)
 
 **Your Agent Identity**: @backend-engineer
 
 Before coding, you MUST:
-1. **Pick a task**: `backlog task <task-id> --plain` to review details
-2. **Assign yourself**: `backlog task edit <task-id> -s "In Progress" -a @backend-engineer`
-3. **Add implementation plan**: `backlog task edit <task-id> --plan $'1. Step 1\n2. Step 2'`
+1. **Pick a task**: `br show <task-id>` to review details
+2. **Assign yourself**: `br update <task-id> --status in_progress --assignee backend-engineer`
+3. **Add implementation plan**: `br update <task-id> --notes $'1. Step 1\n2. Step 2'`
 
 **Project Intelligence (bv)**:
 - Blocker check: `bv -robot-blocker-chain <id>` before starting
@@ -714,12 +714,12 @@ Before coding, you MUST:
 - Forecast: `bv -robot-forecast <id>` for ETA estimate
 
 During implementation:
-- **Check ACs as you complete them**: `backlog task edit <task-id> --check-ac 1`
-- **Check multiple ACs**: `backlog task edit <task-id> --check-ac 1 --check-ac 2`
+- **Check ACs as you complete them**: `br update <task-id> --notes "Completed AC 1"`
+- **Check multiple ACs**: `br update <task-id> --notes "Completed ACs 1 and 2"`
 
 After implementation:
-- **Add implementation notes**: `backlog task edit <task-id> --notes $'Implemented X with Y pattern\n\nKey changes:\n- File A modified\n- File B created'`
-- **Verify all ACs checked**: `backlog task <task-id> --plain` (all should show `[x]`)
+- **Add implementation notes**: `br update <task-id> --notes $'Implemented X with Y pattern\n\nKey changes:\n- File A modified\n- File B created'`
+- **Verify all ACs checked**: `br show <task-id>` (all should show `[x]`)
 
 Implementation Requirements:
 
@@ -782,16 +782,16 @@ Implement AI/ML components for: [USER INPUT FEATURE]
 Context:
 [If PRP loaded: The PRP document (docs/prp/${TASK_ID}.md) contains all context needed]
 [Include model requirements, data sources, performance targets from PRP or discovered docs]
-[Include backlog task IDs discovered in Step 1]
+[Include beads issue IDs discovered in Step 1]
 
-## Backlog Task Management (REQUIRED)
+## Beads Issue Management (REQUIRED)
 
 **Your Agent Identity**: @ai-ml-engineer
 
 Before coding, you MUST:
-1. **Pick a task**: `backlog task <task-id> --plain` to review details
-2. **Assign yourself**: `backlog task edit <task-id> -s "In Progress" -a @ai-ml-engineer`
-3. **Add implementation plan**: `backlog task edit <task-id> --plan $'1. Step 1\n2. Step 2'`
+1. **Pick a task**: `br show <task-id>` to review details
+2. **Assign yourself**: `br update <task-id> --status in_progress --assignee ai-ml-engineer`
+3. **Add implementation plan**: `br update <task-id> --notes $'1. Step 1\n2. Step 2'`
 
 **Project Intelligence (bv)**:
 - Blocker check: `bv -robot-blocker-chain <id>` before starting
@@ -799,12 +799,12 @@ Before coding, you MUST:
 - Forecast: `bv -robot-forecast <id>` for ETA estimate
 
 During implementation:
-- **Check ACs as you complete them**: `backlog task edit <task-id> --check-ac 1`
-- **Check multiple ACs**: `backlog task edit <task-id> --check-ac 1 --check-ac 2`
+- **Check ACs as you complete them**: `br update <task-id> --notes "Completed AC 1"`
+- **Check multiple ACs**: `br update <task-id> --notes "Completed ACs 1 and 2"`
 
 After implementation:
-- **Add implementation notes**: `backlog task edit <task-id> --notes $'Implemented X with Y pattern\n\nKey changes:\n- File A modified\n- File B created'`
-- **Verify all ACs checked**: `backlog task <task-id> --plain` (all should show `[x]`)
+- **Add implementation notes**: `br update <task-id> --notes $'Implemented X with Y pattern\n\nKey changes:\n- File A modified\n- File B created'`
+- **Verify all ACs checked**: `br show <task-id>` (all should show `[x]`)
 
 Implementation Requirements:
 
@@ -861,15 +861,15 @@ You are a Principal Frontend Engineer conducting thorough code reviews for React
 Code to review:
 [PASTE FRONTEND CODE FROM PHASE 1]
 
-## Backlog AC Verification (REQUIRED)
+## Beads AC Verification (REQUIRED)
 
 **Your Agent Identity**: @frontend-code-reviewer
 
 Before approving code, you MUST:
-1. **Review task ACs**: `backlog task <task-id> --plain`
+1. **Review task ACs**: `br show <task-id>`
 2. **Verify AC completion matches code**: For each checked AC, confirm the code implements it
-3. **Uncheck ACs if not satisfied**: `backlog task edit <task-id> --uncheck-ac <N>`
-4. **Add review notes**: `backlog task edit <task-id> --append-notes $'Code Review:\n- Issue: ...\n- Suggestion: ...'`
+3. **Uncheck ACs if not satisfied**: `beads issue edit <task-id> --uncheck-ac <N>`
+4. **Add review notes**: `br update <task-id> --notes $'Code Review:\n- Issue: ...\n- Suggestion: ...'`
 
 **AC Verification Checklist**:
 - [ ] Each checked AC has corresponding code changes
@@ -944,15 +944,15 @@ You are a Principal Backend Engineer conducting thorough code reviews for Go, Ty
 Code to review:
 [PASTE BACKEND CODE FROM PHASE 1]
 
-## Backlog AC Verification (REQUIRED)
+## Beads AC Verification (REQUIRED)
 
 **Your Agent Identity**: @backend-code-reviewer
 
 Before approving code, you MUST:
-1. **Review task ACs**: `backlog task <task-id> --plain`
+1. **Review task ACs**: `br show <task-id>`
 2. **Verify AC completion matches code**: For each checked AC, confirm the code implements it
-3. **Uncheck ACs if not satisfied**: `backlog task edit <task-id> --uncheck-ac <N>`
-4. **Add review notes**: `backlog task edit <task-id> --append-notes $'Code Review:\n- Issue: ...\n- Suggestion: ...'`
+3. **Uncheck ACs if not satisfied**: `beads issue edit <task-id> --uncheck-ac <N>`
+4. **Add review notes**: `br update <task-id> --notes $'Code Review:\n- Issue: ...\n- Suggestion: ...'`
 
 **AC Verification Checklist**:
 - [ ] Each checked AC has corresponding code changes
@@ -1272,14 +1272,14 @@ TASK_ID=$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo
 
 if [ -n "$TASK_ID" ]; then
   echo "Verifying acceptance criteria..."
-  INCOMPLETE=$(backlog task "$TASK_ID" --plain 2>/dev/null | grep -c "^\[ \]" || echo 0)
+  INCOMPLETE=$(br show "$TASK_ID" 2>/dev/null | grep -c "^\[ \]" || echo 0)
 
   if [ "$INCOMPLETE" -gt 0 ]; then
     echo "[X] RIGOR VIOLATION (VALID-005): $INCOMPLETE incomplete acceptance criteria"
-    backlog task "$TASK_ID" --plain | grep "^\[ \]"
+    br show "$TASK_ID" | grep "^\[ \]"
     echo ""
     echo "Fix: Complete all ACs or document why they cannot be completed"
-    echo "  backlog task edit ${TASK_ID} --check-ac <N>"
+    echo "  br update ${TASK_ID} --notes "Completed AC""
     exit 1
   fi
 
@@ -1297,12 +1297,12 @@ TASK_ID=$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo
 if [ -n "$TASK_ID" ]; then
   echo "Verifying task status..."
   # Extract full status (handles multi-word statuses like "In Progress")
-  STATUS=$(backlog task "$TASK_ID" --plain 2>/dev/null | grep "Status:" | head -1 | sed 's/^Status:[[:space:]]*//')
+  STATUS=$(br show "$TASK_ID" 2>/dev/null | grep "Status:" | head -1 | sed 's/^Status:[[:space:]]*//')
 
   if [ "$STATUS" != "In Progress" ]; then
     echo "[!]  WARNING (VALID-006): Task status may be stale: $STATUS"
     echo "Update task status before PR:"
-    echo "  backlog task edit ${TASK_ID} -s 'In Progress'"
+    echo "  beads issue edit ${TASK_ID} -s 'In Progress'"
   else
     echo "[Y] Task status current"
   fi
@@ -1414,7 +1414,7 @@ flowspec hooks emit implement.completed \
   -f src/$FEATURE_ID/
 ```
 
-Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the backlog task ID if available.
+Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the beads issue ID if available.
 
 This triggers any configured hooks in `.flowspec/hooks/hooks.yaml` (e.g., running tests, quality gates, notifications).
 

@@ -135,7 +135,7 @@ TASK_ID=$(echo "$BRANCH" | grep -Eo 'task-[0-9]+' || echo "")
 
 if [ -n "$TASK_ID" ]; then
   echo "[#] Task: $TASK_ID"
-  backlog task "$TASK_ID" --plain 2>/dev/null | head -10
+  br show "$TASK_ID" 2>/dev/null | head -10
 else
   echo "[!] No task ID found in branch name"
 fi
@@ -231,13 +231,13 @@ if [ "$BRANCH_VALID" = "false" ]; then
   TASK_NUM=$(echo "$BRANCH" | grep -Eo 'task-?[0-9]+' | grep -Eo '[0-9]+' | head -1)
 
   if [ -z "$TASK_NUM" ]; then
-    # Try to get task ID from backlog (in-progress task)
-    TASK_NUM=$(backlog task list -s "In Progress" --plain 2>/dev/null | grep -Eo 'task-[0-9]+' | head -1 | grep -Eo '[0-9]+')
+    # Try to get task ID from beads (in-progress issue)
+    TASK_NUM=$(br list --status in_progress 2>/dev/null | grep -Eo 'task-[0-9]+' | head -1 | grep -Eo '[0-9]+')
   fi
 
   if [ -z "$TASK_NUM" ]; then
     echo "[X] Cannot determine task ID. Please specify:"
-    echo "   backlog task list --plain"
+    echo "   beads issue list --plain"
     echo ""
     echo "Then rename branch manually:"
     echo "   git checkout -b ${HOSTNAME_SHORT}/task-<ID>/your-slug"
@@ -373,7 +373,7 @@ if [ "$CREATE_NEW_PR" = "true" ]; then
 
   # Get task title for PR title
   if [ -n "$TASK_ID" ]; then
-    TASK_TITLE=$(backlog task "$TASK_ID" --plain 2>/dev/null | grep "^Title:" | sed 's/^Title:[[:space:]]*//')
+    TASK_TITLE=$(br show "$TASK_ID" 2>/dev/null | grep "^Title:" | sed 's/^Title:[[:space:]]*//')
   fi
 
   # Generate PR title (conventional commit format)

@@ -9,7 +9,6 @@ tools:
   - "Grep"
   - "Glob"
   - "Bash"
-  - "mcp__backlog__*"
   - "mcp__serena__*"
   - "Skill"
 
@@ -41,12 +40,12 @@ This command creates technical architecture and platform design following Gregor
 2. Have specification with clear requirements
 
 **Workflow:**
-1. Discover existing backlog tasks and PRD documents
+1. Discover existing br issues and PRD documents
 2. Launch parallel planning agents:
    - **System Architecture**: ADRs, component design, integration patterns
    - **Platform & Infrastructure**: CI/CD, DevSecOps, observability
 3. Create planning artifacts in `docs/adr/` and `docs/platform/`
-4. Update backlog with planning tasks
+4. Update br with planning tasks
 
 **Key Principles:**
 - Architecture as selling options (defer decisions until maximum information)

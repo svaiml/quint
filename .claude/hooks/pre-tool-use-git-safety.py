@@ -100,7 +100,7 @@ def main():
             print(
                 json.dumps(
                     {
-                        "decision": "allow",
+                        "continue": True,
                         "reason": f"Tool {tool_name} not subject to Git safety checks",
                     }
                 )
@@ -111,7 +111,7 @@ def main():
         command = tool_input.get("command", "")
 
         if not command:
-            print(json.dumps({"decision": "allow", "reason": "No command specified"}))
+            print(json.dumps({"continue": True, "reason": "No command specified"}))
             return 0
 
         # Check if command is dangerous
@@ -121,12 +121,12 @@ def main():
             logger.warning(f"Dangerous git command detected: {command[:100]}")
 
         if is_dangerous:
-            # For interactive rebase, deny instead of ask
+            # For interactive rebase, block instead of ask
             if "rebase -i" in command.lower():
                 print(
                     json.dumps(
                         {
-                            "decision": "deny",
+                            "continue": False,
                             "reason": "Interactive commands not supported",
                             "additionalContext": additional_context,
                         }
@@ -136,14 +136,14 @@ def main():
                 print(
                     json.dumps(
                         {
-                            "decision": "ask",
+                            "continue": False,
                             "reason": reason,
                             "additionalContext": additional_context,
                         }
                     )
                 )
         else:
-            print(json.dumps({"decision": "allow", "reason": "Git command is safe"}))
+            print(json.dumps({"continue": True, "reason": "Git command is safe"}))
 
         return 0
 
@@ -152,7 +152,7 @@ def main():
         print(
             json.dumps(
                 {
-                    "decision": "allow",
+                    "continue": True,
                     "reason": f"Hook error (defaulting to allow): {str(e)}",
                 }
             )

@@ -67,17 +67,17 @@ Every task MUST have a documented plan of action before work begins.
 # Check if task has an implementation plan
 TASK_ID="${TASK_ID:-$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo '')}"
 if [ -n "$TASK_ID" ]; then
-  backlog task "$TASK_ID" --plain 2>/dev/null | grep -q "Implementation Plan:"
+  br show "$TASK_ID" 2>/dev/null | grep -q "Implementation Plan:"
   if [ $? -ne 0 ]; then
     echo "[X] SETUP-001 VIOLATION: No implementation plan for $TASK_ID"
-    echo "Remediation: backlog task edit $TASK_ID --plan \$'1. Step 1\n2. Step 2'"
+    echo "Remediation: beads issue edit $TASK_ID --plan \$'1. Step 1\n2. Step 2'"
   fi
 fi
 ```
 
 **Remediation**:
 ```bash
-backlog task edit <task-id> --plan $'1. Step 1\n2. Step 2\n3. Step 3'
+br update <task-id> --notes $'1. Step 1\n2. Step 2\n3. Step 3'
 ```
 
 **Rationale**: Clear plans prevent scope creep, enable accurate time estimates, and provide onboarding context for new engineers joining mid-task.
@@ -97,7 +97,7 @@ Inter-task dependencies MUST be documented before implementation begins. Tasks c
 TASK_ID="${TASK_ID:-$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo '')}"
 if [ -n "$TASK_ID" ]; then
   # Check for depends-on labels or dependency notes
-  HAS_DEP_LABELS=$(backlog task "$TASK_ID" --plain 2>/dev/null | grep -qE "(depends-on|blocked-by|Dependencies:)" && echo "yes" || echo "no")
+  HAS_DEP_LABELS=$(br show "$TASK_ID" 2>/dev/null | grep -qE "(depends-on|blocked-by|Dependencies:)" && echo "yes" || echo "no")
   if [ "$HAS_DEP_LABELS" = "no" ]; then
     echo "INFO: SETUP-002: No dependencies documented (OK if task is independent)"
   fi
@@ -107,10 +107,10 @@ fi
 **Remediation**:
 ```bash
 # Add dependency label
-backlog task edit <task-id> -l "depends-on:task-123"
+beads issue edit <task-id> -l "depends-on:task-123"
 
 # Or document in description/notes
-backlog task edit <task-id> --append-notes "Dependencies: task-123 (API contract must be defined first)"
+br update <task-id> --notes "Dependencies: task-123 (API contract must be defined first)"
 ```
 
 **Rationale**: Prevents parallel work on dependent tasks, reduces integration conflicts, and ensures proper task ordering.
@@ -130,22 +130,22 @@ Every task MUST have at least one acceptance criterion that is:
 ```bash
 TASK_ID="${TASK_ID:-$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo '')}"
 if [ -n "$TASK_ID" ]; then
-  AC_COUNT=$(backlog task "$TASK_ID" --plain 2>/dev/null | grep -cE "^\[[ x]\]" || echo 0)
+  AC_COUNT=$(br show "$TASK_ID" 2>/dev/null | grep -cE "^\[[ x]\]" || echo 0)
   if [ "$AC_COUNT" -eq 0 ]; then
     echo "[X] SETUP-003 VIOLATION: No acceptance criteria for $TASK_ID"
-    echo "Remediation: backlog task edit $TASK_ID --ac 'Specific testable criterion'"
+    echo "Remediation: beads issue edit $TASK_ID --ac 'Specific testable criterion'"
   fi
 
   # Warn about vague terms (heuristic check)
-  backlog task "$TASK_ID" --plain 2>/dev/null | grep -iE "(improve|enhance|better|good|optimize|nice)" && \
+  br show "$TASK_ID" 2>/dev/null | grep -iE "(improve|enhance|better|good|optimize|nice)" && \
     echo "WARNING: Potentially vague AC terms detected - ensure criteria are measurable"
 fi
 ```
 
 **Remediation**:
 ```bash
-backlog task edit <task-id> --ac "API returns response in <200ms for 95th percentile"
-backlog task edit <task-id> --ac "Unit test coverage exceeds 80%"
+beads issue edit <task-id> --ac "API returns response in <200ms for 95th percentile"
+beads issue edit <task-id> --ac "Unit test coverage exceeds 80%"
 ```
 
 **Rationale**: Vague ACs lead to scope disputes, incomplete implementations, and "it works on my machine" situations.
@@ -163,7 +163,7 @@ Tasks SHOULD identify opportunities for parallel sub-agent work when applicable.
 # Check if task has parallel-work or multi-agent labels
 TASK_ID="${TASK_ID:-$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo '')}"
 if [ -n "$TASK_ID" ]; then
-  HAS_PARALLEL=$(backlog task "$TASK_ID" --plain 2>/dev/null | grep -qE "(parallel-work|frontend|backend)" && echo "yes" || echo "no")
+  HAS_PARALLEL=$(br show "$TASK_ID" 2>/dev/null | grep -qE "(parallel-work|frontend|backend)" && echo "yes" || echo "no")
   if [ "$HAS_PARALLEL" = "no" ]; then
     echo "INFO: SETUP-004: Consider if task can be parallelized (frontend/backend split)"
   fi
@@ -172,7 +172,7 @@ fi
 
 **Remediation**:
 ```bash
-backlog task edit <task-id> -l "parallel-work:frontend,backend"
+beads issue edit <task-id> -l "parallel-work:frontend,backend"
 ```
 
 **Rationale**: Parallel execution reduces critical path duration and improves throughput.
@@ -344,20 +344,20 @@ jq empty memory/decisions/task-100.jsonl
 
 ---
 
-### Rule: EXEC-004 - Backlog Task Linkage
+### Rule: EXEC-004 - Beads Issue Linkage
 **Severity**: BLOCKING
 **Enforcement**: strict
 
-Implementation work MUST be linked to backlog tasks. No "rogue" coding without a task.
+Implementation work MUST be linked to beads issues. No "rogue" coding without a task.
 
 **Validation**:
 ```bash
 TASK_ID=$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo "")
 if [ -n "$TASK_ID" ]; then
-  backlog task "$TASK_ID" --plain > /dev/null 2>&1
+  br show "$TASK_ID" > /dev/null 2>&1
   if [ $? -ne 0 ]; then
-    echo "[X] EXEC-004 VIOLATION: No backlog task found: $TASK_ID"
-    echo "Remediation: Create task first: backlog task create 'Task title' --ac 'Criterion'"
+    echo "[X] EXEC-004 VIOLATION: No beads issue found: $TASK_ID"
+    echo "Remediation: Create task first: br create 'Task title' --ac 'Criterion'"
   fi
 else
   echo "[X] EXEC-004 VIOLATION: Branch does not contain task ID"
@@ -368,14 +368,14 @@ fi
 **Remediation**:
 ```bash
 # Create task if missing
-backlog task create "Feature description" \
+br create "Feature description" \
   --ac "Criterion 1" \
   --ac "Criterion 2" \
   -l "backend" \
   --priority high
 ```
 
-**Rationale**: Prevents "rogue" work that doesn't align with planned backlog, ensures all work is tracked and prioritized.
+**Rationale**: Prevents "rogue" work that doesn't align with planned beads issues, ensures all work is tracked and prioritized.
 
 ---
 
@@ -389,7 +389,7 @@ Task memory SHOULD be updated after every major decision or implementation miles
 ```bash
 TASK_ID=$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo "")
 if [ -n "$TASK_ID" ]; then
-  MEMORY_FILE="backlog/memory/${TASK_ID}.md"
+  MEMORY_FILE=".beads/memory/${TASK_ID}.md"
   if [ -f "$MEMORY_FILE" ]; then
     # Check last modified time
     LAST_MODIFIED=$(stat -c %Y "$MEMORY_FILE" 2>/dev/null || stat -f %m "$MEMORY_FILE" 2>/dev/null || echo 0)
@@ -408,7 +408,7 @@ fi
 ```bash
 # Update or create task memory
 TASK_ID="task-541"
-cat >> "backlog/memory/${TASK_ID}.md" << 'EOF'
+cat >> ".beads/memory/${TASK_ID}.md" << 'EOF'
 
 ## Current State (Updated: $(date +%Y-%m-%d))
 
@@ -444,10 +444,10 @@ Agent MUST always know and track what comes next in the workflow. The current wo
 ```bash
 TASK_ID=$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo "")
 if [ -n "$TASK_ID" ]; then
-  HAS_WORKFLOW=$(backlog task "$TASK_ID" --plain 2>/dev/null | grep -q "workflow:" && echo "yes" || echo "no")
+  HAS_WORKFLOW=$(br show "$TASK_ID" 2>/dev/null | grep -q "workflow:" && echo "yes" || echo "no")
   if [ "$HAS_WORKFLOW" = "no" ]; then
     echo "[X] EXEC-006 VIOLATION: No workflow state label for $TASK_ID"
-    echo "Remediation: backlog task edit $TASK_ID -l 'workflow:In Implementation'"
+    echo "Remediation: beads issue edit $TASK_ID -l 'workflow:In Implementation'"
   fi
 fi
 ```
@@ -455,7 +455,7 @@ fi
 **Remediation**:
 ```bash
 # Add workflow state label
-backlog task edit <task-id> -l "workflow:In Implementation"
+beads issue edit <task-id> -l "workflow:In Implementation"
 ```
 
 **Workflow States**:
@@ -470,11 +470,11 @@ backlog task edit <task-id> -l "workflow:In Implementation"
 
 ---
 
-### Rule: EXEC-007 - Backlog Accuracy Required
+### Rule: EXEC-007 - Beads Accuracy Required
 **Severity**: BLOCKING
 **Enforcement**: strict
 
-Backlog.md is the **human-readable source of truth** for task status. Every PR MUST update backlog task status to reflect reality. Tasks MUST have both `workflow:Current` and `workflow-next:Next` labels.
+Beads is the **source of truth** for issue status. Every PR MUST update beads issue status to reflect reality. Tasks MUST have both `workflow:Current` and `workflow-next:Next` labels.
 
 **What MUST be accurate**:
 - Task status (To Do, In Progress, Done)
@@ -486,7 +486,7 @@ Backlog.md is the **human-readable source of truth** for task status. Every PR M
 ```bash
 TASK_ID=$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo "")
 if [ -n "$TASK_ID" ]; then
-  TASK_OUTPUT=$(backlog task "$TASK_ID" --plain 2>/dev/null)
+  TASK_OUTPUT=$(br show "$TASK_ID" 2>/dev/null)
 
   # Check workflow state exists
   HAS_CURRENT=$(echo "$TASK_OUTPUT" | grep -q "workflow:" && echo "yes" || echo "no")
@@ -504,13 +504,13 @@ fi
 **Remediation**:
 ```bash
 # Update task with current and next workflow states
-backlog task edit <task-id> \
+beads issue edit <task-id> \
   -l "workflow:In Implementation" \
   -l "workflow-next:Validated" \
   -s "In Progress"
 
 # After completing workflow step
-backlog task edit <task-id> \
+beads issue edit <task-id> \
   -l "workflow:Validated" \
   -l "workflow-next:Deployed"
 ```
@@ -520,7 +520,7 @@ backlog task edit <task-id> \
 Assessed → Specified → Planned → In Implementation → Validated → Deployed
 ```
 
-**Rationale**: Humans need accurate status at a glance. The backlog is the coordination point between humans and agents.
+**Rationale**: Humans need accurate status at a glance. Beads is the coordination point between humans and agents.
 
 ---
 
@@ -528,10 +528,10 @@ Assessed → Specified → Planned → In Implementation → Validated → Deplo
 **Severity**: BLOCKING
 **Enforcement**: strict
 
-Beads (`.beads/issues.jsonl`) is the **agent task tracking system**. It MUST be kept in sync with backlog.md for agent micro-tasks and context preservation.
+Beads (`.beads/issues.jsonl`) is the **agent task tracking system**. It MUST be kept in sync with beads-rust for agent micro-tasks and context preservation.
 
-**When to use Beads vs Backlog**:
-- **Backlog.md**: Human-facing tasks, workflow state, acceptance criteria
+**When to use Beads**:
+- **Beads**: All issues, workflow state, acceptance criteria
 - **Beads**: Agent micro-tasks, blockers, dependencies, session continuity
 
 **Validation**:
@@ -555,7 +555,7 @@ fi
 # Initialize beads if missing
 bd init
 
-# Create agent task linked to backlog
+# Create agent issue linked to beads
 bd create --title="Implement feature X" --type=task --priority=2
 
 # Update status as work progresses
@@ -684,7 +684,7 @@ Task memory MUST be updated with current state before freezing. This is the prim
 ```bash
 TASK_ID=$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo "")
 if [ -n "$TASK_ID" ]; then
-  MEMORY_FILE="backlog/memory/${TASK_ID}.md"
+  MEMORY_FILE=".beads/memory/${TASK_ID}.md"
   if [ ! -s "$MEMORY_FILE" ]; then
     echo "[X] FREEZE-001 VIOLATION: Task memory empty or missing: $MEMORY_FILE"
   else
@@ -700,7 +700,7 @@ fi
 **Remediation**:
 ```bash
 # Update task memory with freeze snapshot
-cat >> "backlog/memory/${TASK_ID}.md" << 'EOF'
+cat >> ".beads/memory/${TASK_ID}.md" << 'EOF'
 
 ## Current State (Frozen: $(date +%Y-%m-%d %H:%M))
 
@@ -790,8 +790,8 @@ uv run ruff check --fix .
 uv run pytest tests/ -x
 
 # Or document known issues in task memory if they can't be fixed immediately
-echo "### Known Issues at Freeze Time" >> "backlog/memory/${TASK_ID}.md"
-echo "- Test X failing due to Y (not blocking)" >> "backlog/memory/${TASK_ID}.md"
+echo "### Known Issues at Freeze Time" >> ".beads/memory/${TASK_ID}.md"
+echo "- Test X failing due to Y (not blocking)" >> ".beads/memory/${TASK_ID}.md"
 ```
 
 **Rationale**: Prevents resuming work with a broken baseline. Known failures should be documented, not hidden.
@@ -971,10 +971,10 @@ All acceptance criteria MUST be marked complete and verified before PR creation.
 ```bash
 TASK_ID=$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo "")
 if [ -n "$TASK_ID" ]; then
-  INCOMPLETE=$(backlog task "$TASK_ID" --plain 2>/dev/null | grep -c "^\[ \]" || echo 0)
+  INCOMPLETE=$(br show "$TASK_ID" 2>/dev/null | grep -c "^\[ \]" || echo 0)
   if [ "$INCOMPLETE" -gt 0 ]; then
     echo "[X] VALID-005 VIOLATION: $INCOMPLETE incomplete acceptance criteria"
-    backlog task "$TASK_ID" --plain | grep "^\[ \]"
+    br show "$TASK_ID" | grep "^\[ \]"
     echo "Remediation: Complete all ACs or document why they cannot be completed"
   fi
 fi
@@ -983,11 +983,11 @@ fi
 **Remediation**:
 ```bash
 # Check ACs as they're completed
-backlog task edit <task-id> --check-ac 1
-backlog task edit <task-id> --check-ac 2 --check-ac 3
+br update <task-id> --notes "Completed AC 1"
+br update <task-id> --notes "Completed AC 2" --check-ac 3
 
 # Verify all checked
-backlog task <task-id> --plain | grep "^\["
+br show <task-id> | grep "^\["
 ```
 
 **Rationale**: Ensures deliverables match requirements. Incomplete ACs indicate incomplete work.
@@ -1004,7 +1004,7 @@ Task status MUST reflect current workflow state. A PR must include task status u
 ```bash
 TASK_ID=$(git branch --show-current 2>/dev/null | grep -Eo 'task-[0-9]+' || echo "")
 if [ -n "$TASK_ID" ]; then
-  STATUS=$(backlog task "$TASK_ID" --plain 2>/dev/null | grep "Status:" | head -1)
+  STATUS=$(br show "$TASK_ID" 2>/dev/null | grep "Status:" | head -1)
   echo "Current task status: $STATUS"
   # Status should be "In Progress" during validation phase
 fi
@@ -1013,13 +1013,13 @@ fi
 **Remediation**:
 ```bash
 # Update task status
-backlog task edit <task-id> -s "In Progress"
+br update <task-id> --status in_progress
 
 # Add implementation notes
-backlog task edit <task-id> --notes $'Implementation complete.\n\nChanges:\n- File A modified\n- File B created'
+br update <task-id> --notes $'Implementation complete.\n\nChanges:\n- File A modified\n- File B created'
 ```
 
-**Rationale**: Keeps backlog as single source of truth for project state. Stale statuses cause confusion.
+**Rationale**: Keeps beads as single source of truth for project state. Stale statuses cause confusion.
 
 ---
 

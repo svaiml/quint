@@ -13,8 +13,8 @@
 # IMPORTANT: No strict mode (set -euo pipefail) - we must never block AI tools!
 
 # Fail-open helper: output valid JSON and exit 0
-# Uses "continue":true (valid for all hook types: Stop, PostToolUse, UserPromptSubmit)
-# Note: "decision":"allow" is only valid for PreToolUse hooks
+# Uses "continue":true which is the unified schema for all Claude Code hook types
+# (PreToolUse, PostToolUse, SessionStart, Stop).
 fail_open() {
     local reason="${1:-wrapper error}"
     echo "{\"continue\":true,\"reason\":\"$reason\"}"

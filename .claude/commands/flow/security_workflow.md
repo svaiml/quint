@@ -1,5 +1,5 @@
 ---
-description: Integrate security scanning and remediation into the SDD workflow with automatic backlog task creation.
+description: Integrate security scanning and remediation into the SDD workflow with automatic beads issue creation.
 loop: both
 # Loop Classification: BOTH LOOPS
 # Security commands span both loops: scanning happens in inner loop (pre-commit validation),
@@ -17,7 +17,7 @@ The `/flow:security` command family integrates security assessment into your dev
 1. **Scanning** - SAST, SCA, secrets detection on codebase
 2. **Triaging** - AI-powered vulnerability assessment and false positive detection
 3. **Reporting** - Comprehensive audit reports with OWASP Top 10 compliance
-4. **Task Creation** - Automatic backlog task creation for findings via `--create-tasks` flag
+4. **Task Creation** - Automatic beads issue creation for findings via `--create-tasks` flag
 5. **Workflow Integration** - Seamless integration with flowspec_workflow.yml states
 
 ## Command Family
@@ -30,7 +30,7 @@ The `/flow:security` command family integrates security assessment into your dev
 /flow:security fix       # Generate patches for findings
 
 # Workflow integration features
-/flow:security scan --create-tasks     # Auto-create backlog tasks for findings
+/flow:security scan --create-tasks     # Auto-create beads issues for findings
 /flow:security report --create-tasks   # Create tasks during reporting
 ```
 
@@ -66,12 +66,12 @@ workflows:
         responsibilities:
           - "Security scanning (SAST, SCA, secrets)"
           - "Vulnerability triage and prioritization"
-          - "Security task creation in backlog"
+          - "Security issue creation in beads"
           - "SARIF generation for GitHub Security"
     input_states: ["In Implementation"]
     output_state: "Security Review"
     optional: false
-    creates_backlog_tasks: true
+    creates_beads_issues: true
 
 transitions:
   - name: "security_review"
@@ -89,8 +89,8 @@ transitions:
       - type: "security_report"
         path: "./docs/security/audit-report.md"
         required: true
-      - type: "backlog_tasks"
-        path: "./backlog/tasks/*.md"
+      - type: "beads_issues"
+        path: "./.beads/*.db"
         multiple: true
     validation: "NONE"
 
@@ -151,7 +151,7 @@ workflows:
     input_states: ["In Implementation"]
     output_state: "Validated"
     optional: false
-    creates_backlog_tasks: true  # Security can create tasks
+    creates_beads_issues: true  # Security can create tasks
 
 transitions:
   - name: "validate"
@@ -167,8 +167,8 @@ transitions:
         required: true
       - type: "security_scan_sarif"
         path: "./docs/security/{feature}-sarif.json"
-      - type: "backlog_tasks"
-        path: "./backlog/tasks/*.md"
+      - type: "beads_issues"
+        path: "./.beads/*.db"
         multiple: true
     validation: "NONE"
 ```
@@ -188,7 +188,7 @@ Implementation -> Validated (includes security) -> Deployed
 
 ### Overview
 
-The `--create-tasks` flag automatically creates backlog tasks for security findings, eliminating manual task creation and ensuring remediation tracking.
+The `--create-tasks` flag automatically creates beads issues for security findings, eliminating manual task creation and ensuring remediation tracking.
 
 ### Usage
 
@@ -279,7 +279,7 @@ Security: [Vulnerability Type] in [Component]
 
 ```bash
 # Automatically created task
-backlog task create "Security: SQL Injection in login endpoint" \
+br create "Security: SQL Injection in login endpoint" \
   -d "[Full description as shown above]" \
   --ac "Parameterized queries implemented using SQLAlchemy" \
   --ac "Input validation added for username and password" \
@@ -578,7 +578,7 @@ flowspec security scan --format sarif --output security-results.sarif
    - Filter by severity to avoid noise
 
 4. **Track Remediation**
-   - Use backlog tasks to track fixes
+   - Use beads issues to track fixes
    - Re-scan after fixes to verify
 
 ### CI/CD Integration
@@ -608,8 +608,8 @@ flowspec security scan --create-tasks --severity critical,high
 # Verify triage results exist
 ls -l docs/security/triage-results.json
 
-# Check backlog is accessible
-backlog task list --plain
+# Check beads is accessible
+beads issue list --plain
 ```
 
 ### SARIF Upload Fails

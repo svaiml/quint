@@ -9,7 +9,6 @@ tools:
   - "Grep"
   - "Glob"
   - "Bash"
-  - "mcp__backlog__*"
   - "mcp__serena__*"
   - "Skill"
 
@@ -39,7 +38,7 @@ This command evaluates whether a feature requires the full SDD workflow, a light
 **Purpose:**
 - Analyze feature complexity and scope
 - Recommend appropriate workflow mode
-- Create initial backlog task for tracking
+- Create initial br issue for tracking
 
 **Workflow Modes:**
 
@@ -61,7 +60,7 @@ This command evaluates whether a feature requires the full SDD workflow, a light
 2. Search codebase for related code and patterns
 3. Assess complexity using criteria above
 4. Recommend workflow mode with rationale
-5. Create initial backlog task
+5. Create initial br issue
 
 **Key Commands:**
 ```bash
@@ -69,20 +68,15 @@ This command evaluates whether a feature requires the full SDD workflow, a light
 grep -r "feature_keyword" src/
 
 # Check existing tasks
-backlog search "$ARGUMENTS" --plain
+br list --plain
 
-# Create assessment task
-backlog task create "Assess: [Feature Name]" \
-  -d "Complexity assessment for feature" \
-  --ac "Determine workflow mode" \
-  --ac "Create initial task structure" \
-  -l assess \
-  --priority medium
+# Create assessment issue
+br create "Assess: [Feature Name]"   --description "Complexity assessment for feature"   --ac "Determine workflow mode"   --ac "Create initial task structure"   --label assess   --priority 2
 ```
 
 **Output:**
 - Assessment report with recommended mode
-- Initial backlog task created
+- Initial br issue created
 - Workflow state set to `Assessed`
 
 After assessment, suggest running `/flow:specify` for Full SDD or Spec-Light modes.

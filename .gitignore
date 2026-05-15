@@ -3,3 +3,33 @@
 
 # bv (beads viewer) local config and caches
 .bv/
+
+# Project backups (don't commit)
+.flowspec-backup-*/
+*.backup-*
+
+# Generated tech stack documentation
+.languages/
+
+# Local agent/tool state
+.agents/
+.codex/
+.flowspec/memory/
+.flowspec/scripts/
+.flowspec/templates/
+.gemini/commands/
+.github/prompts/
+
+# Local environments
+.env
+.venv/
+node_modules/
+__pycache__/
+*.log
+
+# IDE settings
+.vscode/settings.json
+.vscode/launch.json
+
+# Large generated assets
+docs/brainstorm/

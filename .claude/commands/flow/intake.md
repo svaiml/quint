@@ -1,9 +1,9 @@
 ---
-description: Process INITIAL feature intake documents to create backlog tasks with full context memory.
+description: Process INITIAL feature intake documents to create beads issues with full context memory.
 mode: agent
 loop: outer
 # Loop Classification: OUTER LOOP
-# This command processes feature intake documents and creates backlog tasks. It's part
+# This command processes feature intake documents and creates beads issues. It's part
 # of the outer loop planning phase, preparing features for the SDD workflow.
 ---
 
@@ -19,7 +19,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 This command processes INITIAL-style feature intake documents and bootstraps the feature workflow by:
 1. Parsing the INITIAL document structure
-2. Creating a backlog task with extracted information
+2. Creating a beads issue with extracted information
 3. Creating a task memory file with full context
 
 **Note**: This command is DIFFERENT from `/flow:init` which handles project constitution initialization. This command handles per-feature intake from INITIAL documents.
@@ -101,9 +101,9 @@ Read the INITIAL document and extract key sections:
 - **Performance Requirements**: Performance targets
 - **Edge Cases**: Boundary conditions
 
-### Step 3: Create Backlog Task
+### Step 3: Create Beads Issue
 
-Use the backlog CLI to create a new task with the extracted information:
+Use the br CLI to create a new issue with the extracted information:
 
 ```bash
 # Generate task title from feature name
@@ -140,15 +140,15 @@ Refs: $INITIAL_PATH" \
 # Set acceptance criteria on the created issue
 br update "$TASK_ID" --acceptance-criteria $'- [ ] All acceptance criteria from PRD are met\n- [ ] Implementation follows documented patterns\n- [ ] Tests cover edge cases\n- [ ] Documentation updated'
 
-# Also supported: backlog task create (if AC tracking via backlog is needed)
-# backlog task create "$TASK_TITLE" -d "$TASK_DESCRIPTION" --ac "..." -l intake,feature
+# Use br create for AC tracking
+# br create "$TASK_TITLE" -d "$TASK_DESCRIPTION" --ac "..." -l intake,feature
 ```
 
 **Capture the task ID** from the CLI output (e.g., `task-XXX`).
 
 ### Step 4: Create Task Memory File
 
-Create a comprehensive memory file for the task at `backlog/memory/<task-id>.md`:
+Create a comprehensive memory file for the task at `.beads/memory/<task-id>.md`:
 
 ```markdown
 # Task Memory: {{TASK_ID}}
@@ -220,7 +220,7 @@ Create a comprehensive memory file for the task at `backlog/memory/<task-id>.md`
 *Associated task: {{TASK_ID}}*
 ```
 
-Write this file to `backlog/memory/<task-id>.md`.
+Write this file to `.beads/memory/<task-id>.md`.
 
 ### Step 5: Output Summary
 
@@ -231,10 +231,10 @@ Feature Intake Complete!
 
 Created:
   Task: task-XXX - "Implement: [Feature Name]"
-  Memory: backlog/memory/task-XXX.md
+  Memory: .beads/memory/task-XXX.md
 
 Next Steps:
-  1. Review the task: backlog task task-XXX --plain
+  1. Review the task: beads issue task-XXX --plain
   2. Assess complexity: /flow:assess task-XXX
   3. Create specification: /flow:specify task-XXX
 
@@ -246,7 +246,7 @@ INITIAL Document: $INITIAL_PATH
 Handle these error cases:
 - INITIAL document not found
 - Document doesn't have expected sections
-- Backlog CLI not available
+- br CLI not available
 - Task creation fails
 - Memory file write fails
 
@@ -268,8 +268,8 @@ For missing sections, use placeholders:
 ## Deliverables
 
 This command produces:
-1. **Backlog Task**: New task with title, description, and initial ACs
-2. **Memory File**: Comprehensive context file at `backlog/memory/<task-id>.md`
+1. **Beads Issue**: New task with title, description, and initial ACs
+2. **Memory File**: Comprehensive context file at `.beads/memory/<task-id>.md`
 3. **Summary**: Clear output showing what was created and next steps
 
 ## Post-Completion

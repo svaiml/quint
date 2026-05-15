@@ -18,13 +18,16 @@ when a task description matches a skill's description.
 | `$flow-gate` | `flow-gate` | Quality gate before implementation |
 | `$flow-triage` | `flow-triage` | Session-start project triage via bv |
 | `$flow-intake` | `flow-intake` | Process INITIAL feature docs |
-| `$flow-research` | `flow-research` | Business validation and research |
+| `$flow-research` | `flow-research` | Business validation and research (workflow stage) |
+| `$flow-spike` | `flow-spike` | Scientific investigation — papers, formal methods (tool, anytime) |
+| `$flow-brainstorm` | `flow-brainstorm` | Divergent ideation — VS-powered candidates (tool, anytime) |
 | `$flow-init` | `flow-init` | Initialize SDD constitution |
 | `$flow-reset` | `flow-reset` | Reset workflow configuration |
 | `$flow-generate-prp` | `flow-generate-prp` | Generate PRP context bundle |
 | `$flow-map-codebase` | `flow-map-codebase` | Map codebase for context |
 | `$flow-security_workflow` | `flow-security_workflow` | Security scanning workflow |
-| `$flow-sync` | `flow-sync` | Sync backlog and beads tasks |
+| `$flow-sync` | `flow-sync` | Sync beads tasks |
+| `$flow-board` | `flow-board` | Project board — epic summary table + top tasks |
 | `$vibe-vibe` | `vibe-vibe` | Casual mode — just code it |
 
 ## How to Execute a Skill
@@ -41,67 +44,82 @@ Three ways to invoke a skill:
 ## SDD Workflow Order
 
 ```
-$flow-assess -> $flow-specify -> $flow-plan -> $flow-implement -> $flow-validate
+WORKFLOW STAGES (sequential, gated):
+  $flow-assess → $flow-specify → [$flow-research] → $flow-plan → $flow-implement → $flow-validate
+                                   ↑ optional
+
+TOOLS (run anytime, no gate, no state transition):
+  $flow-brainstorm  — whenever you need ideas (VS-powered divergent ideation)
+  $flow-spike       — whenever you need to read a paper (scientific investigation)
+```
+
+### Which research tool?
+
+```
+Gating a feature decision? → $flow-research (heavy, multi-agent, advances state)
+Need to understand a paper/science? → $flow-spike (single-agent, sci-focused)
+Need ideas, not facts? → $flow-brainstorm (k candidates, inline, no sources)
 ```
 
 Run `$flow-gate` before implementation to validate spec quality.
 Run `$flow-triage` at session start for project context.
 
-## Task Tracking — Two Systems, Never Mixed
+## Task Tracking — Beads-rust
 
 | System | CLI | When to use |
 |--------|-----|-------------|
-| Backlog.md | `backlog task ...` | Feature/task tracking, workflow labels |
-| Beads-rust | `br ...` | Agent implementation steps, sub-tasks |
+| Beads-rust | `br ...` | All issue and task tracking |
 
 ```bash
-backlog task edit <id> -l workflow:Specified   # set workflow label (backlog only)
-br update <id> --status=in_progress            # valid br statuses: open/in_progress/blocked/deferred/closed
-# NEVER: br update <id> --status=Specified     # invalid — not a br status
+br list                                        # list all open issues
+br update <id> --status in_progress            # valid statuses: open/in_progress/blocked/deferred/closed
+br close <id>                                  # close a completed issue
 ```
 
 ## Project Intelligence (bv)
 
-```bash
-bv -agent-brief /tmp/bv-brief   # Full session context export
-bv -robot-next                  # Recommended next task
-bv -robot-triage                # Full triage report
-bv -robot-alerts                # Blockers and risks
-bv -robot-suggest               # Duplicate/related issue detection
-bv -robot-blocker-chain <id>    # Blocker chain for a task
-bv -robot-forecast <id>         # ETA forecast
-```
-
-## Ecosystem Setup (gm)
-
-`gm` is the git workspace orchestrator. It uses `gh repo clone` (HTTPS + OAuth) for all cloning — no SSH keys needed.
-
-### First-time setup
+`bv` is the graph analytics engine. It computes **PageRank, betweenness centrality, HITS,
+eigenvector centrality, critical path, k-core, and articulation points** over the dependency
+graph — use its scores, not manual priority labels, for decisions.
 
 ```bash
-gh auth login                                    # authenticate
-gh config set git_protocol https --host github.com  # HTTPS mode
-gh auth switch --user USER                      # account with access to all 5 orgs
-./bin/bootstrap                                   # clones 62 repos + installs tools
+bv --robot-triage                # Full scored triage (impact_score, blocked_by, unblocks)
+bv --robot-priority              # Per-task: current vs suggested priority + direction (▲▼)
+bv --robot-next                  # Single top recommendation for next task
+bv --robot-alerts                # Blockers and risks
+bv --robot-insights              # High-level project health
+bv --robot-search "query"        # Semantic task search
+bv --robot-impact <id>           # what-if cascade analysis for one task
 ```
 
-### Common commands
+All `--robot-*` flags output JSON and work **without a TTY** (safe in scripts/agents).
+
+### Board and triage scripts (always use `uv run python`)
 
 ```bash
-gm status                    # all repos: branch, dirty, ahead/behind
-gm sync                      # clone missing repos (parallel)
-gm pull                      # fetch + merge all
-gm lock                      # snapshot state → .gm/workspace.lock
-gm lock --diff               # drift since last lock
-gm push --plan               # dependency-ordered push plan
-gm exec "cargo test" --group reasoning  # run command across group
+# 3-section board: Epics → Per-epic tasks → Top 10 cross-project
+uv run python .flowspec/scripts/board.py [top_n_per_epic] [top_n_standalone]
+
+# Adaptive epic triage — matches unassigned tasks to epics via graph neighborhood
+# (65% graph-neighborhood + 35% text-recall; reads epics dynamically from br)
+uv run python .flowspec/scripts/epic_triage.py              # dry-run, show proposals + scores
+uv run python .flowspec/scripts/epic_triage.py --auto       # wire confident matches
+uv run python .flowspec/scripts/epic_triage.py --verbose    # show ambiguous + no-match
+
+# Never use python3 directly — always uv run python
 ```
 
-### Troubleshooting for agents
+### Reading bv output
 
-| Problem | Fix |
-|---------|-----|
-| SSH passphrase prompts | `gh config set git_protocol https --host github.com` |
-| Repos not cloning | `gh auth switch --user USER` (has access to all orgs) |
-| `gm` not found | `cargo install --git https://github.com/svaiml/gm.git --branch feature/m1-bootstrap --bin gm gm-cli` |
-| Windows path errors | gm v0.1.0+ strips `\\?\` prefix automatically |
+Key fields from `bv --robot-priority`:
+- `impact_score` — composite graph score (PageRank + betweenness + blocker_ratio + staleness + urgency + risk)
+- `suggested_priority` / `direction` — bv's recommended priority change (`increase`/`decrease`/`none`)
+- `confidence` — how certain bv is (0–1); trust `> 0.7`
+- `what_if.direct_unblocks` — how many tasks complete if this one does
+
+```bash
+# Useful jq queries
+bv --robot-triage | jq '.triage.quick_ref.top_picks[:3]'
+bv --robot-priority | jq '.recommendations[] | select(.confidence > 0.7) | {id:.issue_id, score:.impact_score, dir:.direction}'
+bv --robot-triage | jq '.triage.blockers_to_clear | map(.id)'
+```

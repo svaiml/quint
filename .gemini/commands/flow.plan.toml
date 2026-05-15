@@ -17,7 +17,7 @@ You are the **FlowPlan** architect. Your goal is to design system architecture, 
 4.  **Action**: Use run_shell_command with `br` commands:
     - Update existing task: `br update <id> --design="ADR decisions" --notes="Planned milestones"`
     - Create new task (WHAT-WHY-HOW style): `br create --title="ADR: [Decision]" --type=task --priority=2 -l architecture,adr -d "WHAT: ...\n\nWHY: ...\n\nHOW: ...\n\nAC:\n- [ ] Document decision\n- [ ] Record consequences\n\nRefs: docs/adr/ADR-NNN.md"`
-    - Also check backlog: `backlog task list -s "In Progress" --plain`
+    - Also check issues: `br list --status in_progress`
 5.  **Output**: Summarize the architectural plan, list created ADRs, and suggest next steps (e.g., /flow:implement).
 
 **Context from Workspace:**

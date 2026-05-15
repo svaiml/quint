@@ -1,30 +1,30 @@
 ---
 name: security-workflow
-description: Use when creating backlog tasks from security findings, integrating security scans into workflow states, or managing security remediation tracking. Invoked for security workflow integration and task automation.
+description: Use when creating beads issues from security findings, integrating security scans into workflow states, or managing security remediation tracking. Invoked for security workflow integration and task automation.
 ---
 
 # Security Workflow Integration Skill
 
-You are an expert at integrating security assessment findings into development workflows and backlog management systems. You excel at translating security vulnerabilities into actionable development tasks with clear acceptance criteria and appropriate prioritization.
+You are an expert at integrating security assessment findings into development workflows and issue management systems. You excel at translating security vulnerabilities into actionable development tasks with clear acceptance criteria and appropriate prioritization.
 
 ## When to Use This Skill
 
-- Creating backlog tasks from security scan findings
+- Creating beads issues from security scan findings
 - Integrating security into workflow states
 - Managing security remediation tracking
 - Automating security task creation with --create-tasks flag
 - Mapping vulnerabilities to development work items
-- Prioritizing security fixes in backlog
+- Prioritizing security fixes in beads
 
 ## Core Responsibilities
 
-1. **Task Creation** - Convert security findings into well-formed backlog tasks
+1. **Task Creation** - Convert security findings into well-formed beads issues
 2. **Prioritization** - Map severity levels to task priorities
 3. **AC Generation** - Create verifiable acceptance criteria for security fixes
 4. **Metadata Management** - Apply appropriate labels, assignments, and tracking
 5. **Workflow Integration** - Ensure security fits into existing development workflow
 
-## Backlog Task Format for Security Findings
+## Beads Issue Format for Security Findings
 
 ### Task Title Convention
 
@@ -100,9 +100,9 @@ Remediation:
 
 ### Priority Mapping
 
-Map security severity to backlog priority:
+Map security severity to beads priority:
 
-| Security Severity | Backlog Priority | Rationale |
+| Security Severity | Beads Priority | Rationale |
 |-------------------|------------------|-----------|
 | Critical | critical | Remote code execution, auth bypass - immediate fix required |
 | High | high | Data exposure, privilege escalation - fix within 7 days |
@@ -148,7 +148,7 @@ Map vulnerability types to appropriate engineers:
 ### Single Finding
 
 ```bash
-backlog task create "Security: SQL Injection in login endpoint" \
+br create "Security: SQL Injection in login endpoint" \
   -d "$(cat <<'EOF'
 ## Security Finding
 
@@ -206,14 +206,14 @@ For multiple findings, use a shell script:
 
 ```bash
 #!/bin/bash
-# Create backlog tasks for all critical/high findings
+# Create beads issues for all critical/high findings
 # Usage: ./create-security-tasks.sh docs/security/triage-results.json
 
 TRIAGE_FILE="$1"
 
 # Parse JSON and create tasks for critical/high findings
 jq -r '.findings[] | select(.severity == "critical" or .severity == "high") |
-  "backlog task create \"Security: \(.title)\" " +
+  "br create \"Security: \(.title)\" " +
   "-d \"\(.description)\" " +
   "--ac \"\(.remediation.steps[0])\" " +
   "--ac \"\(.remediation.steps[1])\" " +
@@ -257,11 +257,11 @@ workflows:
         responsibilities:
           - "Security scanning (SAST, SCA, secrets)"
           - "Vulnerability triage and prioritization"
-          - "Security task creation in backlog"
+          - "Security issue creation in beads"
     input_states: ["In Implementation"]
     output_state: "Security Review"
     optional: false
-    creates_backlog_tasks: true
+    creates_beads_issues: true
 
 transitions:
   - name: "security_review"
@@ -276,8 +276,8 @@ transitions:
       - type: "security_triage"
         path: "./docs/security/triage-results.json"
         required: true
-      - type: "backlog_tasks"
-        path: "./backlog/tasks/*.md"
+      - type: "beads_issues"
+        path: "./.beads/*.db"
         multiple: true
     validation: "NONE"
 
@@ -320,7 +320,7 @@ workflows:
     input_states: ["In Implementation"]
     output_state: "Validated"
     optional: false
-    creates_backlog_tasks: true  # NEW: Security can create tasks
+    creates_beads_issues: true  # NEW: Security can create tasks
 ```
 
 ## Pre-Commit Hook Integration
@@ -343,7 +343,7 @@ hooks:
   # Post-scan task creation
   security-findings:
     - name: "create-security-tasks"
-      description: "Create backlog tasks for findings"
+      description: "Create beads issues for findings"
       script: "scripts/security/create-tasks.sh"
       condition: "findings.critical > 0 or findings.high > 0"
 ```
@@ -438,7 +438,7 @@ jobs:
         run: |
           flowspec security triage --input security-results.sarif
 
-      - name: Create backlog tasks for findings
+      - name: Create beads issues for findings
         if: github.event_name == 'pull_request'
         run: |
           flowspec security report --create-tasks
@@ -554,7 +554,7 @@ Security scans should output SARIF 2.1.0 format for GitHub Code Scanning integra
 1. **Choose the Right Pattern** - Dedicated state for security-focused teams, extend validate for integrated teams
 2. **Automate When Possible** - Use --create-tasks flag to automate task creation
 3. **Gate Appropriately** - Block critical/high vulnerabilities, warn on medium/low
-4. **Track Progress** - Use backlog tasks to track remediation progress
+4. **Track Progress** - Use beads issues to track remediation progress
 5. **Close the Loop** - Re-scan after fixes to verify remediation
 
 ### CI/CD Integration

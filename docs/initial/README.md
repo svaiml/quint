@@ -31,7 +31,7 @@ INITIAL documents are the **canonical starting point** for any new feature-level
    ```bash
    /flow:intake docs/features/<feature-slug>-initial.md
    ```
-   This creates a backlog task and task memory file.
+   This creates a beads issue and task memory file.
 
 4. **Continue with workflow**:
    - `/flow:assess` - Evaluate complexity

@@ -50,13 +50,12 @@ Continue with the workflow below, but:
 
 **Output**: `docs/prd/$FEATURE_SLUG-spec.md` (full mode) or `docs/prd/$FEATURE_SLUG-spec-light.md` (light mode)
 
-This command creates comprehensive feature specifications using the PM Planner agent, integrating with backlog.md for task management.
+This command creates comprehensive feature specifications using the PM Planner agent, integrating with beads-rust for task management.
 
 **For /flow:specify**: Required input state is `workflow:Assessed`. Output state will be `workflow:Specified`.
 
-> **[!] Two separate systems — never mix:**
-> - `workflow:*` labels → **backlog only**: `backlog task edit <id> -l workflow:Specified`
-> - `br` statuses → **beads-rust only**: `br update <id> --status=in_progress` (valid: `open`, `in_progress`, `blocked`, `deferred`, `closed`)
+> **[!] Use beads-rust (`br`) for all issue tracking:**
+> - `br` statuses: `open`, `in_progress`, `blocked`, `deferred`, `closed`
 > - **NEVER** `br update <id> --status=specified` — that is NOT a valid br status.
 
 If no task is in progress or the task doesn't have the required workflow state, inform the user:
@@ -78,12 +77,8 @@ bv -robot-suggest 2>/dev/null
 bv -robot-insights 2>/dev/null
 bv -robot-next 2>/dev/null
 
-# Search for existing tasks related to the feature
-backlog search "$ARGUMENTS" --plain
-
-# List any existing specification or design tasks (beads-rust preferred, backlog as fallback)
+# List any existing specification or design tasks
 br ready
-backlog task list -s "To Do" --plain | grep -i "spec\|design\|prd"
 ```
 
 If existing tasks are found, include their IDs and context in the agent prompt below.
@@ -148,14 +143,13 @@ Context:
 
 **The PRD MUST reference the assessment scores from the assessment report in the Executive Summary.**
 
-## Backlog.md CLI Integration
+## Beads-rust CLI Integration
 
-You have access to the backlog.md CLI for task management. Use it to create implementation tasks as you define the PRD.
+You have access to the `br` (beads-rust) CLI for task management. Use it to create implementation issues as you define the PRD.
 
 **Your Agent Identity**: @pm-planner
 
 **Key Commands**:
-- Search tasks: `backlog search "keyword" --plain`
 - List ready: `br ready`
 - Create task: `br create --title="Title" --type=task --priority=2 -l label1,label2 -d "WHAT: ...\n\nWHY: ...\n\nHOW: ...\n\nAC:\n- [ ] Criterion 1\n\nRefs: docs/prd/feature.md"`
 - View task: `br show <id>`
@@ -196,9 +190,9 @@ Your deliverables should include:
    - Accessibility requirements (WCAG 2.1 AA)
    - Compliance requirements
 
-6. **Task Breakdown (Backlog Tasks)**
+6. **Task Breakdown (Beads Issues)**
 
-   **MANDATORY**: Create actual backlog tasks using the CLI, then list task IDs here:
+   **MANDATORY**: Create actual beads issues using the CLI, then list issue IDs here:
 
    ```bash
    # Create implementation tasks using WHAT-WHY-HOW style
@@ -244,7 +238,7 @@ Refs: docs/prd/<feature>.md, docs/specs/<feature>-spec.md" \
    - task-YYY: [UI Components] - Priority: Medium, Labels: implement,frontend
 
    Include for each task:
-   - Backlog task ID (from CLI output)
+   - Beads issue ID (from CLI output)
    - Task dependencies (using --dep flag)
    - Priority ordering (P0=high, P1=medium, P2=low)
    - Estimated complexity as label (size-s, size-m, size-l, size-xl)
@@ -314,27 +308,26 @@ If no relevant examples exist, note this explicitly and suggest creating one as 
 
 The agent will produce:
 1. A comprehensive PRD with all 10 sections
-2. **Actual backlog tasks** created via CLI (task IDs listed in section 6)
-3. PRD references task IDs for full traceability
+2. **Actual beads issues** created via CLI (issue IDs listed in section 6)
+3. PRD references issue IDs for full traceability
 
 ### [!] MANDATORY: Design->Implement Workflow
 
 **This is a DESIGN command. The agent creates implementation tasks as part of section 6.**
 
 The PM Planner agent is responsible for:
-1. Creating implementation tasks via backlog CLI during PRD development
-2. Assigning itself (@pm-planner) to created tasks
-3. Including task IDs in the PRD for traceability
+1. Creating implementation issues via `br` CLI during PRD development
+2. Assigning itself (@pm-planner) to created issues
+3. Including issue IDs in the PRD for traceability
 
 After the PRD agent completes its work, verify:
 
 ```bash
-# Verify tasks were created
+# Verify issues were created
 br search "$FEATURE_SLUG" 2>/dev/null || bv -search "$FEATURE_SLUG" -robot-search 2>/dev/null
-backlog search "$ARGUMENTS" --plain 2>/dev/null | head -10
 
-# If tasks exist, the PRD is complete
-# If not, the PRD is incomplete - tasks must be created
+# If issues exist, the PRD is complete
+# If not, the PRD is incomplete - issues must be created
 ```
 
 **Failure to create implementation tasks means the specification work is incomplete.**
@@ -362,6 +355,6 @@ flowspec hooks emit spec.created \
   -f docs/prd/$FEATURE_ID-spec.md
 ```
 
-Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the backlog task ID if available.
+Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the beads issue ID if available.
 
 This triggers any configured hooks in `.flowspec/hooks/hooks.yaml` (e.g., notifications, quality gates).

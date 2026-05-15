@@ -9,7 +9,6 @@ tools:
   - "Grep"
   - "Glob"
   - "Bash"
-  - "mcp__backlog__*"
   - "mcp__serena__*"
   - "Skill"
 
@@ -38,7 +37,7 @@ This command performs thorough validation before PR submission.
 
 **Prerequisites:**
 1. Run `/flow:implement` first to complete coding
-2. All acceptance criteria should be checked in backlog
+2. All acceptance criteria should be checked in br
 3. Code should pass local tests
 
 **Validation Phases:**

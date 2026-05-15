@@ -79,12 +79,12 @@ bv -search "$ARGUMENTS" -robot-search 2>/dev/null
 bv -robot-suggest 2>/dev/null
 
 # Search for research tasks
-backlog search "research" --plain
-backlog search "$ARGUMENTS" --plain
+br list  # search "research" --plain
+br list
 
-# List all research tasks (beads-rust preferred, backlog as fallback)
+# List all research tasks (beads-rust preferred, beads-rust)
 br ready
-backlog task list -l research --plain
+beads issue list -l research --plain
 ```
 
 Review any existing tasks before proceeding. If relevant tasks exist, coordinate with them or update them instead of duplicating work.
@@ -136,13 +136,13 @@ You conduct rigorous, evidence-based research that combines:
 - **Quantification**: Use specific numbers and metrics when available
 - **Citation**: Document sources for key claims and statistics
 
-## Backlog.md Task Management
+## Beads Issue Management
 
-You MUST use backlog.md CLI to create and manage research tasks. Follow these guidelines:
+You MUST use beads-rust (`br`) CLI to create and manage research tasks. Follow these guidelines:
 
 ### Creating Research Spike Tasks
 
-For each research topic, create a research spike task in backlog:
+For each research topic, create a research spike issue in beads:
 
 ```bash
 TASK_ID=$(br create \
@@ -172,14 +172,14 @@ br update "$TASK_ID" --acceptance-criteria $'- [ ] Market analysis documented (T
 
 3. **Mark ACs as you complete each research area:**
    ```bash
-   backlog task edit <id> --check-ac 1  # After market analysis
-   backlog task edit <id> --check-ac 2  # After competitive analysis
+   br update <id> --notes "Completed AC 1"  # After market analysis
+   beads issue edit <id> --check-ac 2  # After competitive analysis
    # etc.
    ```
 
 4. **Add research findings as implementation notes:**
    ```bash
-   backlog task edit <id> --notes $'# Research Findings: [TOPIC]
+   br update <id> --notes $'# Research Findings: [TOPIC]
 
 ## Executive Summary
 [Key findings with confidence levels]
@@ -213,7 +213,7 @@ br update "$TASK_ID" --acceptance-criteria $'- [ ] Market analysis documented (T
 
 5. **Mark task as Done after completing all research:**
    ```bash
-   backlog task edit <id> -s Done
+   br close <id>
    ```
 
 # TASK: Conduct comprehensive research on: [USER INPUT TOPIC]
@@ -279,13 +279,13 @@ Your evaluations are grounded in business fundamentals, market realities, and or
 - **Balanced Perspective**: Present both opportunities and risks
 - **Actionable Insights**: Provide clear recommendations
 
-## Backlog.md Task Management
+## Beads Issue Management
 
-You MUST use backlog.md CLI to create and manage validation tasks. Follow these guidelines:
+You MUST use beads-rust (`br`) CLI to create and manage validation tasks. Follow these guidelines:
 
 ### Creating Business Validation Tasks
 
-For each topic requiring business validation, create a validation task in backlog:
+For each topic requiring business validation, create a validation issue in beads:
 
 ```bash
 TASK_ID=$(br create \
@@ -315,14 +315,14 @@ br update "$TASK_ID" --acceptance-criteria $'- [ ] Market opportunity assessed (
 
 3. **Mark ACs as you complete each validation area:**
    ```bash
-   backlog task edit <id> --check-ac 1  # After market assessment
-   backlog task edit <id> --check-ac 2  # After financial analysis
+   br update <id> --notes "Completed AC 1"  # After market assessment
+   beads issue edit <id> --check-ac 2  # After financial analysis
    # etc.
    ```
 
 4. **Add validation findings as implementation notes:**
    ```bash
-   backlog task edit <id> --notes $'# Business Validation: [TOPIC]
+   br update <id> --notes $'# Business Validation: [TOPIC]
 
 ## Executive Assessment
 **Recommendation**: [Go/No-Go/Proceed with Caution]
@@ -371,7 +371,7 @@ br update "$TASK_ID" --acceptance-criteria $'- [ ] Market opportunity assessed (
 
 5. **Mark task as Done after completing validation:**
    ```bash
-   backlog task edit <id> -s Done
+   br close <id>
    ```
 
 # TASK: Based on the research findings provided, conduct a comprehensive business validation assessment for: [USER INPUT TOPIC]
@@ -453,7 +453,7 @@ Refs: docs/research/<topic>-findings.md" \
 
 2. **Update research task notes** with follow-up references:
    ```bash
-   backlog task edit <research-task-id> --append-notes $'Research Outcome: Go/No-Go/Proceed with Caution\n\nFollow-up Implementation Tasks:\n- task-XXX: Implement recommended solution\n- task-YYY: Validation spike for assumption A'
+   beads issue edit <research-task-id> --append-notes $'Research Outcome: Go/No-Go/Proceed with Caution\n\nFollow-up Implementation Tasks:\n- task-XXX: Implement recommended solution\n- task-YYY: Validation spike for assumption A'
    ```
 
 3. **Only then mark the research task as Done**
@@ -474,6 +474,6 @@ flowspec hooks emit research.completed \
   -f docs/research/$FEATURE_ID-validation.md
 ```
 
-Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the backlog task ID if available.
+Replace `$FEATURE_ID` with the feature name/identifier and `$TASK_ID` with the beads issue ID if available.
 
 This triggers any configured hooks in `.flowspec/hooks/hooks.yaml` (e.g., notifications, quality gates).

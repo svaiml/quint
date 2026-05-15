@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Stop hook: Backlog task quality gate
+Stop hook: Beads issue quality gate
 
 Enforces quality gate before session ends when PR creation is detected:
 - Detects PR creation intent in conversation context
-- Checks for In Progress backlog tasks via CLI
+- Checks for In Progress beads issues via CLI
 - Blocks session end if incomplete tasks exist
 - Follows fail-open principle for reliability
 
@@ -65,7 +65,7 @@ def find_project_root() -> Path:
     for _ in range(10):  # Limit search depth
         if (current / ".git").exists():
             return current
-        if (current / "backlog").exists():
+        if (current / "br").exists():
             return current
         if current.parent == current:
             break
@@ -76,7 +76,7 @@ def find_project_root() -> Path:
 
 def check_in_progress_tasks() -> list[dict]:
     """
-    Check for In Progress tasks via backlog CLI.
+    Check for in_progress issues via br CLI.
 
     Returns:
         List of task dictionaries with 'id' and 'title' keys
@@ -86,9 +86,9 @@ def check_in_progress_tasks() -> list[dict]:
         # Find project root reliably
         project_root = find_project_root()
 
-        # Run backlog CLI with 5 second timeout
+        # Run br CLI with 5 second timeout
         result = subprocess.run(
-            ["backlog", "task", "list", "--plain", "-s", "In Progress"],
+            ["br", "list", "--status", "in_progress"],
             capture_output=True,
             text=True,
             timeout=5,
@@ -221,7 +221,7 @@ def main():
             [f"  - {task['id']}: {task['title']}" for task in in_progress_tasks]
         )
 
-        guidance = f"""Quality Gate: Incomplete Backlog Tasks Detected
+        guidance = f"""Quality Gate: Incomplete Beads Issues Detected
 
 You have {len(in_progress_tasks)} task(s) still marked as "In Progress":
 
@@ -231,7 +231,7 @@ Before creating a PR, please:
 
 1. Complete all acceptance criteria for each task
 2. Mark tasks as Done using:
-   backlog task edit <task-id> -s Done --check-ac 1 --check-ac 2 ...
+   br close <task-id> --check-ac 1 --check-ac 2 ...
 
 Or if work is incomplete:
 
@@ -241,7 +241,7 @@ Or if work is incomplete:
 To bypass this quality gate (not recommended):
 - Use force stop or explicitly request to skip the quality gate
 
-This ensures your backlog accurately reflects completed work.
+This ensures your beads issues accurately reflect completed work.
 """
 
         print(

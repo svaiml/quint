@@ -40,7 +40,7 @@ PRPs have a consistent, machine-parseable structure:
 ### Known Failure Modes - Table format: Failure | Meaning | Fix
 
 ## ACCEPTANCE CRITERIA
-- Checkbox list copied from backlog task
+- Checkbox list copied from beads issue
 
 ## LOOP CLASSIFICATION
 ### Inner Loop          - Implementation tasks

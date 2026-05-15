@@ -33,7 +33,7 @@ COMMAND_EVENT_MAP = {
 
 def allow(reason: str, context: str | None = None) -> None:
     """Output allow decision and exit."""
-    result = {"decision": "allow", "reason": reason}
+    result = {"continue": True, "reason": reason}
     if context:
         result["additionalContext"] = context
     print(json.dumps(result))
@@ -191,9 +191,7 @@ def main():
 
     except Exception as e:
         # Fail-open: on any error, allow the operation
-        print(
-            json.dumps({"decision": "allow", "reason": f"Hook error (fail-open): {e}"})
-        )
+        print(json.dumps({"continue": True, "reason": f"Hook error (fail-open): {e}"}))
         sys.exit(0)
 
 

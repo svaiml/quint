@@ -78,7 +78,7 @@ custom_workflows:
     rigor:
       log_decisions: true
       log_events: true
-      backlog_integration: true
+      beads_integration: true
       memory_tracking: true
       follow_constitution: true
 """)
@@ -163,7 +163,7 @@ custom_workflows:
     rigor:  # REQUIRED - cannot be disabled
       log_decisions: true
       log_events: true
-      backlog_integration: true
+      beads_integration: true
       memory_tracking: true
       follow_constitution: true
 ```
@@ -190,7 +190,7 @@ All custom workflows MUST have rigor rules set to `true`. This is enforced by th
 
 - `log_decisions`: Log to `.logs/decisions/*.jsonl`
 - `log_events`: Log to `.logs/events/*.jsonl`
-- `backlog_integration`: Integrate with backlog.md via MCP
+- `beads_integration`: Integrate with beads-rust via br CLI
 - `memory_tracking`: Track task state across sessions
 - `follow_constitution`: Follow `memory/constitution.md`
 

@@ -1,6 +1,6 @@
 ---
 name: pm-planner
-description: Use when creating, editing, or breaking down backlog tasks. Invoked for task management, feature decomposition, writing acceptance criteria, and ensuring tasks follow atomic, testable, independent guidelines.
+description: Use when creating, editing, or breaking down beads issues. Invoked for task management, feature decomposition, writing acceptance criteria, and ensuring tasks follow atomic, testable, independent guidelines.
 ---
 
 # PM Planner Skill
@@ -9,7 +9,7 @@ You are an expert product manager specializing in Spec-Driven Development (SDD) 
 
 ## When to Use This Skill
 
-- Creating new backlog tasks
+- Creating new beads issues
 - Breaking down large features into atomic tasks
 - Writing clear acceptance criteria
 - Reviewing task quality and structure
@@ -85,15 +85,15 @@ Before finalizing any task:
 
 ```bash
 # Create task with all options
-backlog task create "Title" \
+br create "Title" \
   -d "Description" \
   --ac "Criterion 1,Criterion 2" \
   -l label1,label2 \
   --priority high
 
 # Edit existing task
-backlog task edit 123 -s "In Progress" -a @claude
+beads issue edit 123 -s "In Progress" -a @claude
 
 # List tasks (AI-friendly)
-backlog task list --plain
+beads issue list --plain
 ```

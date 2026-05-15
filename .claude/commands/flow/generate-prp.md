@@ -44,13 +44,13 @@ if [ -z "$TASK_ID" ]; then
   echo "Available tasks:"
   br ready
   br list --status=in_progress
-  backlog task list -s "To Do" --plain | head -10
-  backlog task list -s "In Progress" --plain | head -10
+  br list --status open | head -10
+  br list --status in_progress | head -10
   exit 1
 fi
 
 # Verify task exists
-backlog task $TASK_ID --plain
+beads issue $TASK_ID --plain
 ```
 
 If no task ID is provided, show usage and exit.
@@ -63,7 +63,7 @@ Collect all relevant context for the task:
 
 ```bash
 # Get task details
-backlog task $TASK_ID --plain
+beads issue $TASK_ID --plain
 
 # Extract:
 # - Task title (for FEATURE_NAME)
@@ -76,7 +76,7 @@ backlog task $TASK_ID --plain
 
 ```bash
 # Check for task memory file
-MEMORY_FILE="backlog/memory/$TASK_ID.md"
+MEMORY_FILE=".beads/memory/$TASK_ID.md"
 
 if [ -f "$MEMORY_FILE" ]; then
   echo "Found task memory: $MEMORY_FILE"
@@ -181,7 +181,7 @@ Create the PRP document at `docs/prp/<task-id>.md` using the template:
 |--------|--------|------------|--------|
 {{GOTCHAS_TABLE}}
 
-### Related Backlog Tasks
+### Related Beads Issues
 
 | Task ID | Title | Relationship | Status |
 |---------|-------|--------------|--------|
@@ -301,7 +301,7 @@ Created:
 
 Context Sources Used:
   - Task: <task-id> - "<title>"
-  - Memory: backlog/memory/<task-id>.md [found/not found]
+  - Memory: .beads/memory/<task-id>.md [found/not found]
   - PRD: docs/prd/<filename>.md [found/not found]
   - Examples: X files referenced
   - Gotchas: Y entries included

@@ -76,7 +76,7 @@
 - Post-mortem documents
 -->
 
-### Related Backlog Tasks
+### Related Beads Issues
 
 <!-- Tasks that relate to this feature: dependencies, blockers, related work -->
 <!-- Format: | Task ID | Title | Relationship | Status | -->
@@ -175,7 +175,7 @@
 
 ## ACCEPTANCE CRITERIA
 
-<!-- Copied from the backlog task for easy reference -->
+<!-- Copied from the beads issue for easy reference -->
 
 - [ ] {{AC_1}}
 - [ ] {{AC_2}}

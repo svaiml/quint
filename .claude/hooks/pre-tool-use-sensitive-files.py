@@ -67,7 +67,7 @@ def main():
             print(
                 json.dumps(
                     {
-                        "decision": "allow",
+                        "continue": True,
                         "reason": f"Tool {tool_name} not subject to file protection",
                     }
                 )
@@ -78,7 +78,7 @@ def main():
         file_path = tool_input.get("file_path", "")
 
         if not file_path:
-            print(json.dumps({"decision": "allow", "reason": "No file path specified"}))
+            print(json.dumps({"continue": True, "reason": "No file path specified"}))
             return 0
 
         # Check if file is sensitive
@@ -88,14 +88,14 @@ def main():
             print(
                 json.dumps(
                     {
-                        "decision": "ask",
+                        "continue": False,
                         "reason": reason,
                         "additionalContext": f"Attempting to modify {file_path}. This file is typically auto-generated or contains sensitive data. Are you sure you want to proceed?",
                     }
                 )
             )
         else:
-            print(json.dumps({"decision": "allow", "reason": "File is not sensitive"}))
+            print(json.dumps({"continue": True, "reason": "File is not sensitive"}))
 
         return 0
 
@@ -104,7 +104,7 @@ def main():
         print(
             json.dumps(
                 {
-                    "decision": "allow",
+                    "continue": True,
                     "reason": f"Hook error (defaulting to allow): {str(e)}",
                 }
             )

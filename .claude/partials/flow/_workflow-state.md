@@ -39,11 +39,11 @@ Suggestions:
 # Find the task you're working on
 # Option A: If task ID was provided in arguments, use that
 # Option B: Look for task currently "In Progress"
-backlog task list -s "In Progress" --plain
+br list --status in_progress
 
 # Get task details and extract workflow state from labels
 TASK_ID="<task-id>"  # Replace with actual task ID
-backlog task "$TASK_ID" --plain
+br show "$TASK_ID"
 ```
 
 ### 2. Check Workflow State
@@ -85,7 +85,7 @@ After successful workflow completion, update the task's workflow state:
 ```bash
 # Remove old workflow label and add new one
 # Replace <output-state> with the output state from the table above
-backlog task edit "$TASK_ID" -l "workflow:<output-state>"
+beads issue edit "$TASK_ID" -l "workflow:<output-state>"
 ```
 
 ## Workflow State Labels Reference
@@ -103,11 +103,11 @@ Tasks use labels with the `workflow:` prefix to track their current workflow sta
 >
 > | System | What it tracks | How to update | Valid values |
 > |--------|---------------|---------------|-------------|
-> | **backlog** workflow labels | SDD phase progress | `backlog task edit <id> -l workflow:Specified` | `workflow:Assessed`, `workflow:Specified`, `workflow:Researched`, `workflow:Planned`, `workflow:In Implementation`, `workflow:Validated` |
+> | **beads** workflow labels | SDD phase progress | `br update <id> --label workflow:Specified` | `workflow:Assessed`, `workflow:Specified`, `workflow:Researched`, `workflow:Planned`, `workflow:In Implementation`, `workflow:Validated` |
 > | **br** (beads-rust) status | Issue work state | `br update <id> --status=in_progress` | `open`, `in_progress`, `blocked`, `deferred`, `closed` |
 >
 > **NEVER** do `br update <id> --status=specified` — `specified` is NOT a valid `br` status.
-> **NEVER** do `backlog task edit <id> -s "in_progress"` to set a br-style status on a backlog task; use `-s "In Progress"` (backlog's own status values).
+> **NEVER** use invalid br statuses. Use: `open`, `in_progress`, `blocked`, `deferred`, `closed`.
 
 ## Programmatic State Checking
 

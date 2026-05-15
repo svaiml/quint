@@ -32,7 +32,7 @@ This is **casual development mode** - less rigor, faster iteration. Use this whe
 ### What's NOT Required
 
 - Formal PRD or spec documents
-- Backlog task creation
+- Beads issue creation
 - Workflow state management
 - Constitution validation
 - Full rigor rule compliance
@@ -103,7 +103,7 @@ Consider `/flow:assess` if:
 | `/flow:plan` | Mental model |
 | `/flow:implement` | Just code |
 | `/flow:validate` | Quick test |
-| Backlog tasks | Optional |
+| Beads issues | Optional |
 | Workflow states | None |
 | Rigor rules | Logging only |
 
