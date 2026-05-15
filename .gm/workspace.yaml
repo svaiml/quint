@@ -459,3 +459,10 @@ profiles:
     - infra-eco/*
     - apps/*
     exclude: []
+plugins:
+  notify:
+    targets:
+      toolset:
+        kind: slack
+        webhook_env: SLACK_WEBHOOK_URL
+        channel: '#toolset'
