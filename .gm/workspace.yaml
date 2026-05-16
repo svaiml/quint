@@ -29,12 +29,6 @@ repositories:
   branch: develop
   group: tools/ai-tools
   profile: full
-- name: folder-sync
-  path: tools/ai-tools/folder-sync
-  remote: https://github.com/svaiml/folder-sync.git
-  branch: master
-  group: tools/ai-tools
-  profile: full
 - name: intent-spec-kit
   path: tools/ai-tools/_external/intent-spec-kit
   remote: https://github.com/github/spec-kit.git
