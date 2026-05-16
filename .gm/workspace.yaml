@@ -426,7 +426,7 @@ repositories:
   group: kernel-forge
   profile: null
 - name: contextflow-forge
-  path: research/_external/contextflow-forge
+  path: research/contextflow-forge
   remote: https://github.com/Craftegy-NextGen/contextflow-forge.git
   branch: develop
   group: research
