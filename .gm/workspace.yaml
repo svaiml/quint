@@ -239,6 +239,18 @@ repositories:
   branch: develop
   group: tools/orchestrator
   profile: null
+- name: contextflow-forge
+  path: tools/orchestrator/contextflow-forge
+  remote: https://github.com/Craftegy-NextGen/contextflow-forge.git
+  branch: develop
+  group: tools/orchestrator
+  profile: full
+- name: specmem
+  path: tools/orchestrator/_external/specmem
+  remote: https://github.com/SuperagenticAI/specmem.git
+  branch: main
+  group: tools/orchestrator
+  profile: full
 - name: gm
   path: tools/sysutils/gm
   remote: git@github.com:svaiml/gm.git
@@ -425,18 +437,6 @@ repositories:
   branch: main
   group: kernel-forge
   profile: null
-- name: contextflow-forge
-  path: research/contextflow-forge
-  remote: https://github.com/Craftegy-NextGen/contextflow-forge.git
-  branch: develop
-  group: research
-  profile: full
-- name: specmem
-  path: research/_external/specmem
-  remote: https://github.com/SuperagenticAI/specmem.git
-  branch: main
-  group: research
-  profile: full
 - name: open-design
   path: prodx/_external/open-design
   remote: git@github.com:nexu-io/open-design.git
