@@ -23,6 +23,12 @@ groups:
   epistemic-universe:
     path: epistemic-universe
 repositories:
+- name: cronus
+  path: tools/ai-tools/cronus
+  remote: https://github.com/svaiml/cronus.git
+  branch: develop
+  group: tools/ai-tools
+  profile: full
 - name: code-catalyst
   path: apps/code-catalyst
   remote: git@github.com:svaiml/code-catalyst.git
