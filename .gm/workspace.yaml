@@ -23,12 +23,6 @@ groups:
   epistemic-universe:
     path: epistemic-universe
 repositories:
-- name: cronus
-  path: tools/ai-tools/cronus
-  remote: https://github.com/svaiml/cronus.git
-  branch: develop
-  group: tools/ai-tools
-  profile: full
 - name: feature-factory
   path: tools/ai-tools/feature-factory
   remote: https://github.com/svaiml/feature-factory.git
@@ -239,6 +233,12 @@ repositories:
   branch: develop
   group: tools/orchestrator
   profile: null
+- name: cronus
+  path: tools/orchestrator/cronus
+  remote: https://github.com/svaiml/cronus.git
+  branch: develop
+  group: tools/orchestrator
+  profile: full
 - name: contextflow-forge
   path: tools/orchestrator/contextflow-forge
   remote: https://github.com/Craftegy-NextGen/contextflow-forge.git
