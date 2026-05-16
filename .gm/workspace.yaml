@@ -43,19 +43,19 @@ repositories:
   profile: full
 - name: intent-spec-kit
   path: tools/ai-tools/_external/intent-spec-kit
-  remote: https://github.com/svaiml/intent-spec-kit.git
+  remote: https://github.com/github/spec-kit.git
   branch: main
   group: tools/ai-tools
   profile: full
 - name: tessl-cli
   path: tools/ai-tools/_external/tessl-cli
-  remote: https://github.com/svaiml/tessl-cli.git
+  remote: https://github.com/tesslio/cli.git
   branch: main
   group: tools/ai-tools
   profile: full
 - name: tessl-tile
   path: tools/ai-tools/_external/tessl-tile
-  remote: https://github.com/svaiml/tessl-tile.git
+  remote: https://github.com/tesslio/spec-driven-development-tile.git
   branch: main
   group: tools/ai-tools
   profile: full
@@ -397,12 +397,12 @@ repositories:
   profile: research
 - name: gbla
   path: tools/science-libs/_external/gbla
-  remote: https://github.com/svaiml/gbla.git
+  remote: https://github.com/informalsystems/generalised-byzantine-lattice-agreement.git
   branch: main
   group: tools/science-libs
   profile: full
 - name: quint
-  path: tools/science-libs/_external/quint
+  path: tools/science-libs/quint
   remote: https://github.com/svaiml/quint.git
   branch: main
   group: tools/science-libs
