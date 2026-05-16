@@ -1,42 +1,54 @@
 {
   "version": 1,
-  "locked_at": "2026-05-16T00:10:57.610142500+00:00",
+  "locked_at": "2026-05-16T00:14:00.787156300+00:00",
   "locked_by": "unknown",
   "repos": {
-    "codegraph-rust": {
-      "commit": "ce5bf27a2978983a9089d177447f296e4c6521bb",
+    "haft": {
+      "commit": "9661e5307477b884f10348a3008c95b71ac6df52",
       "branch": "main",
-      "remote": "https://github.com/sashml/codegraph-rust.git",
+      "remote": "https://github.com/m0n0x41d/haft.git",
       "dirty": false
     },
-    "specmem": {
-      "commit": "7391d681c44270446ce2f28bc80f85e8b1bcca67",
+    "ghdash": {
+      "commit": "8cd3c41ef68c54527b2c30182ec23a44b6f1ca53",
       "branch": "main",
-      "remote": "https://github.com/SuperagenticAI/specmem.git",
+      "remote": "https://github.com/zombocoder/ghdash.git",
       "dirty": false
     },
-    "bfc": {
-      "commit": "911db7c5d1eb3693d9a9e57368991418a954ba40",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/bfc.git",
+    "naproche": {
+      "commit": "18c206ae056b895717456298861850d09120d045",
+      "branch": "master",
+      "remote": "https://github.com/naproche/naproche.git",
       "dirty": false
     },
-    "myria": {
-      "commit": "9327b9aa724c004dcf304bf948a75d1240cf3028",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/myria.git",
+    "PaperClip": {
+      "commit": "333a16b035c0811c39418ecda2c021a60247840e",
+      "branch": "master",
+      "remote": "https://github.com/paperclipai/paperclip.git",
       "dirty": false
     },
-    "fpf-problem-solving-skill": {
-      "commit": "3d350e8e9a6fffbaa22fffdbecd7f8514af7832b",
-      "branch": "main",
-      "remote": "https://github.com/CodeAlive-AI/fpf-problem-solving-skill.git",
+    "zz-notation": {
+      "commit": "7a3b24f2a4ed22f80321aa51f276f7d00163922d",
+      "branch": "develop",
+      "remote": "https://github.com/zombocoder/zz-notation.git",
       "dirty": false
     },
-    "sammo": {
-      "commit": "2137815ba9a6fb8c86e5c18cc47ecda8ad8f5e98",
+    "quint": {
+      "commit": "db6f80b2120a3cda86ae577c6f99e322f70d6a9d",
       "branch": "main",
-      "remote": "https://github.com/microsoft/sammo.git",
+      "remote": "https://github.com/informalsystems/quint.git",
+      "dirty": false
+    },
+    "o2l": {
+      "commit": "602925299b65e2de6e6ba7fe5d4f35d25ad6df7c",
+      "branch": "develop",
+      "remote": "https://github.com/sashml/o2l.git",
+      "dirty": false
+    },
+    "beads_rust": {
+      "commit": "60810bdd226d4108289f30a57ee73febe5165545",
+      "branch": "main",
+      "remote": "https://github.com/Dicklesworthstone/beads_rust.git",
       "dirty": false
     },
     "craftegy-design": {
@@ -45,10 +57,28 @@
       "remote": "https://github.com/svaiml/craftegy-design.git",
       "dirty": false
     },
-    "grace-skills": {
-      "commit": "3ba026efaf8f2212e9ec15079c9ef1a609b7cad1",
+    "bfcfs-linux": {
+      "commit": "b6185e24eb5e71920059b6c6aae793101a5a057c",
       "branch": "main",
-      "remote": "https://github.com/BalaBenna/grace-skills.git",
+      "remote": "https://github.com/zombocoder/bfcfs-linux.git",
+      "dirty": false
+    },
+    "episteme-platform": {
+      "commit": "b06be5c93c1ba3fe7a11aefdb14804c0ab5f69aa",
+      "branch": "master",
+      "remote": "https://github.com/sashml/episteme-platform.git",
+      "dirty": false
+    },
+    "grace-marketplace": {
+      "commit": "07bdfaf339e268661c9904ee291b877373c8b635",
+      "branch": "main",
+      "remote": "https://github.com/osovv/grace-marketplace.git",
+      "dirty": false
+    },
+    "algorithmic-algebras-embedding": {
+      "commit": "c2df3967cd3dd674bbdf4448005d583259825994",
+      "branch": "master",
+      "remote": "https://github.com/ips-kyiv/algorithmic-algebras-embedding.git",
       "dirty": false
     },
     "reasoning-apps": {
@@ -63,202 +93,10 @@
       "remote": "https://github.com/Dicklesworthstone/beads_viewer_rust.git",
       "dirty": false
     },
-    "inferense": {
-      "commit": "495b8c7032849f7f236c9325b67b773d19cbdcff",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/inferense.git",
-      "dirty": false
-    },
-    "code-catalyst": {
-      "commit": "6c5d08e8c435aec89bb26d8e8d018fa045c2f6a6",
-      "branch": "main",
-      "remote": "https://github.com/svaiml/code-catalyst.git",
-      "dirty": false
-    },
-    "gsd-2": {
-      "commit": "f8f07e21fe6fad42d8ca6cf66e4a2e64c01f10d5",
-      "branch": "main",
-      "remote": "https://github.com/gsd-build/gsd-2.git",
-      "dirty": false
-    },
-    "AllBeads": {
-      "commit": "e85caf14e6aa658fd159ad7559901be29f14e7a1",
-      "branch": "main",
-      "remote": "https://github.com/thrashr888/AllBeads.git",
-      "dirty": false
-    },
-    "open-design": {
-      "commit": "772ef974768714d50c1c033f1174c5ddcb2373e3",
-      "branch": "main",
-      "remote": "https://github.com/nexu-io/open-design.git",
-      "dirty": false
-    },
-    "obstruct": {
-      "commit": "231aaae0355833cda6841aaff2a59396cda5688f",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/obstruct.git",
-      "dirty": false
-    },
-    "zz-notation": {
-      "commit": "7a3b24f2a4ed22f80321aa51f276f7d00163922d",
-      "branch": "develop",
-      "remote": "https://github.com/zombocoder/zz-notation.git",
-      "dirty": false
-    },
-    "axiomvm": {
-      "commit": "38032f9ed5f6bc657e249ae4a7aeeeb16fac671d",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/axiomvm.git",
-      "dirty": false
-    },
-    "dspy": {
-      "commit": "faa99d1f784a5d34cd0d0a5af5725ace9dae21d8",
-      "branch": "main",
-      "remote": "https://github.com/stanfordnlp/dspy.git",
-      "dirty": false
-    },
-    "dspy-code": {
-      "commit": "c8b9580b3f5145a2228fd21932a3932cd3e187d8",
-      "branch": "main",
-      "remote": "https://github.com/SuperagenticAI/dspy-code.git",
-      "dirty": false
-    },
-    "promptfoo": {
-      "commit": "d1f1e5b48990133521586e5d5cee49031b4b60de",
-      "branch": "main",
-      "remote": "https://github.com/promptfoo/promptfoo.git",
-      "dirty": false
-    },
-    "beads_rust": {
-      "commit": "60810bdd226d4108289f30a57ee73febe5165545",
-      "branch": "main",
-      "remote": "https://github.com/Dicklesworthstone/beads_rust.git",
-      "dirty": false
-    },
-    "o2l": {
-      "commit": "602925299b65e2de6e6ba7fe5d4f35d25ad6df7c",
-      "branch": "develop",
-      "remote": "https://github.com/sashml/o2l.git",
-      "dirty": false
-    },
-    "go-freebsd-pf": {
-      "commit": "ac1d67afc17630fd0cfc112fd23d830e593d78fc",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/go-freebsd-pf.git",
-      "dirty": false
-    },
-    "invariantis": {
-      "commit": "1157c49995ff443966aa98435a88f7473c652ab9",
-      "branch": "develop",
-      "remote": "https://github.com/zombocoder/invariantis.git",
-      "dirty": false
-    },
-    "aivm": {
-      "commit": "4b28ac0880eaf33a2a558f9ce09e33ed5ea1e9c2",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/aivm.git",
-      "dirty": false
-    },
-    "baml": {
-      "commit": "999abcc7c29ba8b4ad7168dce8f14e8a543e7ef9",
-      "branch": "canary",
-      "remote": "https://github.com/BoundaryML/baml.git",
-      "dirty": true
-    },
-    "craftegy-algo": {
-      "commit": "71efb60395e116681b687eb6bf2201cd5db9b88e",
-      "branch": "develop",
-      "remote": "https://github.com/svaiml/craftegy-algo.git",
-      "dirty": false
-    },
-    "bilattice-relabeler": {
-      "commit": "4c7d4b4d1dcf61f9310f03c08c9bcbd95c5a9b58",
-      "branch": "main",
-      "remote": "https://github.com/AITechCraft/bilattice-relabeler.git",
-      "dirty": false
-    },
-    "npd-cipher": {
-      "commit": "90d17a2cd39e944cf5768356753dfc11f5e7e4cd",
-      "branch": "main",
-      "remote": "https://github.com/svaiml/npd-cipher.git",
-      "dirty": false
-    },
-    "haft": {
-      "commit": "9661e5307477b884f10348a3008c95b71ac6df52",
-      "branch": "main",
-      "remote": "https://github.com/m0n0x41d/haft.git",
-      "dirty": false
-    },
-    "fpf-cards": {
-      "commit": "7512ecd8b49426c48eb7a7248c1a90215cb19430",
-      "branch": "develop",
-      "remote": "https://github.com/svaiml/fpf-cards.git",
-      "dirty": false
-    },
-    "AgentOS": {
-      "commit": "ce95893889127cec9b11f81b200de7360ad5a36c",
-      "branch": "main",
-      "remote": "https://github.com/ag2ai/ag2.git",
-      "dirty": false
-    },
-    "infer": {
-      "commit": "6271eaafab4237ef3f344adeb5927956716a1834",
-      "branch": "develop",
-      "remote": "https://github.com/zombocoder/infer.git",
-      "dirty": false
-    },
-    "criterium": {
-      "commit": "c7a22a8dd97da27852a974456e4daee251bdf568",
-      "branch": "develop",
-      "remote": "https://github.com/svaiml/criterium.git",
-      "dirty": false
-    },
-    "contextflow-forge": {
-      "commit": "be0593a31e4111a67b5142e23b8a1075d13ef416",
-      "branch": "develop",
-      "remote": "https://github.com/Craftegy-NextGen/contextflow-forge.git",
-      "dirty": false
-    },
     "FPF": {
       "commit": "ee40821c9c49c642dfedb18d6915388dbec4e7df",
       "branch": "main",
       "remote": "https://github.com/ailev/FPF.git",
-      "dirty": false
-    },
-    "cronus": {
-      "commit": "3390b0760839bb82a7c085761a1e7f218839322c",
-      "branch": "develop",
-      "remote": "https://github.com/svaiml/cronus.git",
-      "dirty": false
-    },
-    "nanoGPT": {
-      "commit": "3adf61e154c3fe3fca428ad6bc3818b27a3b8291",
-      "branch": "master",
-      "remote": "https://github.com/AITechCraft/nanoGPT.git",
-      "dirty": false
-    },
-    "DesignOS": {
-      "commit": "41f4d5f374b1ef3e24c9532c2973fadd63cfeb67",
-      "branch": "main",
-      "remote": "https://github.com/eclectix7/DesignOS.git",
-      "dirty": false
-    },
-    "PaperClip": {
-      "commit": "333a16b035c0811c39418ecda2c021a60247840e",
-      "branch": "master",
-      "remote": "https://github.com/paperclipai/paperclip.git",
-      "dirty": false
-    },
-    "rstmdb": {
-      "commit": "a2574c6e2fed599d57ae4d589d970e2321f3a3f8",
-      "branch": "main",
-      "remote": "https://github.com/rstmdb/rstmdb.git",
-      "dirty": false
-    },
-    "zacta": {
-      "commit": "fcd1a190849150e3eb56c78671d0056f1da1cd08",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/zacta.git",
       "dirty": false
     },
     "feature-factory": {
@@ -267,10 +105,52 @@
       "remote": "https://github.com/svaiml/feature-factory.git",
       "dirty": true
     },
-    "algorithmic-algebras-embedding": {
-      "commit": "c2df3967cd3dd674bbdf4448005d583259825994",
+    "myria": {
+      "commit": "9327b9aa724c004dcf304bf948a75d1240cf3028",
+      "branch": "main",
+      "remote": "https://github.com/zombocoder/myria.git",
+      "dirty": false
+    },
+    "open-codesign": {
+      "commit": "36eb9400f836116abbddbb4c58ece3aa499d72f8",
+      "branch": "main",
+      "remote": "https://github.com/OpenCoworkAI/open-codesign.git",
+      "dirty": false
+    },
+    "folder-sync": {
+      "commit": "2ab75a6eedfc3a93a47c12a29f7090e678fe1e8c",
       "branch": "master",
-      "remote": "https://github.com/ips-kyiv/algorithmic-algebras-embedding.git",
+      "remote": "https://github.com/svaiml/folder-sync.git",
+      "dirty": false
+    },
+    "bfc-kernel": {
+      "commit": "911db7c5d1eb3693d9a9e57368991418a954ba40",
+      "branch": "main",
+      "remote": "https://github.com/zombocoder/bfc.git",
+      "dirty": false
+    },
+    "axiomvm": {
+      "commit": "38032f9ed5f6bc657e249ae4a7aeeeb16fac671d",
+      "branch": "main",
+      "remote": "https://github.com/zombocoder/axiomvm.git",
+      "dirty": false
+    },
+    "research-scaffold": {
+      "commit": "3dcd59899294ce08361f0c23b8349f86ca62d25e",
+      "branch": "main",
+      "remote": "https://github.com/svaiml/research-scaffold.git",
+      "dirty": false
+    },
+    "sammo": {
+      "commit": "2137815ba9a6fb8c86e5c18cc47ecda8ad8f5e98",
+      "branch": "main",
+      "remote": "https://github.com/microsoft/sammo.git",
+      "dirty": false
+    },
+    "aivm": {
+      "commit": "4b28ac0880eaf33a2a558f9ce09e33ed5ea1e9c2",
+      "branch": "main",
+      "remote": "https://github.com/zombocoder/aivm.git",
       "dirty": false
     },
     "gm": {
@@ -279,22 +159,28 @@
       "remote": "https://github.com/svaiml/gm.git",
       "dirty": false
     },
-    "grace-marketplace": {
-      "commit": "07bdfaf339e268661c9904ee291b877373c8b635",
+    "dspy-code": {
+      "commit": "c8b9580b3f5145a2228fd21932a3932cd3e187d8",
       "branch": "main",
-      "remote": "https://github.com/osovv/grace-marketplace.git",
+      "remote": "https://github.com/SuperagenticAI/dspy-code.git",
       "dirty": false
     },
-    "bfcfs-linux": {
-      "commit": "b6185e24eb5e71920059b6c6aae793101a5a057c",
+    "bilattice-relabeler": {
+      "commit": "4c7d4b4d1dcf61f9310f03c08c9bcbd95c5a9b58",
       "branch": "main",
-      "remote": "https://github.com/zombocoder/bfcfs-linux.git",
+      "remote": "https://github.com/AITechCraft/bilattice-relabeler.git",
       "dirty": false
     },
-    "ghdash": {
-      "commit": "8cd3c41ef68c54527b2c30182ec23a44b6f1ca53",
+    "bfc": {
+      "commit": "911db7c5d1eb3693d9a9e57368991418a954ba40",
       "branch": "main",
-      "remote": "https://github.com/zombocoder/ghdash.git",
+      "remote": "https://github.com/zombocoder/bfc.git",
+      "dirty": false
+    },
+    "promptfoo": {
+      "commit": "d1f1e5b48990133521586e5d5cee49031b4b60de",
+      "branch": "main",
+      "remote": "https://github.com/promptfoo/promptfoo.git",
       "dirty": false
     },
     "pbelnap": {
@@ -309,40 +195,28 @@
       "remote": "https://github.com/zombocoder/ctop.git",
       "dirty": false
     },
-    "research-scaffold": {
-      "commit": "3dcd59899294ce08361f0c23b8349f86ca62d25e",
+    "vaultura": {
+      "commit": "cec1f99b59f6ab7da2f0bfba7cb34205334857f0",
       "branch": "main",
-      "remote": "https://github.com/svaiml/research-scaffold.git",
+      "remote": "https://github.com/zombocoder/vaultura.git",
       "dirty": false
     },
-    "open-codesign": {
-      "commit": "36eb9400f836116abbddbb4c58ece3aa499d72f8",
+    "codegraph-rust": {
+      "commit": "ce5bf27a2978983a9089d177447f296e4c6521bb",
       "branch": "main",
-      "remote": "https://github.com/OpenCoworkAI/open-codesign.git",
+      "remote": "https://github.com/sashml/codegraph-rust.git",
       "dirty": false
     },
-    "episteme-lab": {
-      "commit": "8cf470ad6972246dfc79cec5bb74dbc5413f3f89",
-      "branch": "master",
-      "remote": "https://github.com/AITechCraft/episteme-lab.git",
-      "dirty": false
-    },
-    "rstmdb-studio": {
-      "commit": "01a30bf6b2725ecfc5edaef2bff101c55febdfda",
+    "inferense": {
+      "commit": "495b8c7032849f7f236c9325b67b773d19cbdcff",
       "branch": "main",
-      "remote": "https://github.com/rstmdb/rstmdb-studio.git",
+      "remote": "https://github.com/zombocoder/inferense.git",
       "dirty": false
     },
-    "epistemic-game": {
-      "commit": "59567cf7c1b7c6dc01d70f3471314859c9622a84",
-      "branch": "main",
-      "remote": "https://github.com/svaiml/epistemic-game.git",
-      "dirty": false
-    },
-    "flowspec": {
-      "commit": "e37cda80b7b845c925d62aaa1d4ce40f8951b6cd",
+    "craftegy-algo": {
+      "commit": "71efb60395e116681b687eb6bf2201cd5db9b88e",
       "branch": "develop",
-      "remote": "https://github.com/sashml/flowspec.git",
+      "remote": "https://github.com/svaiml/craftegy-algo.git",
       "dirty": false
     },
     "codebase-memory-mcp": {
@@ -351,46 +225,178 @@
       "remote": "https://github.com/DeusData/codebase-memory-mcp.git",
       "dirty": false
     },
+    "flowspec": {
+      "commit": "e37cda80b7b845c925d62aaa1d4ce40f8951b6cd",
+      "branch": "develop",
+      "remote": "https://github.com/sashml/flowspec.git",
+      "dirty": false
+    },
+    "criterium": {
+      "commit": "c7a22a8dd97da27852a974456e4daee251bdf568",
+      "branch": "develop",
+      "remote": "https://github.com/svaiml/criterium.git",
+      "dirty": false
+    },
+    "rstmdb": {
+      "commit": "a2574c6e2fed599d57ae4d589d970e2321f3a3f8",
+      "branch": "main",
+      "remote": "https://github.com/rstmdb/rstmdb.git",
+      "dirty": false
+    },
+    "invariantis": {
+      "commit": "1157c49995ff443966aa98435a88f7473c652ab9",
+      "branch": "develop",
+      "remote": "https://github.com/zombocoder/invariantis.git",
+      "dirty": false
+    },
+    "cronus": {
+      "commit": "3390b0760839bb82a7c085761a1e7f218839322c",
+      "branch": "develop",
+      "remote": "https://github.com/svaiml/cronus.git",
+      "dirty": false
+    },
+    "fpf-problem-solving-skill": {
+      "commit": "3d350e8e9a6fffbaa22fffdbecd7f8514af7832b",
+      "branch": "main",
+      "remote": "https://github.com/CodeAlive-AI/fpf-problem-solving-skill.git",
+      "dirty": false
+    },
+    "AgentOS": {
+      "commit": "ce95893889127cec9b11f81b200de7360ad5a36c",
+      "branch": "main",
+      "remote": "https://github.com/ag2ai/ag2.git",
+      "dirty": false
+    },
+    "DesignOS": {
+      "commit": "41f4d5f374b1ef3e24c9532c2973fadd63cfeb67",
+      "branch": "main",
+      "remote": "https://github.com/eclectix7/DesignOS.git",
+      "dirty": false
+    },
+    "episteme-lab": {
+      "commit": "8cf470ad6972246dfc79cec5bb74dbc5413f3f89",
+      "branch": "master",
+      "remote": "https://github.com/AITechCraft/episteme-lab.git",
+      "dirty": false
+    },
+    "zacta": {
+      "commit": "fcd1a190849150e3eb56c78671d0056f1da1cd08",
+      "branch": "main",
+      "remote": "https://github.com/zombocoder/zacta.git",
+      "dirty": false
+    },
+    "code-catalyst": {
+      "commit": "6c5d08e8c435aec89bb26d8e8d018fa045c2f6a6",
+      "branch": "main",
+      "remote": "https://github.com/svaiml/code-catalyst.git",
+      "dirty": false
+    },
+    "AllBeads": {
+      "commit": "e85caf14e6aa658fd159ad7559901be29f14e7a1",
+      "branch": "main",
+      "remote": "https://github.com/thrashr888/AllBeads.git",
+      "dirty": false
+    },
+    "dspy": {
+      "commit": "faa99d1f784a5d34cd0d0a5af5725ace9dae21d8",
+      "branch": "main",
+      "remote": "https://github.com/stanfordnlp/dspy.git",
+      "dirty": false
+    },
+    "gsd-2": {
+      "commit": "f8f07e21fe6fad42d8ca6cf66e4a2e64c01f10d5",
+      "branch": "main",
+      "remote": "https://github.com/gsd-build/gsd-2.git",
+      "dirty": false
+    },
+    "go-freebsd-pf": {
+      "commit": "ac1d67afc17630fd0cfc112fd23d830e593d78fc",
+      "branch": "main",
+      "remote": "https://github.com/zombocoder/go-freebsd-pf.git",
+      "dirty": false
+    },
+    "infer": {
+      "commit": "6271eaafab4237ef3f344adeb5927956716a1834",
+      "branch": "develop",
+      "remote": "https://github.com/zombocoder/infer.git",
+      "dirty": false
+    },
+    "rstmdb-studio": {
+      "commit": "01a30bf6b2725ecfc5edaef2bff101c55febdfda",
+      "branch": "main",
+      "remote": "https://github.com/rstmdb/rstmdb-studio.git",
+      "dirty": false
+    },
+    "specmem": {
+      "commit": "7391d681c44270446ce2f28bc80f85e8b1bcca67",
+      "branch": "main",
+      "remote": "https://github.com/SuperagenticAI/specmem.git",
+      "dirty": false
+    },
+    "contextflow-forge": {
+      "commit": "be0593a31e4111a67b5142e23b8a1075d13ef416",
+      "branch": "develop",
+      "remote": "https://github.com/Craftegy-NextGen/contextflow-forge.git",
+      "dirty": false
+    },
     "pctl-rs": {
       "commit": "c810693f3395945d716a6a13eb834a0b6bfbbc74",
       "branch": "develop",
       "remote": "https://github.com/zombocoder/pctl-rs.git",
       "dirty": false
     },
-    "naproche": {
-      "commit": "18c206ae056b895717456298861850d09120d045",
-      "branch": "master",
-      "remote": "https://github.com/naproche/naproche.git",
-      "dirty": false
-    },
-    "episteme-platform": {
-      "commit": "b06be5c93c1ba3fe7a11aefdb14804c0ab5f69aa",
-      "branch": "master",
-      "remote": "https://github.com/sashml/episteme-platform.git",
-      "dirty": false
-    },
-    "quint": {
-      "commit": "db6f80b2120a3cda86ae577c6f99e322f70d6a9d",
+    "epistemic-game": {
+      "commit": "59567cf7c1b7c6dc01d70f3471314859c9622a84",
       "branch": "main",
-      "remote": "https://github.com/informalsystems/quint.git",
+      "remote": "https://github.com/svaiml/epistemic-game.git",
       "dirty": false
     },
-    "bfc-kernel": {
-      "commit": "911db7c5d1eb3693d9a9e57368991418a954ba40",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/bfc.git",
+    "fpf-cards": {
+      "commit": "7512ecd8b49426c48eb7a7248c1a90215cb19430",
+      "branch": "develop",
+      "remote": "https://github.com/svaiml/fpf-cards.git",
       "dirty": false
+    },
+    "grace-skills": {
+      "commit": "3ba026efaf8f2212e9ec15079c9ef1a609b7cad1",
+      "branch": "main",
+      "remote": "https://github.com/BalaBenna/grace-skills.git",
+      "dirty": false
+    },
+    "open-design": {
+      "commit": "772ef974768714d50c1c033f1174c5ddcb2373e3",
+      "branch": "main",
+      "remote": "https://github.com/nexu-io/open-design.git",
+      "dirty": false
+    },
+    "obstruct": {
+      "commit": "231aaae0355833cda6841aaff2a59396cda5688f",
+      "branch": "main",
+      "remote": "https://github.com/zombocoder/obstruct.git",
+      "dirty": false
+    },
+    "npd-cipher": {
+      "commit": "90d17a2cd39e944cf5768356753dfc11f5e7e4cd",
+      "branch": "main",
+      "remote": "https://github.com/svaiml/npd-cipher.git",
+      "dirty": false
+    },
+    "nanoGPT": {
+      "commit": "3adf61e154c3fe3fca428ad6bc3818b27a3b8291",
+      "branch": "master",
+      "remote": "https://github.com/AITechCraft/nanoGPT.git",
+      "dirty": false
+    },
+    "baml": {
+      "commit": "999abcc7c29ba8b4ad7168dce8f14e8a543e7ef9",
+      "branch": "canary",
+      "remote": "https://github.com/BoundaryML/baml.git",
+      "dirty": true
     },
     "graphify": {
       "commit": "5843ffc277c54766854f9201286c9647da095390",
       "branch": "v4",
       "remote": "https://github.com/safishamsi/graphify.git",
-      "dirty": false
-    },
-    "vaultura": {
-      "commit": "cec1f99b59f6ab7da2f0bfba7cb34205334857f0",
-      "branch": "main",
-      "remote": "https://github.com/zombocoder/vaultura.git",
       "dirty": false
     }
   }
