@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "functions": {
+    "/api/generate-options": {},
+    "/api/chat": {},
+    "/api/generate-doc": {},
+    "/api/validate-license": {}
+  }
+}

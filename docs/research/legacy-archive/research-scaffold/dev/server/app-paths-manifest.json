@@ -1,0 +1,11 @@
+{
+  "/api/chat/route": "app-edge-has-no-entrypoint",
+  "/api/generate-doc/route": "app-edge-has-no-entrypoint",
+  "/api/generate-options/route": "app-edge-has-no-entrypoint",
+  "/api/log-chat/route": "app/api/log-chat/route.js",
+  "/api/openrouter-models/route": "app-edge-has-no-entrypoint",
+  "/api/spikelog/route": "app/api/spikelog/route.js",
+  "/api/track-event/route": "app/api/track-event/route.js",
+  "/page": "app/page.js",
+  "/wizard/page": "app/wizard/page.js"
+}

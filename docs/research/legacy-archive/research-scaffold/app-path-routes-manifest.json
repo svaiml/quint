@@ -1,0 +1,15 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/chat/route": "/api/chat",
+  "/api/generate-doc/route": "/api/generate-doc",
+  "/api/generate-options/route": "/api/generate-options",
+  "/api/log-chat/route": "/api/log-chat",
+  "/api/log-metadata/route": "/api/log-metadata",
+  "/api/spikelog/route": "/api/spikelog",
+  "/api/subscribe/route": "/api/subscribe",
+  "/api/track-event/route": "/api/track-event",
+  "/api/validate-license/route": "/api/validate-license",
+  "/page": "/",
+  "/wizard/page": "/wizard"
+}

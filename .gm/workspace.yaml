@@ -41,6 +41,24 @@ repositories:
   branch: master
   group: tools/ai-tools
   profile: full
+- name: intent-spec-kit
+  path: tools/ai-tools/_external/intent-spec-kit
+  remote: https://github.com/svaiml/intent-spec-kit.git
+  branch: main
+  group: tools/ai-tools
+  profile: full
+- name: tessl-cli
+  path: tools/ai-tools/_external/tessl-cli
+  remote: https://github.com/svaiml/tessl-cli.git
+  branch: main
+  group: tools/ai-tools
+  profile: full
+- name: tessl-tile
+  path: tools/ai-tools/_external/tessl-tile
+  remote: https://github.com/svaiml/tessl-tile.git
+  branch: main
+  group: tools/ai-tools
+  profile: full
 - name: code-catalyst
   path: apps/code-catalyst
   remote: git@github.com:svaiml/code-catalyst.git
