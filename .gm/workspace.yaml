@@ -23,12 +23,6 @@ groups:
   epistemic-universe:
     path: epistemic-universe
 repositories:
-- name: feature-factory
-  path: tools/ai-tools/feature-factory
-  remote: https://github.com/svaiml/feature-factory.git
-  branch: develop
-  group: tools/ai-tools
-  profile: full
 - name: intent-spec-kit
   path: tools/ai-tools/_external/intent-spec-kit
   remote: https://github.com/github/spec-kit.git
