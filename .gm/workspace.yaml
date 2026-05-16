@@ -426,13 +426,13 @@ repositories:
   group: kernel-forge
   profile: null
 - name: contextflow-forge
-  path: research/contextflow-forge
+  path: research/_external/contextflow-forge
   remote: https://github.com/Craftegy-NextGen/contextflow-forge.git
   branch: develop
   group: research
   profile: full
 - name: specmem
-  path: research/specmem
+  path: research/_external/specmem
   remote: https://github.com/SuperagenticAI/specmem.git
   branch: main
   group: research
