@@ -318,7 +318,7 @@ repositories:
   group: tools/ai-tools
   profile: null
 - name: AllBeads
-  path: tools/ai-tools/_external/AllBeads
+  path: tools/orchestrator/_external/AllBeads
   remote: https://github.com/thrashr888/AllBeads.git
   branch: main
   group: tools/orchestrator
@@ -354,7 +354,7 @@ repositories:
   group: prodx
   profile: null
 - name: nanoGPT
-  path: epistemic-universe/_external/nanoGPT
+  path: epistemic-universe/nanoGPT
   remote: git@github.com:AITechCraft/nanoGPT.git
   branch: master
   group: epistemic-universe
