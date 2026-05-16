@@ -305,14 +305,8 @@ repositories:
   branch: main
   group: tools/ai-tools
   profile: null
-- name: quint
-  path: tools/ai-tools/_external/quint
-  remote: https://github.com/informalsystems/quint.git
-  branch: main
-  group: tools/ai-tools
-  profile: null
 - name: AllBeads
-  path: tools/orchestrator/_external/AllBeads
+  path: tools/ai-tools/_external/AllBeads
   remote: https://github.com/thrashr888/AllBeads.git
   branch: main
   group: tools/orchestrator
@@ -432,13 +426,13 @@ repositories:
   group: kernel-forge
   profile: null
 - name: contextflow-forge
-  path: research/_external/contextflow-forge
+  path: research/contextflow-forge
   remote: https://github.com/Craftegy-NextGen/contextflow-forge.git
   branch: develop
   group: research
   profile: full
 - name: specmem
-  path: research/_external/specmem
+  path: research/specmem
   remote: https://github.com/SuperagenticAI/specmem.git
   branch: main
   group: research
