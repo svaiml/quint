@@ -395,6 +395,18 @@ repositories:
   branch: master
   group: tools/science-libs
   profile: research
+- name: gbla
+  path: tools/science-libs/_external/gbla
+  remote: https://github.com/svaiml/gbla.git
+  branch: main
+  group: tools/science-libs
+  profile: full
+- name: quint
+  path: tools/science-libs/_external/quint
+  remote: https://github.com/svaiml/quint.git
+  branch: main
+  group: tools/science-libs
+  profile: full
 - name: PaperClip
   path: tools/orchestrator/_external/PaperClip
   remote: https://github.com/paperclipai/paperclip.git
